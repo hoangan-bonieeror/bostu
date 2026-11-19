@@ -1,29 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
-import {
-  IsActiveMatchOptions,
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
-import { I18n, I18nKey } from './core/i18n';
+import { Component, HostListener, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ContentService } from './core/content.service';
+import { I18n } from './core/i18n';
+import { RADAR_CATEGORY } from './core/models';
 import { StoreService } from './core/store.service';
-
-interface NavItem {
-  path: string;
-  icon: string;
-  label: I18nKey;
-  query?: Record<string, string>;
-  match: IsActiveMatchOptions;
-}
-
-const base: IsActiveMatchOptions = {
-  paths: 'subset',
-  queryParams: 'ignored',
-  fragment: 'ignored',
-  matrixParams: 'ignored',
-};
 
 @Component({
   selector: 'app-root',
@@ -40,21 +20,60 @@ const base: IsActiveMatchOptions = {
         </a>
 
         <nav class="nav-links" [attr.aria-label]="i18n.t('nav.menu')">
-          @for (item of nav; track item.label) {
-            <a
-              [routerLink]="item.path"
-              [queryParams]="item.query ?? null"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="item.match"
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{
+            i18n.t('nav.home')
+          }}</a>
+
+          <div class="nav-drop" [class.open]="catsOpen()">
+            <button
+              type="button"
+              class="nav-drop-btn"
+              (click)="toggleCats($event)"
+              [attr.aria-expanded]="catsOpen()"
             >
-              <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
-              <span>{{ i18n.t(item.label) }}</span>
-            </a>
-          }
+              {{ i18n.t('nav.categories') }} ▾
+            </button>
+            <div class="nav-drop-menu">
+              @for (c of topics(); track c.id) {
+                <a [routerLink]="['/c', c.id]" routerLinkActive="active">
+                  <span
+                    class="side-cat-icon"
+                    [style.--c1]="c.colors[0]"
+                    [style.--c2]="c.colors[1]"
+                    >{{ c.icon }}</span
+                  >
+                  {{ i18n.pick(c.title) }}
+                </a>
+              }
+            </div>
+          </div>
+
+          <a routerLink="/series" routerLinkActive="active">{{ i18n.t('nav.series') }}</a>
+          <a [routerLink]="['/c', radarId]" routerLinkActive="active"
+            >📡 {{ i18n.t('nav.radar') }}</a
+          >
+          <a routerLink="/archive" routerLinkActive="active">{{ i18n.t('nav.archive') }}</a>
         </nav>
 
         <div class="nav-actions">
-          <span class="streak-pill" [title]="i18n.t('dash.streak')">🔥 {{ store.streak() }}</span>
+          <a
+            class="icon-btn"
+            routerLink="/search"
+            [title]="i18n.t('nav.search')"
+            [attr.aria-label]="i18n.t('nav.search')"
+            >🔍</a
+          >
+          <a
+            class="icon-btn saved-btn"
+            routerLink="/saved"
+            [title]="i18n.t('nav.saved')"
+            [attr.aria-label]="i18n.t('nav.saved')"
+          >
+            🔖
+            @if (store.bookmarkCount()) {
+              <span class="count-dot">{{ store.bookmarkCount() }}</span>
+            }
+          </a>
           <div class="lang-switch" role="group" aria-label="Language">
             <button
               [class.on]="i18n.lang() === 'vi'"
@@ -92,38 +111,44 @@ const base: IsActiveMatchOptions = {
     <main class="content">
       <router-outlet />
     </main>
+
+    <footer class="site-footer">
+      <div><strong>⌘ Bostu</strong> — {{ i18n.t('footer.about') }}</div>
+      <div class="footer-links">
+        <a [href]="'feed.' + i18n.lang() + '.xml'">📰 {{ i18n.t('footer.rss') }}</a>
+        <a href="https://github.com/hoangan-bonieeror/bostu" target="_blank" rel="noopener"
+          >GitHub</a
+        >
+      </div>
+    </footer>
   `,
 })
 export class App {
   protected readonly i18n = inject(I18n);
   protected readonly store = inject(StoreService);
+  private readonly content = inject(ContentService);
   protected readonly menuOpen = signal(false);
-
-  protected readonly nav: NavItem[] = [
-    { path: '/', icon: '🏠', label: 'nav.dashboard', match: { ...base, paths: 'exact' } },
-    { path: '/roadmap', icon: '🗺️', label: 'nav.roadmap', match: base },
-    // Lessons is active for /lessons and /lessons/:id, but not for the Tech Radar filter.
-    {
-      path: '/lessons',
-      icon: '📘',
-      label: 'nav.lessons',
-      match: { ...base, queryParams: 'exact' },
-    },
-    {
-      path: '/lessons',
-      icon: '📡',
-      label: 'nav.radar',
-      query: { skill: 'tech-radar' },
-      match: { ...base, queryParams: 'exact' },
-    },
-    { path: '/sql', icon: '🧪', label: 'nav.sql', match: base },
-    { path: '/cards', icon: '🃏', label: 'nav.cards', match: base },
-    { path: '/settings', icon: '⚙️', label: 'nav.settings', match: base },
-  ];
+  protected readonly catsOpen = signal(false);
+  protected readonly radarId = RADAR_CATEGORY;
+  protected readonly topics = () =>
+    this.content.categories().filter((c) => c.id !== RADAR_CATEGORY);
 
   constructor() {
     inject(Router).events.subscribe((e) => {
-      if (e instanceof NavigationEnd) this.menuOpen.set(false);
+      if (e instanceof NavigationEnd) {
+        this.menuOpen.set(false);
+        this.catsOpen.set(false);
+      }
     });
+  }
+
+  protected toggleCats(e: Event) {
+    e.stopPropagation();
+    this.catsOpen.set(!this.catsOpen());
+  }
+
+  @HostListener('document:click')
+  protected closeMenus() {
+    this.catsOpen.set(false);
   }
 }

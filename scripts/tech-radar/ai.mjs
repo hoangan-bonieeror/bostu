@@ -6,10 +6,16 @@
 // pin a specific model id (e.g. from https://ai.google.dev/gemini-api/docs/models) for stable output.
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+/** Tried in order when the main model is overloaded (503) or unavailable. Comma-separated. */
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? 'gemini-flash-lite-latest')
+  .split(',')
+  .map((m) => m.trim())
+  .filter((m) => m && m !== MODEL);
+const RETRY_DELAYS_MS = [5000, 15000]; // per model, for 429/500/503
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Outcome of the last summarize() call, recorded in radar-status.json for troubleshooting. */
 export const aiStatus = { enabled: false, ok: false, model: MODEL, summarized: 0, error: null };
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 /** JSON schema Gemini must follow (structured output). */
 const RESPONSE_SCHEMA = {
@@ -64,22 +70,59 @@ Also write a 2–3 sentence overview ("intro") of the week's themes in both lang
 Items:
 ${JSON.stringify(items, null, 1)}`;
 
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 16384,
-          responseMimeType: 'application/json',
-          responseSchema: RESPONSE_SCHEMA,
+  const body = JSON.stringify({
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.4,
+      maxOutputTokens: 16384,
+      responseMimeType: 'application/json',
+      responseSchema: RESPONSE_SCHEMA,
+    },
+  });
+
+  /** Call one model, retrying transient errors (overloaded / rate-limited / 5xx). */
+  async function call(model) {
+    for (let attempt = 0; ; attempt++) {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body,
+          signal: AbortSignal.timeout(120000),
         },
-      }),
-      signal: AbortSignal.timeout(90000),
-    });
-    if (!res.ok) throw new Error(`Gemini API ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      );
+      if (res.ok) return res;
+      const detail = (await res.text()).replace(/\s+/g, ' ').slice(0, 240);
+      const transient = [429, 500, 502, 503, 504].includes(res.status);
+      if (transient && attempt < RETRY_DELAYS_MS.length) {
+        console.warn(
+          `⚠ Gemini ${model} ${res.status}, retrying in ${RETRY_DELAYS_MS[attempt] / 1000}s…`,
+        );
+        await sleep(RETRY_DELAYS_MS[attempt]);
+        continue;
+      }
+      const err = new Error(`Gemini API ${res.status} (${model}): ${detail}`);
+      err.fallback = transient || res.status === 404; // overloaded or model not found → try another model
+      throw err;
+    }
+  }
+
+  try {
+    let res;
+    let lastError;
+    for (const model of [MODEL, ...FALLBACK_MODELS]) {
+      try {
+        res = await call(model);
+        aiStatus.model = model;
+        break;
+      } catch (e) {
+        lastError = e;
+        if (!e.fallback) break; // e.g. invalid key: other models won't help
+        console.warn(`⚠ ${e.message} — trying next model`);
+      }
+    }
+    if (!res) throw lastError;
 
     const data = await res.json();
     const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('') ?? '';
@@ -103,7 +146,9 @@ ${JSON.stringify(items, null, 1)}`;
     }
     aiStatus.ok = true;
     aiStatus.summarized = Object.keys(map).length;
-    console.log(`✨ Gemini (${MODEL}) summarized ${Object.keys(map).length}/${items.length} items`);
+    console.log(
+      `✨ Gemini (${aiStatus.model}) summarized ${Object.keys(map).length}/${items.length} items`,
+    );
     return { intro: json.intro, items: map };
   } catch (e) {
     aiStatus.error = e.message.slice(0, 300);

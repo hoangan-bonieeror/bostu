@@ -32,8 +32,8 @@ jobs:
 
       - run: npm ci
 
-      - name: Validate content JSON
-        run: npm run validate:content
+      - name: Validate posts and build the index
+        run: npm run content
 
       - name: Build
         run: npm run build

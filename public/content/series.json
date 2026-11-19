@@ -1,0 +1,35 @@
+[
+  {
+    "id": "system-design-foundations",
+    "title": {
+      "vi": "Thiết kế hệ thống từ nền tảng",
+      "en": "System Design from the Ground Up"
+    },
+    "desc": {
+      "vi": "Từ một server đơn lẻ đến kiến trúc phục vụ hàng triệu người dùng, qua các case study cụ thể.",
+      "en": "From a single server to architectures serving millions, through concrete case studies."
+    }
+  },
+  {
+    "id": "dsa-in-practice",
+    "title": {
+      "vi": "DSA thực chiến",
+      "en": "DSA in Practice"
+    },
+    "desc": {
+      "vi": "Độ phức tạp và các mẫu giải thuật hay gặp, minh họa bằng Python.",
+      "en": "Complexity and recurring algorithm patterns, illustrated in Python."
+    }
+  },
+  {
+    "id": "backend-essentials",
+    "title": {
+      "vi": "Backend căn bản",
+      "en": "Backend Essentials"
+    },
+    "desc": {
+      "vi": "Sáu chủ đề nền tảng mà mọi backend developer dùng hằng ngày.",
+      "en": "Six foundational topics every backend developer uses daily."
+    }
+  }
+]

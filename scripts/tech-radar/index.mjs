@@ -12,7 +12,7 @@
 //
 // Env: GITHUB_TOKEN (recommended, higher rate limits), GEMINI_API_KEY (optional AI summaries),
 //      GEMINI_MODEL (optional, Gemini model id; default gemini-flash-latest).
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { aiStatus, summarize } from './ai.mjs';
@@ -21,13 +21,14 @@ import { pickHighlights, rank } from './classify.mjs';
 import { CATEGORIES, LIMITS, WINDOW_DAYS } from './config.mjs';
 import { renderCover } from './cover.mjs';
 import { postMeta, renderPost } from './render.mjs';
+import { stringifyFrontmatter } from '../lib/frontmatter.mjs';
 import { SOURCES } from './sources.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
 const content = join(root, 'public', 'content');
 const SEEN_FILE = join(here, 'seen.json');
-const RADAR_SKILL = 'tech-radar';
+const RADAR_CATEGORY = 'tech-radar';
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -123,7 +124,8 @@ async function collect() {
 
 async function main() {
   const dateArg = args.date || process.env.RADAR_DATE || '';
-  if (dateArg && !/^\d{4}-\d{2}-\d{2}$/.test(dateArg)) throw new Error(`Invalid date "${dateArg}" (expected YYYY-MM-DD)`);
+  if (dateArg && !/^\d{4}-\d{2}-\d{2}$/.test(dateArg))
+    throw new Error(`Invalid date "${dateArg}" (expected YYYY-MM-DD)`);
   const now = dateArg ? new Date(`${dateArg}T12:00:00Z`) : new Date();
   const { week, year } = isoWeek(now);
   const to = ymd(now);
@@ -193,8 +195,11 @@ async function main() {
     })),
   );
 
-  const skills = JSON.parse(readFileSync(join(content, 'skills.json'), 'utf8'));
-  const skillTitle = (sid, lang) => skills.find((s) => s.id === sid)?.title?.[lang] ?? sid;
+  const blogCategories = JSON.parse(readFileSync(join(content, 'categories.json'), 'utf8'));
+  const categoryLink = (cid, lang) => {
+    const c = blogCategories.find((x) => x.id === cid);
+    return c ? `[${c.icon} ${c.title[lang]}](#/c/${c.id})` : cid;
+  };
 
   const base = {
     week,
@@ -209,7 +214,7 @@ async function main() {
     byCategory,
     counts,
     ai,
-    skillTitle,
+    categoryLink,
     shortDate: {
       vi: `${String(now.getUTCDate()).padStart(2, '0')}/${String(now.getUTCMonth() + 1).padStart(2, '0')}`,
       en: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }),
@@ -243,29 +248,25 @@ async function main() {
     return;
   }
 
-  writeFileSync(join(content, 'lessons', `${id}.vi.md`), vi);
-  writeFileSync(join(content, 'lessons', `${id}.en.md`), en);
-  writeFileSync(join(content, 'covers', `${id}.svg`), cover);
-
-  // Register the post: curriculum lessons first, then radar posts newest-first.
-  const lessonsPath = join(content, 'lessons.json');
-  const lessons = JSON.parse(readFileSync(lessonsPath, 'utf8')).filter((l) => l.id !== id);
-  const words = vi.split(/\s+/).length;
+  // Write the post as bilingual Markdown with front matter; scripts/build-content.mjs indexes it.
   const metaVi = postMeta('vi', base);
   const metaEn = postMeta('en', base);
-  const entry = {
-    id,
-    skill: RADAR_SKILL,
-    minutes: Math.max(5, Math.round(words / 200)),
-    date: to,
-    title: { vi: metaVi.title, en: metaEn.title },
-    summary: { vi: metaVi.summary, en: metaEn.summary },
-  };
-  const course = lessons.filter((l) => l.skill !== RADAR_SKILL);
-  const radar = [entry, ...lessons.filter((l) => l.skill === RADAR_SKILL)].sort((a, b) =>
-    b.date.localeCompare(a.date),
-  );
-  writeFileSync(lessonsPath, JSON.stringify([...course, ...radar], null, 2) + '\n');
+  const topTags = [...new Set(highlights.map((h) => h.category))].slice(0, 3);
+  const front = (meta) =>
+    stringifyFrontmatter({
+      title: meta.title,
+      summary: meta.summary,
+      date: to,
+      category: RADAR_CATEGORY,
+      tags: ['tech-radar', ...topTags],
+      type: 'radar',
+      cover: `content/covers/${id}.svg`,
+      author: 'Tech Radar Bot',
+    });
+  mkdirSync(join(content, 'posts'), { recursive: true });
+  writeFileSync(join(content, 'posts', `${id}.vi.md`), `${front(metaVi)}\n${vi}`);
+  writeFileSync(join(content, 'posts', `${id}.en.md`), `${front(metaEn)}\n${en}`);
+  writeFileSync(join(content, 'covers', `${id}.svg`), cover);
 
   // Remember what was published so next week's post shows new things.
   const urls = [...new Set([...published.map((p) => p.url), ...seen.urls])].slice(0, 2000);
@@ -277,7 +278,7 @@ async function main() {
     postId: id,
     crawl: crawlStats,
   });
-  console.log(`✅ Wrote lessons/${id}.{vi,en}.md, covers/${id}.svg and updated lessons.json`);
+  console.log(`✅ Wrote posts/${id}.{vi,en}.md and covers/${id}.svg`);
 }
 
 main().catch((e) => {

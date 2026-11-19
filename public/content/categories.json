@@ -1,0 +1,114 @@
+[
+  {
+    "id": "system-design",
+    "icon": "🏗️",
+    "colors": [
+      "#3730a3",
+      "#0ea5e9"
+    ],
+    "title": {
+      "vi": "Thiết kế hệ thống",
+      "en": "System Design"
+    },
+    "desc": {
+      "vi": "Cách các hệ thống lớn mở rộng, chịu lỗi và giữ dữ liệu nhất quán.",
+      "en": "How large systems scale, tolerate failure and keep data consistent."
+    }
+  },
+  {
+    "id": "dsa",
+    "icon": "🧮",
+    "colors": [
+      "#6d28d9",
+      "#db2777"
+    ],
+    "title": {
+      "vi": "Cấu trúc dữ liệu & giải thuật",
+      "en": "Data Structures & Algorithms"
+    },
+    "desc": {
+      "vi": "Độ phức tạp, cấu trúc dữ liệu và các mẫu giải thuật thường gặp.",
+      "en": "Complexity, data structures and recurring algorithm patterns."
+    }
+  },
+  {
+    "id": "database",
+    "icon": "🗄️",
+    "colors": [
+      "#1d4ed8",
+      "#06b6d4"
+    ],
+    "title": {
+      "vi": "Thiết kế database",
+      "en": "Database Design"
+    },
+    "desc": {
+      "vi": "Mô hình hóa dữ liệu, chuẩn hóa, index, transaction và SQL — có ô chạy SQL ngay trong bài.",
+      "en": "Data modeling, normalization, indexes, transactions and SQL — with runnable SQL inside articles."
+    }
+  },
+  {
+    "id": "cicd",
+    "icon": "🚀",
+    "colors": [
+      "#0f766e",
+      "#22c55e"
+    ],
+    "title": {
+      "vi": "CI/CD & DevOps",
+      "en": "CI/CD & DevOps"
+    },
+    "desc": {
+      "vi": "Tự động hóa build, test, deploy và vận hành phần mềm.",
+      "en": "Automating build, test, deploy and operations."
+    }
+  },
+  {
+    "id": "enterprise",
+    "icon": "🏢",
+    "colors": [
+      "#9a3412",
+      "#f59e0b"
+    ],
+    "title": {
+      "vi": "Hệ thống doanh nghiệp",
+      "en": "Enterprise Systems"
+    },
+    "desc": {
+      "vi": "ERP, CRM, HRM, tích hợp hệ thống, định danh và các mẫu kiến trúc doanh nghiệp.",
+      "en": "ERP, CRM, HRM, integration, identity and enterprise architecture patterns."
+    }
+  },
+  {
+    "id": "backend",
+    "icon": "🔌",
+    "colors": [
+      "#4338ca",
+      "#7c3aed"
+    ],
+    "title": {
+      "vi": "Backend",
+      "en": "Backend"
+    },
+    "desc": {
+      "vi": "HTTP, API, xác thực, caching — nền móng của mọi dịch vụ web.",
+      "en": "HTTP, APIs, auth, caching — the foundations of every web service."
+    }
+  },
+  {
+    "id": "tech-radar",
+    "icon": "📡",
+    "colors": [
+      "#0b1026",
+      "#312e81"
+    ],
+    "title": {
+      "vi": "Tech Radar",
+      "en": "Tech Radar"
+    },
+    "desc": {
+      "vi": "Tổng hợp tự động hằng tuần các công nghệ, công cụ và bản phát hành mới.",
+      "en": "Weekly auto-compiled digest of new technologies, tools and releases."
+    }
+  }
+]

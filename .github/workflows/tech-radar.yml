@@ -58,7 +58,7 @@ jobs:
         run: node scripts/tech-radar/index.mjs ${{ inputs.ignore_seen && '--ignore-seen' || '' }}
 
       - name: Validate content
-        run: node scripts/validate-content.mjs
+        run: node scripts/build-content.mjs
 
       - name: Commit the new post
         id: commit

@@ -1,11 +1,11 @@
-# Bostu — Backend Learning Lab 🧪
+# Bostu — Sổ tay kỹ thuật / Tech Notebook ⌘
 
-> 🇻🇳 Ứng dụng web học Backend cá nhân, song ngữ Việt–Anh, chạy hoàn toàn trên trình duyệt và deploy miễn phí lên GitHub Pages.
-> 🇺🇸 A personal, bilingual (Vietnamese/English) backend learning app that runs entirely in the browser and deploys free to GitHub Pages.
+> 🇻🇳 Blog kỹ thuật cá nhân, song ngữ Việt–Anh: thiết kế hệ thống, cấu trúc dữ liệu & giải thuật, thiết kế database, CI/CD và hệ thống doanh nghiệp. Ô SQL chạy ngay trong bài, sơ đồ trực quan, kèm một bot tự tổng hợp công nghệ mới mỗi tuần.
+> 🇺🇸 A personal, bilingual (VI/EN) engineering blog on system design, DSA, database design, CI/CD and enterprise systems — with runnable SQL inside articles, visual diagrams, and a bot that compiles new tech every week.
 
-**Live demo:** `https://hoangan-bonieeror.github.io/<repo-name>/`
+**Live:** https://hoangan-bonieeror.github.io/bostu/
 
-![Angular](https://img.shields.io/badge/Angular-22-dd0031?logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6?logo=typescript) ![SQLite](https://img.shields.io/badge/SQLite-WASM-003b57?logo=sqlite) ![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-222?logo=github)
+![Angular](https://img.shields.io/badge/Angular-22-dd0031?logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript) ![SQLite](https://img.shields.io/badge/SQLite-WASM-003b57?logo=sqlite) ![Mermaid](https://img.shields.io/badge/diagrams-Mermaid-ff3670) ![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-222?logo=github)
 
 ---
 
@@ -13,61 +13,123 @@
 
 | | Tính năng | Feature |
 |---|---|---|
-| 🏠 | **Tổng quan**: chuỗi ngày học, mục tiêu phút/ngày, heatmap hoạt động 20 tuần, gợi ý bài tiếp theo | **Dashboard**: streak, daily minutes goal, 20-week activity heatmap, next-lesson suggestion |
-| 🗺️ | **Lộ trình Backend**: 12 kỹ năng (Nền tảng → Cốt lõi → Nâng cao), tự chấm 0–5 sao, % hoàn thành | **Backend roadmap**: 12 skills (Foundations → Core → Advanced), 0–5 self-rating, completion % |
-| 📘 | **Bài học dạng blog**: ảnh bìa, mục lục tự động, thanh tiến độ đọc, hình minh họa SVG, sơ đồ Mermaid, hộp ghi chú màu, nút copy code, phóng to ảnh | **Blog-style lessons**: cover art, auto table of contents, reading progress, SVG illustrations, Mermaid diagrams, colored callouts, copy-code buttons, image zoom |
-| 🧪 | **SQL Lab**: SQLite (WebAssembly) chạy trong trình duyệt, 12 bài tập chấm tự động, sân chơi tự do, xem schema | **SQL Lab**: in-browser SQLite (WebAssembly), 12 auto-graded exercises, free playground, schema browser |
-| 🃏 | **Flashcard** dùng thuật toán lặp lại ngắt quãng SM-2, có phím tắt | **Flashcards** with SM-2 spaced repetition and keyboard shortcuts |
-| 📡 | **Tech Radar bot**: mỗi tuần tự tìm repo mới nổi, bản phát hành mới, bài hot trên Hacker News/DEV rồi viết thành bài blog song ngữ | **Tech Radar bot**: weekly finds rising repos, new releases and hot HN/DEV posts, then writes a bilingual blog post |
-| 🧭 | Thanh điều hướng ngang, menu thả xuống trên mobile | Top navigation bar with a mobile dropdown |
-| 🌗 | Chuyển VI/EN tức thì, giao diện sáng/tối, responsive | Instant VI/EN switch, light/dark theme, responsive |
-| 💾 | Lưu tiến độ bằng localStorage, xuất/nhập file JSON để sao lưu | localStorage persistence with JSON export/import backup |
+| 📰 | **Trang chủ kiểu tạp chí**: bài nổi bật, bài mới nhất, chuyên mục, series, thẻ phổ biến | **Magazine-style home**: featured post, latest posts, topics, series, popular tags |
+| 🗂️ | **7 chuyên mục**: Thiết kế hệ thống · DSA · Thiết kế database · CI/CD · Hệ thống doanh nghiệp · Backend · Tech Radar | **7 topics**: System Design · DSA · Database Design · CI/CD · Enterprise · Backend · Tech Radar |
+| 📚 | **Series** đọc theo thứ tự, có điều hướng giữa các phần | **Series** with part-to-part navigation |
+| 🧾 | **Trang bài viết**: ảnh bìa, mục lục theo dõi vị trí đọc, thanh tiến độ, hộp ghi chú màu, nút copy code, phóng to ảnh, bài liên quan | **Article page**: cover, scroll-spy TOC, reading progress, callouts, copy-code, image zoom, related posts |
+| 🧪 | **Ô SQL chạy được** ngay trong bài (SQLite/WebAssembly), có database mẫu `shop` và `payroll` | **Runnable SQL boxes** inside articles (SQLite/WebAssembly) with sample `shop` and `payroll` databases |
+| 📊 | **Sơ đồ Mermaid** (sequence, flowchart, ERD) tự đổi màu theo giao diện, cùng hình SVG song ngữ | **Mermaid diagrams** (sequence, flowchart, ERD) that follow the theme, plus bilingual SVG figures |
+| 🔍 | **Tìm kiếm** toàn văn ngay trên trình duyệt, không phân biệt dấu ("thiet ke" khớp "thiết kế") | **Full-text search** in the browser, diacritics-insensitive |
+| 🔖 | **Đã lưu**: bookmark, ghi chú riêng cho từng bài, lịch sử đọc, sao lưu JSON | **Saved**: bookmarks, per-post private notes, reading history, JSON backup |
+| 🗓️ | **Lưu trữ** theo tháng và **RSS** (`feed.vi.xml`, `feed.en.xml`) | **Archive** by month and **RSS** feeds |
+| 📡 | **Tech Radar bot**: mỗi tuần quét GitHub, Hacker News, DEV, đọc nội dung từng link, viết bài song ngữ | **Tech Radar bot**: weekly scan of GitHub, HN, DEV; reads each link and writes a bilingual post |
+| 🌗 | VI/EN chuyển tức thì, sáng/tối, responsive | Instant VI/EN, light/dark, responsive |
 
-### Nội dung sẵn có / Bundled content
+### Nội dung hiện có / Current content
 
-- **6 bài học** (mỗi bài có bản VI và EN): HTTP, REST API design, SQL, Index & Transaction & N+1, Session/JWT/OAuth, Caching với Redis
-- **12 bài tập SQL**: SELECT → JOIN → GROUP BY/HAVING → window function → transaction → index với `EXPLAIN QUERY PLAN`
-- **6 ảnh bìa + 8 sơ đồ SVG** (mỗi sơ đồ có bản VI/EN) và **6 sơ đồ Mermaid** (sequence, flowchart)
-- **44 flashcard** song ngữ: HTTP, REST, SQL, DB design, Auth, Caching, Security, Docker, Messaging
+| Chuyên mục | Bài viết |
+|---|---|
+| 🏗️ Thiết kế hệ thống | Từ một server đến hàng triệu người dùng · Case study: dịch vụ rút gọn URL |
+| 🧮 DSA | Big-O trong thực tế · Two Pointers & Sliding Window |
+| 🗄️ Thiết kế database | Chuẩn hóa 1NF→3NF · Schema hệ thống quản lý lương · SQL thiết yếu · Index, Transaction & N+1 |
+| 🚀 CI/CD & DevOps | CI/CD: từ commit đến production · Chiến lược triển khai |
+| 🏢 Hệ thống doanh nghiệp | Bản đồ ERP/CRM/HRM & tích hợp · SSO: SAML, OIDC, LDAP |
+| 🔌 Backend | HTTP · REST API · Session/JWT/OAuth · Caching với Redis |
+| 📡 Tech Radar | Bài tự động hằng tuần |
 
 ---
 
 ## 🚀 Chạy local / Run locally
 
-Yêu cầu / Requires: **Node.js 22+**
+Yêu cầu / Requires **Node.js 22+**
 
 ```bash
 npm install
-npm start            # http://localhost:4200
+npm start             # http://localhost:4200  (tự build chỉ mục bài viết trước)
 ```
-
-Các lệnh khác / Other scripts:
 
 ```bash
-npm run build              # production build → dist/bostu/browser
-npm run validate:content   # kiểm tra JSON & liên kết nội dung / check content files
+npm run content       # kiểm tra bài viết + tạo lại chỉ mục, tìm kiếm, RSS, ảnh bìa tự động
+npm run build         # production build → dist/bostu/browser
+npm run new-post -- --category=system-design --title="Rate limiter"   # tạo khung bài mới
 ```
+
+> Đang chạy `npm start` mà thêm/sửa front matter của bài? Chạy `npm run content` để cập nhật danh sách bài (nội dung Markdown thì tải lại trang là thấy).
+
+---
+
+## ✍️ Viết bài / Writing posts
+
+Mỗi bài là **hai file Markdown** (VI và EN) trong `public/content/posts/`:
+
+```
+public/content/
+├── posts/<id>.vi.md, <id>.en.md   # bài viết (front matter + Markdown)
+├── categories.json                 # chuyên mục: icon, màu, tên, mô tả
+├── series.json                     # series
+├── site.json                       # tên site, URL (dùng cho RSS)
+├── sql/shop.sql, payroll.sql       # database mẫu cho ô SQL
+├── covers/                         # ảnh bìa (auto/ được sinh tự động)
+├── diagrams/<tên>.<vi|en>.svg      # hình minh họa song ngữ
+└── generated/                      # ⚙️ sinh tự động khi build (không commit)
+```
+
+**Front matter:**
+
+```yaml
+---
+title: "Rate limiter hoạt động thế nào"
+summary: "Một câu tóm tắt, hiện trên thẻ bài và trong RSS."
+date: 2026-11-20
+category: system-design          # id trong categories.json
+tags: [rate-limiting, redis]
+type: article                    # article | note (ghi chép ngắn) | radar
+series: system-design-foundations   # tùy chọn
+seriesOrder: 3                      # tùy chọn
+cover: content/covers/x.svg         # tùy chọn — bỏ trống thì tự sinh ảnh bìa theo chuyên mục
+---
+```
+
+**Các khối đặc biệt trong Markdown:**
+
+````markdown
+> [!TIP]
+> Hộp ghi chú màu. Có: NOTE, TIP, IMPORTANT, WARNING, CAUTION.
+
+![Chú thích](content/diagrams/ten-hinh.vi.svg "Chú thích dưới ảnh")
+
+```mermaid
+sequenceDiagram
+    Client->>API: GET /users/42
+    API-->>Client: 200 OK
+```
+
+```sql-run
+-- db: payroll
+SELECT full_name FROM employees;
+```
+
+```sql-run
+-- db: none
+CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT);
+INSERT INTO t VALUES (1, 'a');
+-- ---
+SELECT * FROM t;
+```
+````
+
+- Ô `sql-run` chạy trên database mới mỗi lần bấm. `-- db: <tên>` nạp `content/sql/<tên>.sql` (mặc định `shop`); phần phía trên dòng `-- ---` là dữ liệu chuẩn bị (ẩn, xem được qua nút "Dữ liệu mẫu"), phần dưới là câu lệnh người đọc sửa được.
+- `##` / `###` tự vào mục lục. `npm run content` báo lỗi nếu thiếu tiêu đề, sai ngày, chuyên mục/series không tồn tại, ảnh hoặc database SQL không có.
 
 ---
 
 ## 🌐 Deploy lên GitHub Pages
 
-1. Tạo repo mới trên GitHub, ví dụ `bostu`, rồi push code:
+1. **Settings → Pages → Source:** chọn **GitHub Actions**.
+2. **Settings → Actions → General → Workflow permissions:** chọn **Read and write permissions** (cho bot Tech Radar).
+3. Push lên `main`. Workflow `deploy.yml` sẽ kiểm tra bài viết, build và deploy.
 
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: initial Bostu learning app"
-   git branch -M main
-   git remote add origin https://github.com/hoangan-bonieeror/bostu.git
-   git push -u origin main
-   ```
-
-2. Trên GitHub, vào **Settings → Pages → Build and deployment → Source** và chọn **GitHub Actions**.
-3. Mỗi lần push lên `main`, workflow `.github/workflows/deploy.yml` sẽ tự kiểm tra nội dung, build và deploy.
-4. Trang sẽ có địa chỉ `https://hoangan-bonieeror.github.io/bostu/`.
-
-> App dùng **hash routing** (`/#/lessons`) và `<base href="./">`, nên chạy được ở bất kỳ đường dẫn con nào mà không cần cấu hình thêm hay file `404.html`.
+App dùng hash routing (`/#/p/<id>`) và `<base href="./">`, nên chạy được ở mọi đường dẫn con mà không cần cấu hình thêm.
 
 ---
 
@@ -80,7 +142,7 @@ Bot nằm trong `scripts/tech-radar/` (Node.js 22; bộ crawl dùng `@mozilla/re
    - GitHub Releases: bản phát hành mới của FastAPI, Django, uv, Redis/Valkey, Kafka, Docker Compose, k6…
    - Hacker News: bài trên 120 điểm
    - DEV Community: bài top tuần theo tag
-2. **Lọc và chấm điểm**: bỏ repo spam (nhiều repo cùng chủ, mô tả rỗng, ít sao), bỏ chủ đề lạc đề (crypto, game, mobile…). Một từ thông dụng như "test" hay "security" đứng một mình không đủ để coi là tin công nghệ: cần thêm một từ khóa khác, hoặc một thuật ngữ cụ thể như `postgres`, `xss`, `kubernetes` (danh sách `AMBIGUOUS_KEYWORDS`). Mỗi mục được xếp vào một chủ đề gắn với kỹ năng trên lộ trình. Điểm = độ phổ biến (thang log) + mức liên quan.
+2. **Lọc và chấm điểm**: bỏ repo spam (nhiều repo cùng chủ, mô tả rỗng, ít sao), bỏ chủ đề lạc đề (crypto, game, mobile…). Một từ thông dụng như "test" hay "security" đứng một mình không đủ để coi là tin công nghệ: cần thêm một từ khóa khác, hoặc một thuật ngữ cụ thể như `postgres`, `xss`, `kubernetes` (danh sách `AMBIGUOUS_KEYWORDS`). Mỗi mục được xếp theo chủ đề và liên kết tới chuyên mục tương ứng của blog. Điểm = độ phổ biến (thang log) + mức liên quan.
 3. **Đọc nội dung bên trong từng link** (`crawl.mjs`):
    - Repo GitHub → đọc README; bản phát hành → đọc release notes; bài DEV → lấy qua DEV API; bài viết khác → tải trang và trích phần nội dung chính bằng `@mozilla/readability`.
    - Lấy ra: trích đoạn ngắn, các mục lớn (outline), các ý chính (gạch đầu dòng), ảnh xem trước (og:image) và thời gian đọc.
@@ -88,7 +150,7 @@ Bot nằm trong `scripts/tech-radar/` (Node.js 22; bộ crawl dùng `@mozilla/re
    - Tôn trọng bản quyền: chỉ đăng trích đoạn ≤ 280 ký tự và ý chính ngắn kèm link gốc. Toàn văn chỉ dùng trong bộ nhớ để Gemini tóm tắt.
    - Khi có Gemini, mỗi mục nổi bật có thêm 2–3 **điểm chính** do Gemini diễn đạt lại từ nội dung thật của bài.
    - Bỏ qua bước này bằng cờ `--no-crawl`.
-4. **Viết bài** song ngữ `public/content/lessons/tech-radar-<ngày>.{vi,en}.md`, gồm: biểu đồ tròn Mermaid, top nổi bật kèm "vì sao nên quan tâm", bảng bản phát hành, danh sách theo chủ đề và checklist việc nên làm. Bot cũng **vẽ ảnh bìa radar** dạng SVG.
+4. **Viết bài** song ngữ `public/content/posts/tech-radar-<ngày>.{vi,en}.md` (có front matter, chuyên mục `tech-radar`), gồm: biểu đồ tròn Mermaid, top nổi bật kèm "vì sao nên quan tâm", bảng bản phát hành, danh sách theo chủ đề và checklist việc nên làm. Bot cũng **vẽ ảnh bìa radar** dạng SVG.
 5. **Ghi nhớ** các link đã đăng trong `seen.json`, để tuần sau chỉ hiện thứ mới.
 6. **Ghi trạng thái** mỗi lần chạy vào `public/content/radar-status.json` (mỗi nguồn lấy được bao nhiêu mục, có lỗi gì không, có đăng bài không). Trang **Tech Radar** hiển thị ô **"Lần quét gần nhất"** từ file này. Trong tab Actions, mỗi lần chạy cũng có bảng tóm tắt ở trang **Summary**.
 7. **Commit và deploy** lại trang.
@@ -104,6 +166,7 @@ node scripts/tech-radar/index.mjs --fixture=radar.json                  # chạy
 
 - **Settings → Actions → General → Workflow permissions** → chọn **Read and write permissions**, để bot commit được bài mới.
 - (Tùy chọn) Lấy API key miễn phí tại [Google AI Studio](https://aistudio.google.com/apikey), rồi vào **Settings → Secrets and variables → Actions → Secrets** thêm `GEMINI_API_KEY`. Khi có key, **Gemini** sẽ viết tóm tắt tiếng Việt/Anh cho từng mục và đoạn mở đầu tổng quan (trả về JSON theo schema cố định). Không có key thì bot giữ nguyên mô tả gốc tiếng Anh.
+- Khi Gemini báo quá tải (429/503), bot tự thử lại sau 5 giây và 15 giây, rồi chuyển sang model dự phòng (`GEMINI_FALLBACK_MODELS`, mặc định `gemini-flash-lite-latest`). Kết quả gọi Gemini hiện ở ô "Lần quét gần nhất".
 - (Tùy chọn) Mặc định bot dùng alias `gemini-flash-latest`, luôn trỏ tới model Flash mới nhất. Muốn cố định một model thì thêm **Variable** `GEMINI_MODEL` (ví dụ một model id trong [danh sách model](https://ai.google.dev/gemini-api/docs/models)).
 - Chạy local có AI: `GEMINI_API_KEY=... npm run radar` (PowerShell: `$env:GEMINI_API_KEY="..."; npm run radar`).
 - Chạy tay bất cứ lúc nào: tab **Actions → Tech Radar bot → Run workflow**. Tick **ignore_seen** nếu muốn bot viết lại bài của ngày hôm nay, cho phép dùng lại cả những link đã đăng (hữu ích sau khi nâng cấp bot).
@@ -113,132 +176,55 @@ node scripts/tech-radar/index.mjs --fixture=radar.json                  # chạy
 
 ---
 
-## ✍️ Thêm nội dung / Adding content
-
-Toàn bộ nội dung nằm trong `public/content/`. Muốn thêm bài thì chỉ cần sửa file và push, **không phải sửa code**.
-
-```
-public/content/
-├── skills.json        # các kỹ năng trên lộ trình
-├── lessons.json       # danh sách bài học (metadata)
-├── lessons/
-│   ├── <id>.vi.md     # nội dung tiếng Việt (tech-radar-*.md do bot tạo)
-│   └── <id>.en.md     # nội dung tiếng Anh
-├── covers/<id>.svg    # ảnh bìa 1200×630 (mặc định theo id bài)
-├── diagrams/          # hình minh họa: <tên>.vi.svg / <tên>.en.svg
-├── sql-lab.json       # schema + bài tập SQL
-└── flashcards.json    # thẻ ôn tập
-```
-
-**Thêm một bài học:**
-
-```jsonc
-// lessons.json
-{
-  "id": "docker-basics",
-  "skill": "docker",                       // phải trùng với id trong skills.json
-  "minutes": 20,
-  "title":   { "vi": "Docker cơ bản", "en": "Docker basics" },
-  "summary": { "vi": "Image, container, Dockerfile", "en": "Images, containers, Dockerfiles" },
-  "sqlExercises": []                       // tùy chọn: id bài tập trong sql-lab.json
-}
-```
-
-Sau đó tạo `lessons/docker-basics.vi.md` và `lessons/docker-basics.en.md`. Nếu thiếu một ngôn ngữ, app sẽ tự hiển thị bản còn lại kèm thông báo.
-
-**Viết bài kiểu blog:** trong file Markdown bạn có thể dùng:
-
-````markdown
-![Chú thích hiện dưới ảnh](content/diagrams/ten-hinh.vi.svg "Chú thích hiện dưới ảnh")
-
-> [!TIP]
-> Mẹo hiển thị trong hộp màu xanh. Có thêm NOTE, IMPORTANT, WARNING, CAUTION.
-
-```mermaid
-sequenceDiagram
-    Client->>API: GET /users/42
-    API-->>Client: 200 OK
-```
-````
-
-- Heading `##` và `###` tự động đưa vào **mục lục** bên phải.
-- Ảnh bìa: đặt file `covers/<id>.svg` (hoặc `.png`/`.jpg`, rồi khai báo `"cover": "content/covers/x.png"` trong `lessons.json`).
-- Mermaid chỉ được tải khi bài viết có sơ đồ, nên trang chủ vẫn nhẹ. Sơ đồ tự đổi màu theo giao diện sáng/tối.
-- `npm run validate:content` sẽ báo lỗi nếu ảnh bìa hoặc ảnh trong bài bị thiếu.
-
-**Thêm bài tập SQL:** thêm một object vào `exercises` trong `sql-lab.json`. App chấm bài bằng cách chạy câu của bạn và câu `solution` trên **database mới**, rồi so sánh **tập kết quả** (không so tên cột; số thực được làm tròn 2 chữ số). Đặt `"ordered": true` nếu bài yêu cầu `ORDER BY`.
-
-**Thêm flashcard:** thêm `{ id, skill, front: {vi, en}, back: {vi, en} }` vào `flashcards.json`.
-
-Chạy `npm run validate:content` để kiểm tra trước khi push. CI cũng chạy bước này.
-
----
-
 ## 🏗️ Kiến trúc / Architecture
 
 ```
 src/app/
 ├── core/
-│   ├── models.ts           # kiểu dữ liệu nội dung & trạng thái
-│   ├── store.service.ts    # trạng thái dùng signal, lưu localStorage, export/import
-│   ├── i18n.ts             # từ điển UI + pick({vi,en}) theo ngôn ngữ hiện tại
-│   ├── content.service.ts  # tải JSON/Markdown có cache, fallback ngôn ngữ
-│   ├── markdown.ts         # marked + highlight.js, mục lục, figure, callout, Mermaid lazy-load
-│   ├── sql-engine.ts       # nạp sql.js lazily, chạy trên DB mới, so sánh kết quả
-│   ├── srs.ts              # thuật toán SM-2
-│   └── dates.ts            # helper ngày theo giờ địa phương
-├── pages/                  # mỗi trang là standalone component, lazy-loaded
-├── shared/heatmap.ts
-└── app.ts                  # layout: navigation bar, chuyển VI/EN, sáng/tối
+│   ├── content.service.ts  # tải chỉ mục bài, chuyên mục, series; Markdown theo ngôn ngữ (có fallback)
+│   ├── markdown.ts         # marked + highlight.js: mục lục, figure, callout, ```mermaid, ```sql-run
+│   ├── sql-runner.ts       # ô SQL nhúng (DOM thuần) chạy trên sql.js
+│   ├── sql-engine.ts       # nạp SQLite WASM lười, chạy trên DB mới
+│   ├── store.service.ts    # signal state: ngôn ngữ, giao diện, đã đọc, bookmark, ghi chú (localStorage)
+│   └── i18n.ts             # từ điển UI + định dạng ngày theo ngôn ngữ
+├── pages/                  # home, post, category, tag, series, archive, search, saved (lazy-loaded)
+├── shared/                 # post-card, radar-status
+└── app.ts                  # navbar (dropdown chuyên mục), footer
 
 scripts/
-├── validate-content.mjs    # kiểm tra nội dung trong CI
-└── tech-radar/             # bot: config, sources, classify, render, cover, ai.mjs (Gemini, tùy chọn)
+├── build-content.mjs       # front matter → posts.json, search.<lang>.json, RSS, ảnh bìa tự động; kiểm tra lỗi
+├── new-post.mjs            # tạo khung bài song ngữ
+├── lib/                    # frontmatter parser, cover generator
+└── tech-radar/             # bot: sources, classify, crawl, ai (Gemini), render, cover
 ```
 
-**Các quyết định thiết kế chính / Key decisions**
+**Quyết định thiết kế / Key decisions**
 
-- **Angular 22, zoneless, standalone components, signals**: không dùng NgModule hay zone.js; state đơn giản, dễ đọc.
-- **i18n tự viết dựa trên signal** thay vì `@angular/localize`: đổi ngôn ngữ ngay lúc chạy, không phải build riêng cho từng ngôn ngữ.
-- **Nội dung tách khỏi code**: nội dung là file tĩnh, nên thêm bài chỉ cần sửa Markdown/JSON.
-- **sql.js** chỉ được nạp khi mở SQL Lab, để trang chủ tải nhanh.
-- **Không có backend**: phù hợp với GitHub Pages. Tiến độ nằm trong trình duyệt và có thể sao lưu bằng file JSON.
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Python playground (Pyodide) cho bài tập pandas/thuật toán
-- [ ] Chế độ luyện thi / phỏng vấn có bấm giờ
-- [ ] Sổ ghi chú "Today I Learned" có gắn tag
-- [ ] Theo dõi project portfolio gắn với từng kỹ năng
-- [ ] PWA: cài lên điện thoại, học offline
-- [ ] Đồng bộ nhiều thiết bị qua GitHub Gist
-- [ ] Thêm bài: Testing, Docker, Message queue, Security, System design
-- [ ] Tech Radar: tự tạo flashcard từ các mục nổi bật
+- **Nội dung là file tĩnh, chỉ mục sinh lúc build:** viết bài chỉ cần thêm Markdown; danh sách bài, tìm kiếm và RSS tự cập nhật, không cần backend.
+- **Angular 22 zoneless + signals**, mọi trang lazy-load. Mermaid và SQLite chỉ tải khi bài viết cần.
+- **i18n tự viết dựa trên signal:** đổi ngôn ngữ tức thì, mỗi bài có bản VI/EN riêng và tự rơi về bản còn lại nếu thiếu.
+- **Dữ liệu người đọc ở trình duyệt:** bookmark, ghi chú, lịch sử đọc nằm trong localStorage, có xuất/nhập JSON.
 
 ---
 
-## 💼 Gợi ý trình bày trong portfolio / Portfolio presentation tips
+## 💼 Gợi ý trình bày trong portfolio
 
 **Mô tả ngắn (CV / LinkedIn):**
 
-> *Built Bostu, a bilingual (VI/EN) backend learning platform in Angular 22 (zoneless, signals) featuring an in-browser SQLite lab with auto-grading via WebAssembly, SM-2 spaced-repetition flashcards, and a scheduled "Tech Radar" bot that aggregates GitHub, Hacker News and DEV data, ranks it, and publishes bilingual blog posts through a CI-validated GitHub Actions pipeline to GitHub Pages.*
+> *Built Bostu, a bilingual (VI/EN) engineering blog in Angular 22 (zoneless, signals) with a build-time content pipeline (front matter → index, full-text search, RSS, generated covers), in-browser runnable SQL via SQLite/WebAssembly, Mermaid diagrams, and a scheduled GitHub Actions bot that aggregates GitHub, Hacker News and DEV, crawls each article (robots.txt-aware), summarizes with Gemini, and publishes weekly posts to GitHub Pages.*
 
 **Điểm nên nhấn mạnh khi phỏng vấn:**
 
-1. **Chấm bài SQL tự động**: mỗi lần chạy dùng một database mới; so sánh tập kết quả có chuẩn hóa NULL và số thực; xử lý riêng bài có và không có `ORDER BY`.
-2. **Thuật toán SM-2**: giải thích ease factor, interval, và cách "Quên" đưa thẻ trở lại cuối phiên ôn.
-3. **Kiến trúc tĩnh**: tại sao chọn hash routing, lazy loading, và lưu localStorage kèm export JSON.
-4. **Hệ thống nội dung**: Markdown → HTML có mục lục, figure, callout; sơ đồ Mermaid chỉ tải khi cần và tự đổi theo theme.
-5. **CI/CD**: bước validate nội dung chặn deploy khi JSON sai hoặc tham chiếu hỏng.
-6. **Tech Radar bot**: kiến trúc nguồn độc lập (một nguồn lỗi không làm hỏng cả lần chạy), chống spam, chấm điểm thang log để so sánh các nguồn khác nhau, dedupe bằng `seen.json`, workflow tái sử dụng để deploy sau khi bot commit.
-7. **Song ngữ khi chạy**: dùng signal-based i18n thay vì build riêng cho từng ngôn ngữ.
+1. **Content pipeline:** Markdown + front matter → chỉ mục, tìm kiếm, RSS; CI chặn deploy khi nội dung sai.
+2. **Ô SQL nhúng:** fenced block `sql-run` được biến thành editor chạy SQLite trong trình duyệt, mỗi lần chạy trên database mới.
+3. **Tech Radar bot:** nguồn độc lập (một nguồn lỗi không làm hỏng cả lần chạy), chấm điểm thang log, bộ lọc chống spam/lạc đề, crawl có tôn trọng robots.txt và bản quyền, Gemini có retry + model dự phòng, ghi trạng thái để quan sát.
+4. **CI/CD:** workflow tái sử dụng (`workflow_call`), quyền tối thiểu, concurrency, truyền input qua env để tránh script injection.
+5. **Song ngữ khi chạy** bằng signal, không phải build riêng từng ngôn ngữ.
 
-**Ảnh chụp màn hình nên có:** trang Bài học dạng blog (lưới ảnh bìa), một bài viết có sơ đồ Mermaid và mục lục, Dashboard (sáng và tối), SQL Lab lúc báo "Chính xác!", một flashcard đã lật, và giao diện trên mobile.
+**Ảnh chụp nên có:** trang chủ (sáng và tối), một bài có sơ đồ Mermaid + mục lục, một ô SQL đang hiển thị kết quả, trang tìm kiếm, và giao diện mobile.
 
 ---
 
 ## 📄 License
 
-MIT — dùng tự do cho việc học. / Free to use for learning.
+MIT

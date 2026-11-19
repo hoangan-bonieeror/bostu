@@ -4,15 +4,14 @@ import { CATEGORIES } from './config.mjs';
 const T = {
   vi: {
     by: (date, list) =>
-      `🤖 Bài viết được **Tech Radar Bot** tổng hợp tự động ngày ${date} từ ${list}. Mỗi mục được xếp vào một chủ đề gắn với kỹ năng trên [lộ trình](#/roadmap) của bạn.`,
+      `🤖 Bài viết được **Tech Radar Bot** tổng hợp tự động ngày ${date} từ ${list}. Mỗi mục được xếp theo chủ đề và liên kết tới chuyên mục tương ứng trên blog.`,
     origDesc:
       'Mô tả của repo/bài viết được giữ nguyên tiếng Anh — đây cũng là cách luyện đọc tài liệu kỹ thuật!',
     failed: (names) =>
       `Lần chạy này không lấy được dữ liệu từ: ${names}. Bot sẽ thử lại ở lần chạy sau.`,
     overview: '📊 Toàn cảnh tuần này',
     pieTitle: 'Số mục theo chủ đề',
-    table: ['Chủ đề', 'Số mục', 'Kỹ năng liên quan'],
-    noSkill: 'Chủ đề mở rộng',
+    table: ['Chủ đề', 'Số mục', 'Chuyên mục liên quan'],
     highlights: (n) => `🔥 Top ${n} đáng chú ý`,
     why: 'Vì sao nên quan tâm:',
     keyPoints: '📌 Điểm chính',
@@ -25,7 +24,7 @@ const T = {
     byTopic: '🧭 Theo chủ đề',
     actions: '✅ Việc nên làm tuần này',
     tryIt: (name) => `Thử với **${name}**:`,
-    review: 'Ôn lại [flashcard](#/cards) và luyện thêm một bài trong [SQL Lab](#/sql).',
+    review: (link) => `Đọc thêm một bài trong chuyên mục ${link}.`,
     about: '⚙️ Về bot này',
     aboutText:
       'Bot chạy tự động mỗi thứ Hai qua GitHub Actions (`.github/workflows/tech-radar.yml`), lấy dữ liệu từ GitHub, Hacker News và DEV, chấm điểm theo độ phổ biến và mức liên quan tới backend, mở từng link để đọc nội dung (README, release notes, bài viết — có tôn trọng robots.txt), rồi xuất bản thành bài blog này. Bài chỉ trích đoạn ngắn kèm link gốc. Bạn có thể đổi nguồn, từ khóa và chủ đề trong `scripts/tech-radar/config.mjs`.',
@@ -40,14 +39,13 @@ const T = {
   },
   en: {
     by: (date, list) =>
-      `🤖 This post was compiled automatically by **Tech Radar Bot** on ${date} from ${list}. Each item is mapped to a topic linked to the skills on your [roadmap](#/roadmap).`,
+      `🤖 This post was compiled automatically by **Tech Radar Bot** on ${date} from ${list}. Each item is grouped by topic and linked to the matching section of this blog.`,
     origDesc: '',
     failed: (names) =>
       `This run could not fetch data from: ${names}. The bot will retry on the next run.`,
     overview: '📊 This week at a glance',
     pieTitle: 'Items per topic',
-    table: ['Topic', 'Items', 'Related skill'],
-    noSkill: 'Bonus topic',
+    table: ['Topic', 'Items', 'Related section'],
     highlights: (n) => `🔥 Top ${n} highlights`,
     why: 'Why it matters:',
     keyPoints: '📌 Key points',
@@ -60,7 +58,7 @@ const T = {
     byTopic: '🧭 By topic',
     actions: '✅ To-do this week',
     tryIt: (name) => `Try it with **${name}**:`,
-    review: 'Review your [flashcards](#/cards) and solve one more [SQL Lab](#/sql) exercise.',
+    review: (link) => `Read one more post in ${link}.`,
     about: '⚙️ About this bot',
     aboutText:
       'The bot runs every Monday via GitHub Actions (`.github/workflows/tech-radar.yml`), pulls data from GitHub, Hacker News and DEV, scores items by popularity and backend relevance, opens each link to read its content (README, release notes, articles — respecting robots.txt), and publishes this post. Only short excerpts are quoted, always with a link to the source. Change sources, keywords and topics in `scripts/tech-radar/config.mjs`.',
@@ -125,7 +123,6 @@ export function renderPost(lang, p) {
     .map((s) => `${s.name} (${s.count})`)
     .join(', ');
 
-  out.push(`# ${t.title(p.week, p.year, p.shortDate[lang])}`, '');
   out.push('> [!NOTE]', `> ${t.by(p.dateLabel, srcList || '—')}`);
   if (!p.ai && t.origDesc) out.push('>', `> ${t.origDesc}`);
   out.push('');
@@ -143,8 +140,7 @@ export function renderPost(lang, p) {
     out.push(`| ${t.table.join(' | ')} |`, '|---|---:|---|');
     for (const [id, n] of entries) {
       const c = catOf(id);
-      const skill = c.skill ? `[${md(p.skillTitle(c.skill, lang))}](#/roadmap)` : t.noSkill;
-      out.push(`| ${c.icon} ${md(c.title[lang])} | ${n} | ${skill} |`);
+      out.push(`| ${c.icon} ${md(c.title[lang])} | ${n} | ${p.categoryLink(c.blog, lang)} |`);
     }
     out.push('');
   }
@@ -227,7 +223,8 @@ export function renderPost(lang, p) {
     const c = catOf(it.category);
     out.push(`- [ ] ${c.icon} ${t.tryIt(md(it.title))} ${c.action[lang]}`);
   }
-  out.push(`- [ ] 🃏 ${t.review}`, '');
+  const topCat = catOf(p.highlights[0]?.category ?? '')?.blog ?? 'system-design';
+  out.push(`- [ ] 📚 ${t.review(p.categoryLink(topCat, lang))}`, '');
 
   out.push(`## ${t.about}`, '', t.aboutText, '');
   return out.join('\n');

@@ -2,199 +2,159 @@ import { Injectable, computed, inject } from '@angular/core';
 import { I18nText } from './models';
 import { StoreService } from './store.service';
 
-/** UI strings. Content strings (lessons, cards...) carry their own {vi, en} text. */
+/** UI strings. Post content carries its own language versions. */
 const DICT = {
   'app.name': { vi: 'Bostu', en: 'Bostu' },
-  'app.tagline': { vi: 'Phòng lab học Backend', en: 'Backend learning lab' },
+  'app.tagline': { vi: 'Sổ tay kỹ thuật', en: 'Tech notebook' },
 
-  'nav.dashboard': { vi: 'Tổng quan', en: 'Dashboard' },
-  'nav.roadmap': { vi: 'Lộ trình', en: 'Roadmap' },
-  'nav.lessons': { vi: 'Bài học', en: 'Lessons' },
+  'nav.home': { vi: 'Trang chủ', en: 'Home' },
+  'nav.categories': { vi: 'Chuyên mục', en: 'Topics' },
+  'nav.series': { vi: 'Series', en: 'Series' },
   'nav.radar': { vi: 'Tech Radar', en: 'Tech Radar' },
-  'nav.sql': { vi: 'SQL Lab', en: 'SQL Lab' },
-  'nav.cards': { vi: 'Flashcard', en: 'Flashcards' },
-  'nav.settings': { vi: 'Cài đặt', en: 'Settings' },
-  'nav.toggleTheme': { vi: 'Đổi giao diện sáng/tối', en: 'Toggle light/dark' },
-  'nav.toggleLang': { vi: 'Switch to English', en: 'Chuyển sang tiếng Việt' },
+  'nav.archive': { vi: 'Lưu trữ', en: 'Archive' },
+  'nav.search': { vi: 'Tìm kiếm', en: 'Search' },
+  'nav.saved': { vi: 'Đã lưu', en: 'Saved' },
   'nav.menu': { vi: 'Menu', en: 'Menu' },
+  'nav.toggleTheme': { vi: 'Đổi giao diện sáng/tối', en: 'Toggle light/dark' },
 
   'common.loading': { vi: 'Đang tải…', en: 'Loading…' },
   'common.error': { vi: 'Không tải được nội dung.', en: 'Could not load content.' },
-  'common.minutes': { vi: 'phút', en: 'min' },
-  'common.days': { vi: 'ngày', en: 'days' },
-  'common.open': { vi: 'Mở', en: 'Open' },
-  'common.back': { vi: 'Quay lại', en: 'Back' },
-  'common.all': { vi: 'Tất cả', en: 'All' },
+  'common.notFound': { vi: 'Không tìm thấy bài viết này.', en: 'This post could not be found.' },
+  'common.minRead': { vi: 'phút đọc', en: 'min read' },
+  'common.posts': { vi: 'bài', en: 'posts' },
+  'common.readMore': { vi: 'Đọc tiếp', en: 'Read more' },
+  'common.backHome': { vi: 'Về trang chủ', en: 'Back to home' },
 
-  'dash.hello': { vi: 'Chào An 👋', en: 'Hi An 👋' },
-  'dash.subtitle': {
-    vi: 'Mỗi ngày một chút, kỹ năng sẽ cộng dồn.',
-    en: 'A little every day compounds into skill.',
-  },
-  'dash.streak': { vi: 'Chuỗi ngày học', en: 'Day streak' },
-  'dash.lessons': { vi: 'Bài đã học', en: 'Lessons done' },
-  'dash.cardsDue': { vi: 'Thẻ cần ôn hôm nay', en: 'Cards due today' },
-  'dash.sqlSolved': { vi: 'Bài SQL đã giải', en: 'SQL solved' },
-  'dash.todayGoal': { vi: 'Mục tiêu hôm nay', en: "Today's goal" },
-  'dash.logTime': { vi: 'Ghi thời gian tự học', en: 'Log study time' },
-  'dash.continue': { vi: 'Học tiếp', en: 'Continue learning' },
-  'dash.allDone': {
-    vi: 'Bạn đã học hết bài hiện có. Hãy thêm bài mới trong public/content!',
-    en: 'You finished every lesson. Add new ones in public/content!',
-  },
-  'dash.reviewNow': { vi: 'Ôn thẻ ngay', en: 'Review now' },
-  'dash.activity': { vi: 'Hoạt động 20 tuần gần nhất', en: 'Activity — last 20 weeks' },
-  'dash.less': { vi: 'Ít', en: 'Less' },
-  'dash.more': { vi: 'Nhiều', en: 'More' },
-  'dash.skills': { vi: 'Kỹ năng tự đánh giá', en: 'Self-rated skills' },
+  'type.article': { vi: 'Bài viết', en: 'Article' },
+  'type.note': { vi: 'Ghi chép', en: 'Note' },
+  'type.radar': { vi: 'Tech Radar', en: 'Tech Radar' },
 
-  'road.title': { vi: 'Lộ trình Backend', en: 'Backend roadmap' },
-  'road.subtitle': {
-    vi: 'Đi từ nền tảng đến nâng cao. Tự chấm 0–5 sao cho mỗi kỹ năng.',
-    en: 'From foundations to advanced. Rate yourself 0–5 stars per skill.',
+  'home.title': { vi: 'Sổ tay kỹ thuật', en: 'A tech notebook' },
+  'home.subtitle': {
+    vi: 'Ghi chép về thiết kế hệ thống, giải thuật, database, CI/CD và hệ thống doanh nghiệp.',
+    en: 'Writing on system design, algorithms, databases, CI/CD and enterprise systems.',
   },
-  'road.foundation': { vi: 'Nền tảng', en: 'Foundations' },
-  'road.core': { vi: 'Cốt lõi', en: 'Core' },
-  'road.advanced': { vi: 'Nâng cao', en: 'Advanced' },
-  'road.topics': { vi: 'Chủ đề', en: 'Topics' },
-  'road.noLessons': { vi: 'Chưa có bài — hãy tự thêm!', en: 'No lessons yet — add your own!' },
-  'road.rate': { vi: 'Tự đánh giá', en: 'Self-rating' },
+  'home.featured': { vi: 'Nổi bật', en: 'Featured' },
+  'home.latest': { vi: 'Bài mới nhất', en: 'Latest posts' },
+  'home.loadMore': { vi: 'Xem thêm bài', en: 'Load more' },
+  'home.categories': { vi: 'Chuyên mục', en: 'Topics' },
+  'home.series': { vi: 'Series', en: 'Series' },
+  'home.tags': { vi: 'Thẻ phổ biến', en: 'Popular tags' },
+  'home.radar': { vi: 'Tech Radar mới nhất', en: 'Latest Tech Radar' },
 
-  'lessons.title': { vi: 'Bài học', en: 'Lessons' },
-  'lessons.subtitle': {
-    vi: 'Đọc, ghi chú, rồi đánh dấu hoàn thành.',
-    en: 'Read, take notes, then mark complete.',
-  },
-  'lessons.done': { vi: 'Đã học', en: 'Done' },
-  'lessons.markDone': { vi: 'Đánh dấu đã học', en: 'Mark as done' },
-  'lessons.markUndone': { vi: 'Bỏ đánh dấu', en: 'Mark as not done' },
-  'lessons.prev': { vi: 'Bài trước', en: 'Previous' },
-  'lessons.next': { vi: 'Bài tiếp', en: 'Next' },
-  'lessons.practice': { vi: 'Luyện tập trong SQL Lab', en: 'Practice in SQL Lab' },
-  'lessons.featured': { vi: 'Bài nên đọc tiếp', en: 'Up next' },
-  'lessons.read': { vi: 'Đọc bài', en: 'Read article' },
-  'lessons.allPosts': { vi: 'Tất cả bài viết', en: 'All articles' },
-  'lessons.words': { vi: 'từ', en: 'words' },
-  'lessons.toc': { vi: 'Mục lục', en: 'On this page' },
-  'lessons.finished': {
-    vi: 'Bạn đã hoàn thành bài này. Ôn lại bằng flashcard nhé!',
-    en: 'You finished this lesson. Reinforce it with flashcards!',
-  },
-  'lessons.finishPrompt': {
-    vi: 'Đọc xong rồi? Đánh dấu để theo dõi tiến độ.',
-    en: 'Done reading? Mark it to track your progress.',
-  },
-  'lessons.fallback': {
+  'post.toc': { vi: 'Mục lục', en: 'On this page' },
+  'post.fallback': {
     vi: 'Bài này chưa có bản tiếng Việt, đang hiển thị bản tiếng Anh.',
     en: 'No English version yet — showing Vietnamese.',
   },
+  'post.bookmark': { vi: 'Lưu để đọc sau', en: 'Save for later' },
+  'post.bookmarked': { vi: 'Đã lưu', en: 'Saved' },
+  'post.read': { vi: 'Đã đọc', en: 'Read' },
+  'post.inSeries': { vi: 'Thuộc series', en: 'Part of the series' },
+  'post.part': { vi: 'Phần', en: 'Part' },
+  'post.prev': { vi: 'Bài trước', en: 'Previous' },
+  'post.next': { vi: 'Bài tiếp', en: 'Next' },
+  'post.related': { vi: 'Bài liên quan', en: 'Related posts' },
+  'post.notes': { vi: 'Ghi chú của bạn', en: 'Your notes' },
+  'post.notesHint': {
+    vi: 'Ghi lại điều bạn rút ra, câu hỏi còn thắc mắc… Ghi chú chỉ lưu trong trình duyệt này.',
+    en: 'Write down takeaways or open questions… Notes are stored only in this browser.',
+  },
+  'post.notesSaved': { vi: 'Đã lưu', en: 'Saved' },
+  'post.words': { vi: 'từ', en: 'words' },
+  'post.allPosts': { vi: 'Tất cả bài viết', en: 'All posts' },
 
+  'series.subtitle': {
+    vi: 'Các chuỗi bài nên đọc theo thứ tự.',
+    en: 'Multi-part posts best read in order.',
+  },
+  'series.parts': { vi: 'phần', en: 'parts' },
+  'series.start': { vi: 'Bắt đầu đọc', en: 'Start reading' },
+
+  'archive.title': { vi: 'Lưu trữ', en: 'Archive' },
+  'archive.subtitle': { vi: 'Tất cả bài viết theo thời gian.', en: 'Every post, by date.' },
+
+  'tag.title': { vi: 'Thẻ', en: 'Tag' },
+
+  'search.placeholder': {
+    vi: 'Tìm bài viết, chủ đề, công nghệ…',
+    en: 'Search posts, topics, technologies…',
+  },
+  'search.results': { vi: 'kết quả', en: 'results' },
+  'search.none': {
+    vi: 'Không có bài nào khớp. Thử từ khóa khác?',
+    en: 'No posts match. Try another keyword?',
+  },
+  'search.hint': { vi: 'Gõ ít nhất 2 ký tự để tìm.', en: 'Type at least 2 characters.' },
+
+  'saved.title': { vi: 'Đã lưu', en: 'Saved' },
+  'saved.subtitle': {
+    vi: 'Bài đánh dấu đọc sau và ghi chú của bạn.',
+    en: 'Your bookmarks and notes.',
+  },
+  'saved.bookmarks': { vi: 'Đọc sau', en: 'Read later' },
+  'saved.notes': { vi: 'Ghi chú', en: 'Notes' },
+  'saved.history': { vi: 'Đã đọc gần đây', en: 'Recently read' },
+  'saved.emptyBookmarks': {
+    vi: 'Chưa lưu bài nào. Bấm 🔖 trên một bài viết để lưu.',
+    en: 'Nothing saved yet. Tap 🔖 on a post to save it.',
+  },
+  'saved.emptyNotes': {
+    vi: 'Chưa có ghi chú. Ghi chú nằm ở cuối mỗi bài viết.',
+    en: 'No notes yet. You can write one at the end of any post.',
+  },
+  'saved.data': { vi: 'Sao lưu dữ liệu', en: 'Backup' },
+  'saved.dataNote': {
+    vi: 'Bookmark, ghi chú và lịch sử đọc chỉ lưu trong trình duyệt này. Hãy xuất file sao lưu định kỳ.',
+    en: 'Bookmarks, notes and history live only in this browser. Export a backup regularly.',
+  },
+  'saved.export': { vi: 'Xuất file', en: 'Export' },
+  'saved.import': { vi: 'Nhập file', en: 'Import' },
+  'saved.reset': { vi: 'Xóa tất cả', en: 'Clear all' },
+  'saved.resetConfirm': {
+    vi: 'Xóa toàn bộ bookmark, ghi chú và lịch sử đọc?',
+    en: 'Delete all bookmarks, notes and history?',
+  },
+  'saved.imported': { vi: 'Đã nhập dữ liệu.', en: 'Backup imported.' },
+  'saved.importFailed': { vi: 'File không hợp lệ.', en: 'Invalid backup file.' },
+
+  'radar.about': {
+    vi: 'Các bài Tech Radar do bot tự động tổng hợp mỗi tuần từ GitHub, Hacker News và DEV, đọc nội dung từng link rồi xếp theo chuyên mục.',
+    en: 'Tech Radar posts are compiled weekly by a bot from GitHub, Hacker News and DEV; it reads each link and groups items by topic.',
+  },
   'radar.lastRun': { vi: 'Lần quét gần nhất', en: 'Last scan' },
   'radar.relevant': { vi: 'Mục mới phù hợp sau khi lọc', en: 'Relevant new items after filtering' },
   'radar.published': { vi: 'Đã đăng', en: 'Published' },
   'radar.noPost': { vi: 'Không có gì mới nên không đăng bài', en: 'Nothing new, so no post' },
-  'radar.neverRun': {
-    vi: 'Chưa có dữ liệu trạng thái quét. Ô này sẽ hiện sau lần chạy tới của bot (hoặc vào Actions → Tech Radar bot → Run workflow để chạy ngay).',
-    en: 'No scan status yet. It will appear after the bot’s next run (or go to Actions → Tech Radar bot → Run workflow to run it now).',
-  },
-  'radar.aiOff': { vi: 'tắt (chưa có GEMINI_API_KEY)', en: 'off (no GEMINI_API_KEY)' },
   'radar.crawled': { vi: 'Đã đọc nội dung', en: 'Articles read' },
+  'radar.aiOff': { vi: 'tắt (chưa có GEMINI_API_KEY)', en: 'off (no GEMINI_API_KEY)' },
+  'radar.neverRun': {
+    vi: 'Chưa có dữ liệu trạng thái quét. Ô này sẽ hiện sau lần chạy tới của bot.',
+    en: 'No scan status yet. It will appear after the bot’s next run.',
+  },
   'radar.today': { vi: 'hôm nay', en: 'today' },
   'radar.daysAgo': { vi: 'ngày trước', en: 'days ago' },
-  'radar.latest': { vi: 'Tech Radar mới nhất', en: 'Latest Tech Radar' },
-  'radar.newest': { vi: 'Số mới nhất', en: 'Newest issue' },
-  'radar.about': {
-    vi: 'Các bài Tech Radar do bot tự động tổng hợp mỗi tuần từ GitHub, Hacker News và DEV, rồi xếp theo kỹ năng trên lộ trình của bạn.',
-    en: 'Tech Radar posts are compiled weekly by a bot from GitHub, Hacker News and DEV, then grouped by the skills on your roadmap.',
-  },
-  'sql.title': { vi: 'SQL Lab', en: 'SQL Lab' },
-  'sql.subtitle': {
-    vi: 'SQLite chạy ngay trong trình duyệt. Dữ liệu được làm mới mỗi lần chạy.',
-    en: 'SQLite running in your browser. Data is reset on every run.',
-  },
-  'sql.exercises': { vi: 'Bài tập', en: 'Exercises' },
-  'sql.playground': { vi: 'Sân chơi tự do', en: 'Free playground' },
+
   'sql.run': { vi: 'Chạy', en: 'Run' },
-  'sql.check': { vi: 'Kiểm tra', en: 'Check' },
-  'sql.solution': { vi: 'Xem đáp án', en: 'Show solution' },
-  'sql.hint': { vi: 'Gợi ý', en: 'Hint' },
-  'sql.reset': { vi: 'Xóa', en: 'Clear' },
-  'sql.schema': { vi: 'Cấu trúc bảng', en: 'Schema' },
+  'sql.reset': { vi: 'Khôi phục', en: 'Reset' },
+  'sql.setup': { vi: 'Dữ liệu mẫu', en: 'Sample data' },
+  'sql.tables': { vi: 'Bảng', en: 'Tables' },
   'sql.rows': { vi: 'dòng', en: 'rows' },
   'sql.noResult': {
-    vi: 'Câu lệnh chạy thành công, không có dữ liệu trả về.',
-    en: 'Statement ran successfully, no rows returned.',
+    vi: 'Chạy thành công, không có dòng nào trả về.',
+    en: 'Ran successfully, no rows returned.',
   },
-  'sql.correct': {
-    vi: '✅ Chính xác! Kết quả khớp với đáp án.',
-    en: '✅ Correct! Your result matches the solution.',
+  'sql.loading': { vi: 'Đang khởi động SQLite…', en: 'Starting SQLite…' },
+  'sql.hint': {
+    vi: 'Sửa câu lệnh rồi bấm Chạy (Ctrl/⌘ + Enter). Mỗi lần chạy dùng dữ liệu mới.',
+    en: 'Edit and press Run (Ctrl/⌘ + Enter). Each run starts from fresh data.',
   },
-  'sql.wrongCols': { vi: '❌ Số cột không khớp', en: '❌ Column count differs' },
-  'sql.wrongRows': { vi: '❌ Số dòng không khớp', en: '❌ Row count differs' },
-  'sql.wrongValues': {
-    vi: '❌ Dữ liệu chưa khớp. Kiểm tra lại điều kiện lọc hoặc phép tính.',
-    en: '❌ Values differ. Re-check your filters or calculations.',
-  },
-  'sql.wrongOrder': {
-    vi: '❌ Thứ tự dòng chưa đúng (bài yêu cầu ORDER BY).',
-    en: '❌ Row order is wrong (this exercise needs ORDER BY).',
-  },
-  'sql.expected': { vi: 'mong đợi', en: 'expected' },
-  'sql.got': { vi: 'bạn trả về', en: 'you returned' },
-  'sql.solved': { vi: 'Đã giải', en: 'Solved' },
-  'sql.loadingEngine': { vi: 'Đang khởi động SQLite…', en: 'Starting SQLite…' },
-  'sql.shortcut': { vi: 'Ctrl/⌘ + Enter để chạy', en: 'Ctrl/⌘ + Enter to run' },
-  'sql.level': { vi: 'Cấp', en: 'Level' },
 
-  'cards.title': { vi: 'Flashcard', en: 'Flashcards' },
-  'cards.subtitle': {
-    vi: 'Lặp lại ngắt quãng (SM-2): thẻ khó gặp lại sớm, thẻ dễ giãn ra xa.',
-    en: 'Spaced repetition (SM-2): hard cards come back sooner, easy ones later.',
+  'footer.about': {
+    vi: 'Bostu là sổ tay kỹ thuật cá nhân, song ngữ Việt–Anh, mã nguồn mở trên GitHub.',
+    en: 'Bostu is a personal, bilingual (VI/EN) tech notebook, open source on GitHub.',
   },
-  'cards.deck': { vi: 'Bộ thẻ', en: 'Deck' },
-  'cards.due': { vi: 'Đến hạn', en: 'Due' },
-  'cards.new': { vi: 'Thẻ mới', en: 'New' },
-  'cards.learned': { vi: 'Đã học', en: 'Learned' },
-  'cards.start': { vi: 'Bắt đầu ôn', en: 'Start review' },
-  'cards.show': { vi: 'Hiện đáp án', en: 'Show answer' },
-  'cards.again': { vi: 'Quên', en: 'Again' },
-  'cards.hard': { vi: 'Khó', en: 'Hard' },
-  'cards.good': { vi: 'Nhớ', en: 'Good' },
-  'cards.easy': { vi: 'Dễ', en: 'Easy' },
-  'cards.left': { vi: 'thẻ còn lại', en: 'cards left' },
-  'cards.finished': { vi: '🎉 Xong phiên ôn hôm nay!', en: '🎉 Session complete!' },
-  'cards.nothing': {
-    vi: 'Không có thẻ nào cần ôn lúc này. Quay lại vào ngày mai nhé.',
-    en: 'Nothing to review right now. Come back tomorrow.',
-  },
-  'cards.shortcuts': {
-    vi: 'Phím tắt: Space = lật thẻ, 1–4 = chấm điểm',
-    en: 'Shortcuts: Space = flip, 1–4 = grade',
-  },
-  'cards.end': { vi: 'Kết thúc', en: 'End session' },
-
-  'set.title': { vi: 'Cài đặt', en: 'Settings' },
-  'set.language': { vi: 'Ngôn ngữ', en: 'Language' },
-  'set.theme': { vi: 'Giao diện', en: 'Theme' },
-  'set.light': { vi: 'Sáng', en: 'Light' },
-  'set.dark': { vi: 'Tối', en: 'Dark' },
-  'set.study': { vi: 'Thói quen học', en: 'Study habits' },
-  'set.dailyNew': { vi: 'Số thẻ mới mỗi ngày', en: 'New cards per day' },
-  'set.dailyGoal': { vi: 'Mục tiêu (phút/ngày)', en: 'Daily goal (minutes)' },
-  'set.data': { vi: 'Dữ liệu', en: 'Data' },
-  'set.dataNote': {
-    vi: 'Tiến độ chỉ lưu trong trình duyệt này (localStorage). Hãy xuất file sao lưu định kỳ.',
-    en: 'Progress is stored only in this browser (localStorage). Export a backup regularly.',
-  },
-  'set.export': { vi: 'Xuất file sao lưu', en: 'Export backup' },
-  'set.import': { vi: 'Nhập file sao lưu', en: 'Import backup' },
-  'set.reset': { vi: 'Xóa toàn bộ tiến độ', en: 'Reset all progress' },
-  'set.resetConfirm': {
-    vi: 'Xóa toàn bộ tiến độ? Không thể hoàn tác.',
-    en: 'Reset all progress? This cannot be undone.',
-  },
-  'set.imported': { vi: 'Đã nhập dữ liệu thành công.', en: 'Backup imported.' },
-  'set.importFailed': { vi: 'File không hợp lệ.', en: 'Invalid backup file.' },
+  'footer.rss': { vi: 'RSS', en: 'RSS' },
 } satisfies Record<string, I18nText>;
 
 export type I18nKey = keyof typeof DICT;
@@ -204,7 +164,7 @@ export class I18n {
   private store = inject(StoreService);
   readonly lang = computed(() => this.store.lang());
 
-  /** Translate a UI key. Reading `lang()` makes templates re-render on language switch. */
+  /** Translate a UI key. Reading `lang()` makes templates update on language switch. */
   t(key: I18nKey): string {
     return DICT[key][this.lang()];
   }
@@ -213,5 +173,15 @@ export class I18n {
   pick(text: I18nText | undefined | null): string {
     if (!text) return '';
     return text[this.lang()] || text.vi || text.en;
+  }
+
+  /** Locale-aware date, e.g. "19 thg 11, 2026" / "Nov 19, 2026". */
+  date(iso: string, style: 'short' | 'long' = 'short'): string {
+    const d = new Date(iso.length === 10 ? `${iso}T00:00:00` : iso);
+    return d.toLocaleDateString(this.lang() === 'vi' ? 'vi-VN' : 'en-US', {
+      day: 'numeric',
+      month: style === 'long' ? 'long' : 'short',
+      year: 'numeric',
+    });
   }
 }

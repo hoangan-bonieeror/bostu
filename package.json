@@ -7,9 +7,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "validate:content": "node scripts/validate-content.mjs",
+    "validate:content": "node scripts/build-content.mjs",
     "radar": "node scripts/tech-radar/index.mjs",
-    "radar:dry": "node scripts/tech-radar/index.mjs --dry-run"
+    "radar:dry": "node scripts/tech-radar/index.mjs --dry-run",
+    "content": "node scripts/build-content.mjs",
+    "prestart": "node scripts/build-content.mjs",
+    "prebuild": "node scripts/build-content.mjs",
+    "new-post": "node scripts/new-post.mjs"
   },
   "private": true,
   "packageManager": "npm@10.9.9",
@@ -37,5 +41,5 @@
     "prettier": "^3.8.1",
     "typescript": "~6.0.2"
   },
-  "description": "Bostu — personal bilingual (VI/EN) backend learning lab"
+  "description": "Bostu \u2014 a personal bilingual (VI/EN) tech notebook: system design, DSA, databases, CI/CD, enterprise systems"
 }

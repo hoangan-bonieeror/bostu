@@ -30,6 +30,7 @@ export interface RenderedMarkdown {
   html: string;
   toc: TocItem[];
   hasMermaid: boolean;
+  hasSql: boolean;
   words: number;
 }
 
@@ -85,6 +86,7 @@ export function renderMarkdown(md: string): RenderedMarkdown {
   const toc: TocItem[] = [];
   const used = new Map<string, number>();
   let hasMermaid = false;
+  let hasSql = false;
 
   const marked = new Marked({
     gfm: true,
@@ -104,6 +106,24 @@ export function renderMarkdown(md: string): RenderedMarkdown {
       },
       code({ text, lang }: Tokens.Code) {
         const language = (lang ?? '').split(/\s/)[0].toLowerCase();
+        if (language === 'sql-run') {
+          // Runnable SQL: optional "-- db: <name>" first line, optional "-- ---" separating setup from the query.
+          hasSql = true;
+          const lines = text.split('\n');
+          let db = 'shop';
+          const first = lines[0]?.match(/^--\s*db:\s*([a-z0-9-]+)/i);
+          if (first) {
+            db = first[1];
+            lines.shift();
+          }
+          const sep = lines.findIndex((l) => /^--\s*-{3,}\s*$/.test(l));
+          const setup = sep >= 0 ? lines.slice(0, sep).join('\n').trim() : '';
+          const query = (sep >= 0 ? lines.slice(sep + 1) : lines).join('\n').trim();
+          return (
+            `<div class="sql-runner" data-db="${escapeHtml(db)}" data-setup="${escapeHtml(setup)}" data-query="${escapeHtml(query)}">` +
+            `<pre><code>${escapeHtml(query)}</code></pre></div>`
+          );
+        }
         if (language === 'mermaid') {
           hasMermaid = true;
           return `<figure class="diagram"><div class="mermaid-src" data-src="${escapeHtml(text)}"><pre>${escapeHtml(text)}</pre></div></figure>`;
@@ -162,7 +182,7 @@ export function renderMarkdown(md: string): RenderedMarkdown {
     .split(/\s+/)
     .filter(Boolean).length;
 
-  return { html, toc, hasMermaid, words };
+  return { html, toc, hasMermaid, hasSql, words };
 }
 
 let mermaidPromise: Promise<typeof import('mermaid').default> | null = null;

@@ -8,14 +8,14 @@ export const WINDOW_DAYS = 7;
 export const LIMITS = { highlights: 5, perCategory: 4, releases: 10, actions: 4 };
 
 /**
- * Radar categories. `skill` links a category to a roadmap skill (public/content/skills.json),
+ * Radar topics. `blog` links a topic to a blog category (public/content/categories.json),
  * `keywords` are matched (case-insensitive, word-ish) against title + description + topics.
  */
 export const CATEGORIES = [
   {
     id: 'api',
     icon: '🔌',
-    skill: 'rest-api',
+    blog: 'backend',
     title: { vi: 'API & giao tiếp dịch vụ', en: 'APIs & service communication' },
     keywords: [
       'api',
@@ -50,7 +50,7 @@ export const CATEGORIES = [
   {
     id: 'data',
     icon: '🗄️',
-    skill: 'db-design',
+    blog: 'database',
     title: { vi: 'Database & dữ liệu', en: 'Databases & data' },
     keywords: [
       'database',
@@ -80,14 +80,14 @@ export const CATEGORIES = [
       en: 'Most performance problems live in the data layer — knowing new tools helps you pick the right store for each job.',
     },
     action: {
-      vi: 'Nạp bộ dữ liệu mẫu trong SQL Lab vào công cụ này và chạy lại 3 bài tập JOIN/GROUP BY.',
-      en: 'Load the SQL Lab sample data into it and re-run three JOIN/GROUP BY exercises.',
+      vi: 'Thử chạy lại vài truy vấn JOIN/GROUP BY quen thuộc trên công cụ này và so sánh kế hoạch truy vấn.',
+      en: 'Re-run a few familiar JOIN/GROUP BY queries on it and compare the query plans.',
     },
   },
   {
     id: 'cache-msg',
     icon: '⚡',
-    skill: 'caching',
+    blog: 'system-design',
     title: { vi: 'Cache, hàng đợi & event', en: 'Caching, queues & events' },
     keywords: [
       'cache',
@@ -121,7 +121,7 @@ export const CATEGORIES = [
   {
     id: 'devops',
     icon: '🐳',
-    skill: 'docker',
+    blog: 'cicd',
     title: { vi: 'Container, CI/CD & hạ tầng', en: 'Containers, CI/CD & infrastructure' },
     keywords: [
       'docker',
@@ -154,7 +154,7 @@ export const CATEGORIES = [
   {
     id: 'observability',
     icon: '🔭',
-    skill: 'system-design',
+    blog: 'system-design',
     title: { vi: 'Kiến trúc & observability', en: 'Architecture & observability' },
     keywords: [
       'distributed',
@@ -188,7 +188,7 @@ export const CATEGORIES = [
   {
     id: 'security',
     icon: '🛡️',
-    skill: 'security',
+    blog: 'backend',
     title: { vi: 'Bảo mật & xác thực', en: 'Security & auth' },
     keywords: [
       'security',
@@ -229,7 +229,7 @@ export const CATEGORIES = [
   {
     id: 'testing',
     icon: '🧪',
-    skill: 'testing',
+    blog: 'cicd',
     title: { vi: 'Kiểm thử & chất lượng', en: 'Testing & quality' },
     keywords: [
       'test',
@@ -262,7 +262,7 @@ export const CATEGORIES = [
   {
     id: 'ai-backend',
     icon: '🤖',
-    skill: null,
+    blog: 'backend',
     title: { vi: 'AI cho backend developer', en: 'AI for backend developers' },
     keywords: [
       'llm',
