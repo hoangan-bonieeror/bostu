@@ -1,4 +1,4 @@
-# Tech Radar tuần 47/2026
+# Tech Radar 19/11 · tuần 47/2026
 
 > [!NOTE]
 > 🤖 Bài viết được **Tech Radar Bot** tổng hợp tự động ngày 19/11/2026 từ Hacker News (8), DEV Community (17). Mỗi mục được xếp vào một chủ đề gắn với kỹ năng trên [lộ trình](#/roadmap) của bạn.

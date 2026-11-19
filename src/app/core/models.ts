@@ -44,7 +44,10 @@ export interface RadarStatus {
   relevant: number;
   published: number;
   postId: string | null;
-  ai: boolean;
+  /** Older status files stored a boolean. */
+  ai:
+    | boolean
+    | { enabled: boolean; ok: boolean; model: string; summarized: number; error: string | null };
 }
 
 /** Tech Radar posts are generated weekly by the bot in scripts/tech-radar. */

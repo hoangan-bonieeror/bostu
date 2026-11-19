@@ -1,4 +1,4 @@
-# Tech Radar week 47/2026
+# Tech Radar Nov 19 · week 47/2026
 
 > [!NOTE]
 > 🤖 This post was compiled automatically by **Tech Radar Bot** on November 19, 2026 from Hacker News (8), DEV Community (17). Each item is mapped to a topic linked to the skills on your [roadmap](#/roadmap).

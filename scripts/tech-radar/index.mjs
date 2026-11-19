@@ -13,7 +13,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { summarize } from './ai.mjs';
+import { aiStatus, summarize } from './ai.mjs';
 import { pickHighlights, rank } from './classify.mjs';
 import { CATEGORIES, LIMITS, WINDOW_DAYS } from './config.mjs';
 import { renderCover } from './cover.mjs';
@@ -62,7 +62,7 @@ function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
     relevant,
     published,
     postId,
-    ai: !!process.env.GEMINI_API_KEY,
+    ai: { ...aiStatus, enabled: !!process.env.GEMINI_API_KEY },
   };
   if (!dryRun)
     writeFileSync(join(content, 'radar-status.json'), JSON.stringify(status, null, 2) + '\n');
@@ -83,7 +83,7 @@ function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
       '',
       `- Relevant new items after filtering: **${relevant}**`,
       `- Published: **${published}** ${postId ? `→ \`${postId}\`` : '(no new post)'}`,
-      `- Gemini summaries: ${status.ai ? 'on' : 'off'}`,
+      `- Gemini summaries: ${!status.ai.enabled ? 'off (no GEMINI_API_KEY)' : status.ai.ok ? `✅ ${status.ai.summarized} items (${status.ai.model})` : `❌ ${status.ai.error ?? 'not called'}`}`,
       '',
     ].join('\n');
     writeFileSync(process.env.GITHUB_STEP_SUMMARY, summary, { flag: 'a' });
@@ -181,6 +181,10 @@ async function main() {
     counts,
     ai,
     skillTitle,
+    shortDate: {
+      vi: `${String(now.getUTCDate()).padStart(2, '0')}/${String(now.getUTCMonth() + 1).padStart(2, '0')}`,
+      en: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }),
+    },
     maxActions: LIMITS.actions,
   };
   const vi = renderPost('vi', {

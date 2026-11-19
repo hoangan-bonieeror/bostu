@@ -61,7 +61,7 @@ import { StoreService } from '../core/store.service';
             } @else {
               {{ i18n.t('radar.noPost') }}
             }
-            · Gemini: {{ st.ai ? 'ON' : 'OFF' }}
+            · Gemini: {{ aiLabel(st) }}
           </p>
         </div>
       } @else if (statusLoaded()) {
@@ -166,6 +166,14 @@ export class LessonsPage {
       this.status.set(st);
       this.statusLoaded.set(true);
     });
+  }
+
+  protected aiLabel(st: RadarStatus): string {
+    const ai = st.ai;
+    if (typeof ai === 'boolean') return ai ? 'ON' : 'OFF';
+    if (!ai.enabled) return this.i18n.t('radar.aiOff');
+    if (ai.ok) return `✅ ${ai.summarized} (${ai.model})`;
+    return `❌ ${ai.error ?? '?'}`;
   }
 
   protected formatDateTime(iso: string) {

@@ -32,7 +32,7 @@ const T = {
     comments: 'bình luận',
     reactions: 'lượt thích',
     newRepo: 'repo mới',
-    title: (w, y) => `Tech Radar tuần ${w}/${y}`,
+    title: (w, y, d) => `Tech Radar ${d} · tuần ${w}/${y}`,
     summary: (names) => `Nổi bật: ${names}`,
   },
   en: {
@@ -64,7 +64,7 @@ const T = {
     comments: 'comments',
     reactions: 'reactions',
     newRepo: 'new repo',
-    title: (w, y) => `Tech Radar week ${w}/${y}`,
+    title: (w, y, d) => `Tech Radar ${d} · week ${w}/${y}`,
     summary: (names) => `Highlights: ${names}`,
   },
 };
@@ -102,7 +102,7 @@ export function renderPost(lang, p) {
     .map((s) => `${s.name} (${s.count})`)
     .join(', ');
 
-  out.push(`# ${t.title(p.week, p.year)}`, '');
+  out.push(`# ${t.title(p.week, p.year, p.shortDate[lang])}`, '');
   out.push('> [!NOTE]', `> ${t.by(p.dateLabel, srcList || '—')}`);
   if (!p.ai && t.origDesc) out.push('>', `> ${t.origDesc}`);
   out.push('');
@@ -195,7 +195,7 @@ export function renderPost(lang, p) {
 export function postMeta(lang, p) {
   const t = T[lang];
   return {
-    title: t.title(p.week, p.year),
+    title: t.title(p.week, p.year, p.shortDate[lang]),
     summary: t.summary(
       p.highlights
         .slice(0, 3)

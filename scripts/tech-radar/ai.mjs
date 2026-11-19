@@ -6,6 +6,9 @@
 // pin a specific model id (e.g. from https://ai.google.dev/gemini-api/docs/models) for stable output.
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+
+/** Outcome of the last summarize() call, recorded in radar-status.json for troubleshooting. */
+export const aiStatus = { enabled: false, ok: false, model: MODEL, summarized: 0, error: null };
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 /** JSON schema Gemini must follow (structured output). */
@@ -35,6 +38,7 @@ const RESPONSE_SCHEMA = {
  */
 export async function summarize(items) {
   const key = process.env.GEMINI_API_KEY;
+  aiStatus.enabled = !!key;
   if (!key || !items.length) return null;
 
   const prompt = `You are writing a weekly "Tech Radar" digest for a backend developer who is upskilling
@@ -81,9 +85,12 @@ ${JSON.stringify(items, null, 1)}`;
     const map = {};
     for (const it of json.items)
       if (it?.key && it.vi && it.en) map[it.key] = { vi: it.vi, en: it.en };
+    aiStatus.ok = true;
+    aiStatus.summarized = Object.keys(map).length;
     console.log(`✨ Gemini (${MODEL}) summarized ${Object.keys(map).length}/${items.length} items`);
     return { intro: json.intro, items: map };
   } catch (e) {
+    aiStatus.error = e.message.slice(0, 300);
     console.warn(`⚠ AI summaries skipped: ${e.message}`);
     return null;
   }

@@ -97,6 +97,7 @@ const DICT = {
     vi: 'Chưa có dữ liệu trạng thái quét. Ô này sẽ hiện sau lần chạy tới của bot (hoặc vào Actions → Tech Radar bot → Run workflow để chạy ngay).',
     en: 'No scan status yet. It will appear after the bot’s next run (or go to Actions → Tech Radar bot → Run workflow to run it now).',
   },
+  'radar.aiOff': { vi: 'tắt (chưa có GEMINI_API_KEY)', en: 'off (no GEMINI_API_KEY)' },
   'radar.today': { vi: 'hôm nay', en: 'today' },
   'radar.daysAgo': { vi: 'ngày trước', en: 'days ago' },
   'radar.latest': { vi: 'Tech Radar mới nhất', en: 'Latest Tech Radar' },
