@@ -31,9 +31,11 @@
     "@angular/build": "^22.2.8",
     "@angular/cli": "^22.2.8",
     "@angular/compiler-cli": "^22.2.0",
+    "@mozilla/readability": "^0.6.0",
     "@types/sql.js": "^1.4.11",
+    "linkedom": "^0.18.15",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2"
   },
-  "description": "Bostu \u2014 personal bilingual (VI/EN) backend learning lab"
+  "description": "Bostu — personal bilingual (VI/EN) backend learning lab"
 }

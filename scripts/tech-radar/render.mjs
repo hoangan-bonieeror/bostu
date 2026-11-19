@@ -15,6 +15,9 @@ const T = {
     noSkill: 'Chủ đề mở rộng',
     highlights: (n) => `🔥 Top ${n} đáng chú ý`,
     why: 'Vì sao nên quan tâm:',
+    keyPoints: '📌 Điểm chính',
+    covers: '🗂️ Bài viết gồm các phần',
+    readTime: (n) => `⏱ ~${n} phút đọc bài gốc`,
     open: 'Xem chi tiết →',
     discuss: 'Thảo luận trên HN',
     releases: '🚀 Bản phát hành mới của công cụ quen thuộc',
@@ -25,7 +28,7 @@ const T = {
     review: 'Ôn lại [flashcard](#/cards) và luyện thêm một bài trong [SQL Lab](#/sql).',
     about: '⚙️ Về bot này',
     aboutText:
-      'Bot chạy tự động mỗi thứ Hai qua GitHub Actions (`.github/workflows/tech-radar.yml`), lấy dữ liệu từ GitHub, Hacker News và DEV, chấm điểm theo độ phổ biến và mức liên quan tới backend, rồi xuất bản thành bài blog này. Bạn có thể đổi nguồn, từ khóa và chủ đề trong `scripts/tech-radar/config.mjs`.',
+      'Bot chạy tự động mỗi thứ Hai qua GitHub Actions (`.github/workflows/tech-radar.yml`), lấy dữ liệu từ GitHub, Hacker News và DEV, chấm điểm theo độ phổ biến và mức liên quan tới backend, mở từng link để đọc nội dung (README, release notes, bài viết — có tôn trọng robots.txt), rồi xuất bản thành bài blog này. Bài chỉ trích đoạn ngắn kèm link gốc. Bạn có thể đổi nguồn, từ khóa và chủ đề trong `scripts/tech-radar/config.mjs`.',
     none: 'Tuần này chưa có mục nào đủ nổi bật.',
     src: { github: 'GitHub', release: 'Release', hn: 'Hacker News', devto: 'DEV' },
     points: 'điểm',
@@ -47,6 +50,9 @@ const T = {
     noSkill: 'Bonus topic',
     highlights: (n) => `🔥 Top ${n} highlights`,
     why: 'Why it matters:',
+    keyPoints: '📌 Key points',
+    covers: '🗂️ What it covers',
+    readTime: (n) => `⏱ ~${n} min read`,
     open: 'Read more →',
     discuss: 'HN discussion',
     releases: '🚀 New releases of tools you know',
@@ -57,7 +63,7 @@ const T = {
     review: 'Review your [flashcards](#/cards) and solve one more [SQL Lab](#/sql) exercise.',
     about: '⚙️ About this bot',
     aboutText:
-      'The bot runs every Monday via GitHub Actions (`.github/workflows/tech-radar.yml`), pulls data from GitHub, Hacker News and DEV, scores items by popularity and backend relevance, and publishes this post. Change sources, keywords and topics in `scripts/tech-radar/config.mjs`.',
+      'The bot runs every Monday via GitHub Actions (`.github/workflows/tech-radar.yml`), pulls data from GitHub, Hacker News and DEV, scores items by popularity and backend relevance, opens each link to read its content (README, release notes, articles — respecting robots.txt), and publishes this post. Only short excerpts are quoted, always with a link to the source. Change sources, keywords and topics in `scripts/tech-radar/config.mjs`.',
     none: 'Nothing stood out enough this week.',
     src: { github: 'GitHub', release: 'Release', hn: 'Hacker News', devto: 'DEV' },
     points: 'points',
@@ -87,8 +93,25 @@ function metricLabel(it, t) {
 }
 
 function describe(it, ai, lang) {
-  return ai?.items?.[it.key]?.[lang] || it.description || '';
+  return ai?.items?.[it.key]?.[lang] || it.description || it.crawl?.excerpt || '';
 }
+
+/** Key points: AI takeaways if available, else bullets found in the crawled page. */
+function keyPoints(it, ai, lang) {
+  const fromAi = ai?.items?.[it.key]?.points?.[lang];
+  if (fromAi?.length) return fromAi;
+  // Without AI these are quotes from the source, so keep them short.
+  return it.crawl?.ok ? (it.crawl.bullets ?? []).slice(0, 4).map((b) => clipText(b, 140)) : [];
+}
+
+const clipText = (s, n) => {
+  const t = String(s ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
+};
+
+const safeUrl = (u) => String(u).replace(/ /g, '%20').replace(/\(/g, '%28').replace(/\)/g, '%29');
 
 /**
  * @param {'vi'|'en'} lang
@@ -132,12 +155,28 @@ export function renderPost(lang, p) {
     p.highlights.forEach((it, i) => {
       const c = catOf(it.category);
       out.push(`### ${i + 1}. ${md(it.title)}`, '');
+      const cr = it.crawl?.ok ? it.crawl : null;
       out.push(
-        `**${t.src[it.source]}** · ${metricLabel(it, t)} · ${c.icon} ${md(c.title[lang])}${it.date ? ` · 📅 ${it.date}` : ''}`,
+        `**${t.src[it.source]}** · ${metricLabel(it, t)} · ${c.icon} ${md(c.title[lang])}${it.date ? ` · 📅 ${it.date}` : ''}${cr?.minutes ? ` · ${t.readTime(cr.minutes)}` : ''}`,
         '',
       );
+      if (cr?.image)
+        out.push(
+          `![${md(it.title)}](${safeUrl(cr.image)} "${md(cr.site ?? it.title).replace(/"/g, "'")}")`,
+          '',
+        );
       const d = describe(it, p.ai, lang);
       if (d) out.push(md(d), '');
+      // Short quoted excerpt from the source (only when there is no AI summary to avoid repetition).
+      if (cr?.excerpt && !p.ai?.items?.[it.key] && cr.excerpt !== it.description) {
+        out.push(`> “${md(cr.excerpt)}”`, `> — *${md(cr.site ?? '')}*`, '');
+      }
+      const pts = keyPoints(it, p.ai, lang);
+      if (pts.length) {
+        out.push(`**${t.keyPoints}**`, '', ...pts.map((x) => `- ${md(x)}`), '');
+      } else if (cr?.outline?.length) {
+        out.push(`**${t.covers}:** ${cr.outline.map(md).join(' · ')}`, '');
+      }
       out.push('> [!TIP]', `> **${t.why}** ${c.why[lang]}`, '');
       const links = [`[${t.open}](${it.url})`];
       if (it.discussion && it.discussion !== it.url) links.push(`[${t.discuss}](${it.discussion})`);
@@ -152,7 +191,9 @@ export function renderPost(lang, p) {
     out.push(`## ${t.releases}`, '');
     out.push(`| ${t.relTable.join(' | ')} |`, '|---|---|---|---|');
     for (const r of p.releases) {
-      const note = md(describe(r, p.ai, lang)).slice(0, 120);
+      const ai = p.ai?.items?.[r.key]?.[lang];
+      const bullets = r.crawl?.ok ? (r.crawl.bullets ?? []).slice(0, 3).join('; ') : '';
+      const note = md(clipText(ai || bullets || r.description, 170));
       out.push(
         `| [${md(r.title)}](${r.url}) | \`${r.version.replace(/`/g, '')}\` | ${r.date} | ${note} |`,
       );

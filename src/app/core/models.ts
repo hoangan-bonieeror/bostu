@@ -44,6 +44,8 @@ export interface RadarStatus {
   relevant: number;
   published: number;
   postId: string | null;
+  /** Articles opened by the crawler (absent in older status files). */
+  crawl?: { attempted: number; ok: number; failed: number; robots: number } | null;
   /** Older status files stored a boolean. */
   ai:
     | boolean

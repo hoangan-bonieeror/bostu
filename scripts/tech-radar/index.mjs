@@ -7,6 +7,8 @@
 //   node scripts/tech-radar/index.mjs --days=14       # look further back
 //   node scripts/tech-radar/index.mjs --save-fixture=radar.json   # also save raw data
 //   node scripts/tech-radar/index.mjs --fixture=radar.json        # offline: reuse saved data
+//   node scripts/tech-radar/index.mjs --no-crawl                  # skip reading the linked articles
+//   node scripts/tech-radar/index.mjs --ignore-seen               # rebuild: allow already-published links
 //
 // Env: GITHUB_TOKEN (recommended, higher rate limits), GEMINI_API_KEY (optional AI summaries),
 //      GEMINI_MODEL (optional, Gemini model id; default gemini-flash-latest).
@@ -14,6 +16,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { aiStatus, summarize } from './ai.mjs';
+import { crawlAll } from './crawl.mjs';
 import { pickHighlights, rank } from './classify.mjs';
 import { CATEGORIES, LIMITS, WINDOW_DAYS } from './config.mjs';
 import { renderCover } from './cover.mjs';
@@ -32,8 +35,11 @@ const args = Object.fromEntries(
     return [k, v ?? true];
   }),
 );
-const days = Number(args.days) || WINDOW_DAYS;
+const days = Math.min(60, Number(args.days) || Number(process.env.RADAR_DAYS) || WINDOW_DAYS);
 const dryRun = !!args['dry-run'];
+// Rebuild mode: ignore seen.json so items already published can be picked again
+// (e.g. to regenerate today's post after improving the bot). Same-day post is replaced.
+const ignoreSeen = !!args['ignore-seen'];
 
 function isoWeek(d) {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -48,7 +54,7 @@ const ymd = (d) => d.toISOString().slice(0, 10);
  * Records what the last run did, so the app (and the Actions summary) can show whether
  * the bot is fetching data even in weeks when nothing new gets published.
  */
-function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
+function writeStatus(results, { published = 0, relevant = 0, postId = null, crawl = null }) {
   const status = {
     lastRun: new Date().toISOString(),
     days,
@@ -62,6 +68,7 @@ function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
     relevant,
     published,
     postId,
+    crawl,
     ai: { ...aiStatus, enabled: !!process.env.GEMINI_API_KEY },
   };
   if (!dryRun)
@@ -83,6 +90,9 @@ function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
       '',
       `- Relevant new items after filtering: **${relevant}**`,
       `- Published: **${published}** ${postId ? `→ \`${postId}\`` : '(no new post)'}`,
+      crawl
+        ? `- Articles crawled: **${crawl.ok}/${crawl.attempted}** ok, ${crawl.failed} failed, ${crawl.robots} blocked by robots.txt`
+        : '- Articles crawled: skipped',
       `- Gemini summaries: ${!status.ai.enabled ? 'off (no GEMINI_API_KEY)' : status.ai.ok ? `✅ ${status.ai.summarized} items (${status.ai.model})` : `❌ ${status.ai.error ?? 'not called'}`}`,
       '',
     ].join('\n');
@@ -112,14 +122,17 @@ async function collect() {
 }
 
 async function main() {
-  const now = args.date ? new Date(`${args.date}T12:00:00Z`) : new Date();
+  const dateArg = args.date || process.env.RADAR_DATE || '';
+  if (dateArg && !/^\d{4}-\d{2}-\d{2}$/.test(dateArg)) throw new Error(`Invalid date "${dateArg}" (expected YYYY-MM-DD)`);
+  const now = dateArg ? new Date(`${dateArg}T12:00:00Z`) : new Date();
   const { week, year } = isoWeek(now);
   const to = ymd(now);
   const from = ymd(new Date(now.getTime() - days * 864e5));
   const id = `tech-radar-${to}`;
 
   const seen = existsSync(SEEN_FILE) ? JSON.parse(readFileSync(SEEN_FILE, 'utf8')) : { urls: [] };
-  const seenUrls = new Set(seen.urls);
+  const seenUrls = ignoreSeen ? new Set() : new Set(seen.urls);
+  if (ignoreSeen) console.log('♻️  --ignore-seen: previously published links may appear again');
 
   const results = await collect();
   const all = results
@@ -151,16 +164,32 @@ async function main() {
     return;
   }
 
-  // Stable keys for the AI step.
+  // Read what is inside each link (README, release notes, article text).
+  let crawlStats = null;
+  if (!args['no-crawl']) {
+    process.stdout.write(`📖 Crawling ${published.length} links `);
+    ({ stats: crawlStats } = await crawlAll(published));
+    console.log(
+      `   ${crawlStats.ok} ok, ${crawlStats.failed} failed, ${crawlStats.robots} blocked by robots.txt`,
+    );
+  }
+
+  // Stable keys for the AI step. Highlights get more of the crawled text than list items.
   published.forEach((it, i) => (it.key = `i${i}`));
   const ai = await summarize(
-    published.map(({ key, title, description, source, category, version }) => ({
-      key,
-      title,
-      description,
-      source,
-      category,
-      version,
+    published.map((it) => ({
+      key: it.key,
+      title: it.title,
+      description: it.description,
+      source: it.source,
+      category: it.category,
+      version: it.version,
+      highlight: hlUrls.has(it.url),
+      content: it.crawl?.ok
+        ? hlUrls.has(it.url)
+          ? it.crawl.text
+          : it.crawl.text.slice(0, 700)
+        : '',
     })),
   );
 
@@ -239,10 +268,15 @@ async function main() {
   writeFileSync(lessonsPath, JSON.stringify([...course, ...radar], null, 2) + '\n');
 
   // Remember what was published so next week's post shows new things.
-  const urls = [...published.map((p) => p.url), ...seen.urls].slice(0, 2000);
+  const urls = [...new Set([...published.map((p) => p.url), ...seen.urls])].slice(0, 2000);
   writeFileSync(SEEN_FILE, JSON.stringify({ updated: to, urls }, null, 2) + '\n');
 
-  writeStatus(results, { relevant: ranked.length, published: published.length, postId: id });
+  writeStatus(results, {
+    relevant: ranked.length,
+    published: published.length,
+    postId: id,
+    crawl: crawlStats,
+  });
   console.log(`✅ Wrote lessons/${id}.{vi,en}.md, covers/${id}.svg and updated lessons.json`);
 }
 

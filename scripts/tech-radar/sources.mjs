@@ -119,6 +119,7 @@ export async function githubReleases({ days }) {
       title: repo,
       url: rel.html_url,
       version: rel.tag_name,
+      body: (rel.body ?? '').slice(0, 20000), // full notes for the crawler
       description: cleanText(
         (rel.name && rel.name !== rel.tag_name && !/^v?\d/.test(rel.name)
           ? rel.name
@@ -172,6 +173,7 @@ export async function devTo() {
         topics: a.tag_list ?? [],
         date: a.published_at?.slice(0, 10),
         metric: a.positive_reactions_count ?? 0,
+        apiPath: a.path, // e.g. /user/slug → https://dev.to/api/articles/user/slug
       });
     }
     await sleep(400);

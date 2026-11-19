@@ -62,6 +62,12 @@ import { StoreService } from '../core/store.service';
               {{ i18n.t('radar.noPost') }}
             }
             · Gemini: {{ aiLabel(st) }}
+            @if (st.crawl; as c) {
+              · {{ i18n.t('radar.crawled') }}: <strong>{{ c.ok }}/{{ c.attempted }}</strong>
+              @if (c.robots) {
+                ({{ c.robots }} robots.txt)
+              }
+            }
           </p>
         </div>
       } @else if (statusLoaded()) {

@@ -10,6 +10,15 @@ on:
         description: 'How many days back to look'
         required: false
         default: '7'
+      date:
+        description: 'Post date YYYY-MM-DD (optional; use an existing post''s date to replace it)'
+        required: false
+        default: ''
+      ignore_seen:
+        description: 'Rebuild: ignore already-published links (replaces today''s post)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -31,6 +40,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      # Installs the article parser (@mozilla/readability + linkedom) used by the crawler.
+      - run: npm ci
 
       - name: Find new technologies and write the post
         env:
@@ -39,7 +52,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Optional: pin a model with a repository variable (default: gemini-flash-latest).
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-        run: node scripts/tech-radar/index.mjs --days=${{ inputs.days || 7 }}
+          # Passed via env (not inlined in the shell command) to avoid script injection.
+          RADAR_DATE: ${{ inputs.date }}
+          RADAR_DAYS: ${{ inputs.days }}
+        run: node scripts/tech-radar/index.mjs ${{ inputs.ignore_seen && '--ignore-seen' || '' }}
 
       - name: Validate content
         run: node scripts/validate-content.mjs

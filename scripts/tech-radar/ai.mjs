@@ -24,7 +24,13 @@ const RESPONSE_SCHEMA = {
       type: 'ARRAY',
       items: {
         type: 'OBJECT',
-        properties: { key: { type: 'STRING' }, vi: { type: 'STRING' }, en: { type: 'STRING' } },
+        properties: {
+          key: { type: 'STRING' },
+          vi: { type: 'STRING' },
+          en: { type: 'STRING' },
+          points_vi: { type: 'ARRAY', items: { type: 'STRING' } },
+          points_en: { type: 'ARRAY', items: { type: 'STRING' } },
+        },
         required: ['key', 'vi', 'en'],
       },
     },
@@ -44,10 +50,14 @@ export async function summarize(items) {
   const prompt = `You are writing a weekly "Tech Radar" digest for a backend developer who is upskilling
 (roadmap: HTTP, REST APIs, SQL, database design, auth, testing, Docker/CI, caching, queues, security, system design).
 
-For EACH item below, write a concise 1–2 sentence summary explaining what it is and why a backend developer
-might care, in Vietnamese ("vi") and English ("en"). Keep technical terms in English inside the Vietnamese text.
-Only use information given in the item; do not invent features, numbers or dates. If an item is unclear, say what it
-appears to be based on its title. Return one entry per item, using the item's "key".
+Each item may include "content": text crawled from the linked article, README or release notes.
+For EACH item:
+- "vi" / "en": a concise 1–2 sentence summary of what it is and why a backend developer might care.
+- "points_vi" / "points_en": for items with "highlight": true and non-empty content, 2–3 short key takeaways
+  (max ~20 words each) taken from the content; otherwise return empty arrays.
+Write Vietnamese for "vi"/"points_vi" and English for "en"/"points_en"; keep technical terms in English inside
+Vietnamese text. Paraphrase in your own words — never copy sentences from the content. Only use facts present in the
+item; do not invent features, numbers, versions or dates. Return one entry per item, using the item's "key".
 
 Also write a 2–3 sentence overview ("intro") of the week's themes in both languages.
 
@@ -62,7 +72,7 @@ ${JSON.stringify(items, null, 1)}`;
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.4,
-          maxOutputTokens: 8192,
+          maxOutputTokens: 16384,
           responseMimeType: 'application/json',
           responseSchema: RESPONSE_SCHEMA,
         },
@@ -83,8 +93,14 @@ ${JSON.stringify(items, null, 1)}`;
 
     // Turn the array into a lookup keyed by item key (what render.mjs expects).
     const map = {};
-    for (const it of json.items)
-      if (it?.key && it.vi && it.en) map[it.key] = { vi: it.vi, en: it.en };
+    for (const it of json.items) {
+      if (!it?.key || !it.vi || !it.en) continue;
+      map[it.key] = {
+        vi: it.vi,
+        en: it.en,
+        points: { vi: (it.points_vi ?? []).slice(0, 3), en: (it.points_en ?? []).slice(0, 3) },
+      };
+    }
     aiStatus.ok = true;
     aiStatus.summarized = Object.keys(map).length;
     console.log(`✨ Gemini (${MODEL}) summarized ${Object.keys(map).length}/${items.length} items`);
