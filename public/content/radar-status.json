@@ -1,0 +1,38 @@
+{
+  "lastRun": "2026-11-19T01:21:20.215Z",
+  "days": 7,
+  "sources": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "ok": true,
+      "fetched": 15,
+      "error": null
+    },
+    {
+      "id": "release",
+      "name": "GitHub Releases",
+      "ok": true,
+      "fetched": 9,
+      "error": null
+    },
+    {
+      "id": "hn",
+      "name": "Hacker News",
+      "ok": true,
+      "fetched": 255,
+      "error": null
+    },
+    {
+      "id": "devto",
+      "name": "DEV Community",
+      "ok": true,
+      "fetched": 67,
+      "error": null
+    }
+  ],
+  "relevant": 38,
+  "published": 25,
+  "postId": "tech-radar-2026-11-19",
+  "ai": true
+}

@@ -100,6 +100,20 @@
     "date": "2026-11-17"
   },
   {
+    "id": "tech-radar-2026-11-19",
+    "skill": "tech-radar",
+    "minutes": 8,
+    "date": "2026-11-19",
+    "title": {
+      "vi": "Tech Radar tuần 47/2026",
+      "en": "Tech Radar week 47/2026"
+    },
+    "summary": {
+      "vi": "Nổi bật: Java4Shell: RCE in OpenJDK when processing Base64, Critical RCE Vulnerability in Apache HTTP Server, Understanding Positional Embeddings in Modern LLMs",
+      "en": "Highlights: Java4Shell: RCE in OpenJDK when processing Base64, Critical RCE Vulnerability in Apache HTTP Server, Understanding Positional Embeddings in Modern LLMs"
+    }
+  },
+  {
     "id": "tech-radar-2026-11-18",
     "skill": "tech-radar",
     "minutes": 5,
