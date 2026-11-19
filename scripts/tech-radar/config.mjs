@@ -35,6 +35,8 @@ export const CATEGORIES = [
       'nestjs',
       'flask',
       'django',
+      'rest api',
+      'http server',
     ],
     why: {
       vi: 'API là "mặt tiền" của backend — công cụ mới thường giúp viết API nhanh hơn, an toàn kiểu dữ liệu hơn.',
@@ -68,9 +70,10 @@ export const CATEGORIES = [
       'drizzle',
       'sqlalchemy',
       'supabase',
-      'neon',
       'olap',
       'oltp',
+      'jsonb',
+      'wal',
     ],
     why: {
       vi: 'Phần lớn sự cố hiệu năng nằm ở tầng dữ liệu — hiểu công cụ mới giúp bạn chọn đúng kho lưu trữ cho từng bài toán.',
@@ -209,6 +212,10 @@ export const CATEGORIES = [
       'rbac',
       'zero trust',
       'encryption',
+      'rce',
+      'csrf',
+      'ssrf',
+      'sql injection',
     ],
     why: {
       vi: 'Một lỗ hổng có thể xóa sạch mọi công sức — cập nhật kiến thức bảo mật là việc phải làm định kỳ.',
@@ -350,6 +357,64 @@ export const EXCLUDE_KEYWORDS = [
   'telegram bot',
   'discord bot',
   'awesome',
+];
+
+/**
+ * Everyday words that also have a tech meaning ("test scores", "national security").
+ * One of these alone is not enough to count an item as relevant: it needs a second
+ * keyword, or a specific tech term (e.g. "postgres", "xss", "kubernetes").
+ */
+export const AMBIGUOUS_KEYWORDS = [
+  'test',
+  'testing',
+  'security',
+  'secret',
+  'secrets',
+  'event',
+  'workflow',
+  'stream',
+  'streaming',
+  'index',
+  'query',
+  'api',
+  'rest',
+  'auth',
+  'cache',
+  'deploy',
+  'ci',
+  'cd',
+  'mock',
+  'lint',
+  'benchmark',
+  'metrics',
+  'logging',
+  'monitoring',
+  'architecture',
+  'distributed',
+  'migration',
+  'inference',
+  'evals',
+  'encryption',
+  'injection',
+  'database',
+  'sdk',
+  'container',
+  'serverless',
+  'scalability',
+  'agent',
+  'prompt',
+  'sso',
+  'queue',
+  'event',
+  'tracing',
+];
+
+/** Titles matching these patterns are skipped (low-value series, off-topic formats). */
+export const EXCLUDE_TITLE_PATTERNS = [
+  /^day \d+\b/i,
+  /\bweekly (recap|roundup)\b/i,
+  /^ask hn:/i,
+  /\bhiring\b/i,
 ];
 
 /** Hacker News: only stories above this score are considered. */

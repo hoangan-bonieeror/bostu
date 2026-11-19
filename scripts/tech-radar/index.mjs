@@ -44,6 +44,52 @@ function isoWeek(d) {
 }
 const ymd = (d) => d.toISOString().slice(0, 10);
 
+/**
+ * Records what the last run did, so the app (and the Actions summary) can show whether
+ * the bot is fetching data even in weeks when nothing new gets published.
+ */
+function writeStatus(results, { published = 0, relevant = 0, postId = null }) {
+  const status = {
+    lastRun: new Date().toISOString(),
+    days,
+    sources: results.map((r) => ({
+      id: r.id,
+      name: r.name,
+      ok: r.ok,
+      fetched: r.items.length,
+      error: r.error ?? null,
+    })),
+    relevant,
+    published,
+    postId,
+    ai: !!process.env.GEMINI_API_KEY,
+  };
+  if (!dryRun)
+    writeFileSync(join(content, 'radar-status.json'), JSON.stringify(status, null, 2) + '\n');
+
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    const rows = status.sources
+      .map(
+        (s) =>
+          `| ${s.ok ? '✅' : '❌'} ${s.name} | ${s.fetched} | ${s.error ? s.error.replace(/\|/g, '/') : ''} |`,
+      )
+      .join('\n');
+    const summary = [
+      '## 📡 Tech Radar run',
+      '',
+      '| Source | Fetched | Error |',
+      '|---|---:|---|',
+      rows,
+      '',
+      `- Relevant new items after filtering: **${relevant}**`,
+      `- Published: **${published}** ${postId ? `→ \`${postId}\`` : '(no new post)'}`,
+      `- Gemini summaries: ${status.ai ? 'on' : 'off'}`,
+      '',
+    ].join('\n');
+    writeFileSync(process.env.GITHUB_STEP_SUMMARY, summary, { flag: 'a' });
+  }
+}
+
 async function collect() {
   if (args.fixture) {
     console.log(`📦 Using fixture ${args.fixture}`);
@@ -101,6 +147,7 @@ async function main() {
 
   if (!published.length) {
     console.log('😴 Nothing new found — no post written.');
+    writeStatus(results, { relevant: ranked.length });
     return;
   }
 
@@ -191,6 +238,7 @@ async function main() {
   const urls = [...published.map((p) => p.url), ...seen.urls].slice(0, 2000);
   writeFileSync(SEEN_FILE, JSON.stringify({ updated: to, urls }, null, 2) + '\n');
 
+  writeStatus(results, { relevant: ranked.length, published: published.length, postId: id });
   console.log(`✅ Wrote lessons/${id}.{vi,en}.md, covers/${id}.svg and updated lessons.json`);
 }
 

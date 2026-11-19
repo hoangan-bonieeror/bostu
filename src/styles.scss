@@ -1004,3 +1004,11 @@ figcaption { margin-top: .55rem; font-size: .85rem; color: var(--muted); font-st
 .avatar.bot { background: linear-gradient(135deg, #0f172a, #4f46e5); font-size: 1.1rem; }
 .prose input[type='checkbox'] { accent-color: var(--accent); margin-right: .4rem; }
 .prose ul:has(> li > input[type='checkbox']) { list-style: none; padding-left: .4rem; }
+
+.radar-status { display: grid; gap: .6rem; }
+.radar-status p { margin: 0; }
+.radar-status-head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.radar-sources { display: flex; flex-wrap: wrap; gap: .5rem; }
+.src-chip { background: var(--success-soft); color: var(--success); border-radius: 999px; padding: .25rem .75rem; font-size: .85rem; font-weight: 600; }
+.src-chip.bad { background: var(--danger-soft); color: var(--danger); cursor: help; }
+.src-chip strong { margin-left: .2rem; }

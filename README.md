@@ -80,9 +80,10 @@ Bot nằm trong `scripts/tech-radar/` (Node.js thuần, không cần cài thêm 
    - GitHub Releases: bản phát hành mới của FastAPI, Django, uv, Redis/Valkey, Kafka, Docker Compose, k6…
    - Hacker News: bài trên 120 điểm
    - DEV Community: bài top tuần theo tag
-2. **Lọc và chấm điểm**: bỏ repo spam (nhiều repo cùng chủ, mô tả rỗng, ít sao), bỏ chủ đề lạc đề (crypto, game, mobile…). Mỗi mục được xếp vào một chủ đề gắn với kỹ năng trên lộ trình. Điểm = độ phổ biến (thang log) + mức liên quan.
+2. **Lọc và chấm điểm**: bỏ repo spam (nhiều repo cùng chủ, mô tả rỗng, ít sao), bỏ chủ đề lạc đề (crypto, game, mobile…). Một từ thông dụng như "test" hay "security" đứng một mình không đủ để coi là tin công nghệ: cần thêm một từ khóa khác, hoặc một thuật ngữ cụ thể như `postgres`, `xss`, `kubernetes` (danh sách `AMBIGUOUS_KEYWORDS`). Mỗi mục được xếp vào một chủ đề gắn với kỹ năng trên lộ trình. Điểm = độ phổ biến (thang log) + mức liên quan.
 3. **Viết bài** song ngữ `public/content/lessons/tech-radar-<ngày>.{vi,en}.md`, gồm: biểu đồ tròn Mermaid, top nổi bật kèm "vì sao nên quan tâm", bảng bản phát hành, danh sách theo chủ đề và checklist việc nên làm. Bot cũng **vẽ ảnh bìa radar** dạng SVG.
 4. **Ghi nhớ** các link đã đăng trong `seen.json`, để tuần sau chỉ hiện thứ mới.
+4b. **Ghi trạng thái** mỗi lần chạy vào `public/content/radar-status.json` (mỗi nguồn lấy được bao nhiêu mục, có lỗi gì không, có đăng bài không). Trang **Tech Radar** hiển thị ô **"Lần quét gần nhất"** từ file này. Trong tab Actions, mỗi lần chạy cũng có bảng tóm tắt ở trang **Summary**.
 5. **Commit và deploy** lại trang.
 
 ```bash

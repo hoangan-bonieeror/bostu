@@ -36,6 +36,17 @@ export interface LessonMeta {
 
 export const RADAR_SKILL = 'tech-radar';
 
+/** Written by the Tech Radar bot on every run (public/content/radar-status.json). */
+export interface RadarStatus {
+  lastRun: string;
+  days: number;
+  sources: { id: string; name: string; ok: boolean; fetched: number; error: string | null }[];
+  relevant: number;
+  published: number;
+  postId: string | null;
+  ai: boolean;
+}
+
 /** Tech Radar posts are generated weekly by the bot in scripts/tech-radar. */
 export function isRadar(l: LessonMeta | undefined): boolean {
   return l?.skill === RADAR_SKILL;

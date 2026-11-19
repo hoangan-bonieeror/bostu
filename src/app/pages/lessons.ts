@@ -2,7 +2,7 @@ import { Component, computed, inject, input, linkedSignal, signal } from '@angul
 import { Router, RouterLink } from '@angular/router';
 import { ContentService } from '../core/content.service';
 import { I18n } from '../core/i18n';
-import { LessonMeta, RADAR_SKILL, Skill, isRadar, lessonCover } from '../core/models';
+import { LessonMeta, RADAR_SKILL, RadarStatus, Skill, isRadar, lessonCover } from '../core/models';
 import { StoreService } from '../core/store.service';
 
 @Component({
@@ -40,6 +40,33 @@ import { StoreService } from '../core/store.service';
 
     @if (filter() === radarSkill) {
       <p class="notice">🤖 {{ i18n.t('radar.about') }}</p>
+      @if (status(); as st) {
+        <div class="card radar-status">
+          <div class="radar-status-head">
+            <span class="radar-dot"></span>
+            <strong>{{ i18n.t('radar.lastRun') }}</strong>
+            <span class="muted">{{ formatDateTime(st.lastRun) }} · {{ ago(st.lastRun) }}</span>
+          </div>
+          <div class="radar-sources">
+            @for (s of st.sources; track s.id) {
+              <span class="src-chip" [class.bad]="!s.ok" [title]="s.error ?? ''">
+                {{ s.ok ? '✅' : '❌' }} {{ s.name }} <strong>{{ s.fetched }}</strong>
+              </span>
+            }
+          </div>
+          <p class="small muted">
+            {{ i18n.t('radar.relevant') }}: <strong>{{ st.relevant }}</strong> ·
+            @if (st.postId) {
+              {{ i18n.t('radar.published') }}: <strong>{{ st.published }}</strong>
+            } @else {
+              {{ i18n.t('radar.noPost') }}
+            }
+            · Gemini: {{ st.ai ? 'ON' : 'OFF' }}
+          </p>
+        </div>
+      } @else if (statusLoaded()) {
+        <p class="notice">⏳ {{ i18n.t('radar.neverRun') }}</p>
+      }
     }
 
     @if (featured(); as f) {
@@ -104,6 +131,8 @@ export class LessonsPage {
   private readonly lessons = signal<LessonMeta[]>([]);
   protected readonly filter = linkedSignal(() => this.skill() ?? '');
   protected readonly radarSkill = RADAR_SKILL;
+  protected readonly status = signal<RadarStatus | null>(null);
+  protected readonly statusLoaded = signal(false);
   protected readonly isRadar = isRadar;
   protected readonly error = signal(false);
   protected readonly cover = lessonCover;
@@ -133,6 +162,23 @@ export class LessonsPage {
       .lessons()
       .then((v) => this.lessons.set(v))
       .catch(() => this.error.set(true));
+    this.content.radarStatus().then((st) => {
+      this.status.set(st);
+      this.statusLoaded.set(true);
+    });
+  }
+
+  protected formatDateTime(iso: string) {
+    return new Date(iso).toLocaleString(this.i18n.lang() === 'vi' ? 'vi-VN' : 'en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  }
+
+  protected ago(iso: string) {
+    const days = Math.floor((Date.now() - Date.parse(iso)) / 864e5);
+    if (days <= 0) return this.i18n.t('radar.today');
+    return `${days} ${this.i18n.t('radar.daysAgo')}`;
   }
 
   protected setFilter(id: string) {

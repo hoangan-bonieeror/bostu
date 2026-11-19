@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Flashcard, Lang, LessonMeta, Skill, SqlLabData } from './models';
+import { Flashcard, Lang, LessonMeta, RadarStatus, Skill, SqlLabData } from './models';
 
 /**
  * Loads learning content from /content (served from the `public/` folder).
@@ -32,6 +32,13 @@ export class ContentService {
 
   sqlLab() {
     return this.get<SqlLabData>('sql-lab.json', 'json');
+  }
+
+  /** Last Tech Radar bot run; resolves to null if the bot has not run yet. */
+  radarStatus(): Promise<RadarStatus | null> {
+    return fetch(`content/radar-status.json?t=${Date.now()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
   }
 
   flashcards() {

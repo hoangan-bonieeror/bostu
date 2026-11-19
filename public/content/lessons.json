@@ -100,20 +100,6 @@
     "date": "2026-11-17"
   },
   {
-    "id": "tech-radar-2026-11-19",
-    "skill": "tech-radar",
-    "minutes": 9,
-    "date": "2026-11-19",
-    "title": {
-      "vi": "Tech Radar tuần 47/2026",
-      "en": "Tech Radar week 47/2026"
-    },
-    "summary": {
-      "vi": "Nổi bật: New Evidence Shows School Phone Bans Are Gradually Improving Test Scores, Highly classified US national security communications network goes down, Universal XSS in uBlock Origin from website-driven element picker",
-      "en": "Highlights: New Evidence Shows School Phone Bans Are Gradually Improving Test Scores, Highly classified US national security communications network goes down, Universal XSS in uBlock Origin from website-driven element picker"
-    }
-  },
-  {
     "id": "tech-radar-2026-11-18",
     "skill": "tech-radar",
     "minutes": 5,

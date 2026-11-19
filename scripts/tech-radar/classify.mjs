@@ -1,10 +1,19 @@
 // Assigns each item to a radar category and computes a comparable score.
-import { CATEGORIES, EXCLUDE_KEYWORDS } from './config.mjs';
+import {
+  AMBIGUOUS_KEYWORDS,
+  CATEGORIES,
+  EXCLUDE_KEYWORDS,
+  EXCLUDE_TITLE_PATTERNS,
+} from './config.mjs';
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+const ambiguous = new Set(AMBIGUOUS_KEYWORDS);
 const matchers = CATEGORIES.map((c) => ({
   cat: c,
-  res: c.keywords.map((k) => new RegExp(`(^|[^a-z0-9])${escapeRe(k.toLowerCase())}([^a-z0-9]|$)`)),
+  res: c.keywords.map((k) => ({
+    kw: k.toLowerCase(),
+    re: new RegExp(`(^|[^a-z0-9])${escapeRe(k.toLowerCase())}([^a-z0-9]|$)`),
+  })),
 }));
 
 const excludes = EXCLUDE_KEYWORDS.map(
@@ -12,11 +21,15 @@ const excludes = EXCLUDE_KEYWORDS.map(
 );
 
 /**
- * Returns { category, hits } for the best-matching category, or null.
- * Keywords in the title/description count double; repo topics count once
- * (topics are often stuffed), and at least 2 points are required.
+ * Returns { category, hits, matched } for the best-matching category, or null.
+ * - Keywords in the title/description count double; repo topics count once (often stuffed).
+ * - Relevance gate: at least one specific tech term, or two different keywords. A single
+ *   everyday word ("test", "security") is not enough — otherwise headlines like
+ *   "School phone bans improve test scores" slip in.
  */
 export function categorize(item) {
+  if (item.source !== 'release' && EXCLUDE_TITLE_PATTERNS.some((re) => re.test(item.title)))
+    return null;
   const strong = [item.title, item.title.replace(/[/_.-]/g, ' '), item.description]
     .join(' ')
     .toLowerCase();
@@ -28,10 +41,21 @@ export function categorize(item) {
     return null;
   let best = null;
   for (const { cat, res } of matchers) {
-    const hits = res.reduce((n, re) => n + (re.test(strong) ? 2 : re.test(weak) ? 1 : 0), 0);
-    if (hits && (!best || hits > best.hits)) best = { category: cat, hits };
+    let hits = 0;
+    const matched = [];
+    for (const { kw, re } of res) {
+      const w = re.test(strong) ? 2 : re.test(weak) ? 1 : 0;
+      if (w) {
+        hits += w;
+        matched.push(kw);
+      }
+    }
+    if (hits && (!best || hits > best.hits)) best = { category: cat, hits, matched };
   }
-  if (!best || (item.source !== 'release' && best.hits < 2)) return null;
+  if (!best) return null;
+  if (item.source === 'release') return best;
+  const specific = best.matched.some((k) => !ambiguous.has(k));
+  if (best.hits < 2 || (!specific && best.matched.length < 2)) return null;
   return best;
 }
 

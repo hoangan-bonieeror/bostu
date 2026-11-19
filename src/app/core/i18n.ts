@@ -89,6 +89,16 @@ const DICT = {
     en: 'No English version yet — showing Vietnamese.',
   },
 
+  'radar.lastRun': { vi: 'Lần quét gần nhất', en: 'Last scan' },
+  'radar.relevant': { vi: 'Mục mới phù hợp sau khi lọc', en: 'Relevant new items after filtering' },
+  'radar.published': { vi: 'Đã đăng', en: 'Published' },
+  'radar.noPost': { vi: 'Không có gì mới nên không đăng bài', en: 'Nothing new, so no post' },
+  'radar.neverRun': {
+    vi: 'Chưa có dữ liệu trạng thái quét. Ô này sẽ hiện sau lần chạy tới của bot (hoặc vào Actions → Tech Radar bot → Run workflow để chạy ngay).',
+    en: 'No scan status yet. It will appear after the bot’s next run (or go to Actions → Tech Radar bot → Run workflow to run it now).',
+  },
+  'radar.today': { vi: 'hôm nay', en: 'today' },
+  'radar.daysAgo': { vi: 'ngày trước', en: 'days ago' },
   'radar.latest': { vi: 'Tech Radar mới nhất', en: 'Latest Tech Radar' },
   'radar.newest': { vi: 'Số mới nhất', en: 'Newest issue' },
   'radar.about': {
