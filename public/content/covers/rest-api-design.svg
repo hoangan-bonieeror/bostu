@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="2" fill="#ffffff" fill-opacity=".12"/>
+    </pattern>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#0b1030" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <circle cx="1080" cy="80" r="220" fill="#ffffff" fill-opacity=".08"/>
+  <circle cx="90" cy="600" r="190" fill="#ffffff" fill-opacity=".07"/>
+
+  <g stroke="#ffffff" stroke-opacity=".75" stroke-width="4" fill="none">
+    <path d="M300 168 V 260 H 220 V 300"/><path d="M300 260 H 420 V 300"/>
+    <path d="M220 358 V 440"/>
+  </g>
+  <g filter="url(#sh)"><rect x="200" y="110" width="200" height="58" rx="29.0" fill="#ffffff"/><text x="300" y="148" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="24" font-weight="700" fill="#0f766e">/users</text></g>
+  <g filter="url(#sh)"><rect x="110" y="300" width="230" height="58" rx="29.0" fill="#ffffff"/><text x="225" y="338" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="24" font-weight="700" fill="#0f766e">/users/42</text></g>
+  <g filter="url(#sh)"><rect x="360" y="300" width="180" height="58" rx="29.0" fill="#ffffff"/><text x="450" y="338" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="24" font-weight="700" fill="#0f766e">?page=2</text></g>
+  <g filter="url(#sh)"><rect x="70" y="440" width="320" height="58" rx="29.0" fill="#ffffff"/><text x="230" y="478" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="24" font-weight="700" fill="#0f766e">/users/42/orders</text></g>
+  <!-- json card -->
+  <g filter="url(#sh)">
+    <rect x="620" y="110" width="520" height="300" rx="22" fill="#0b2530"/>
+    <circle cx="652" cy="142" r="8" fill="#ff5f57"/><circle cx="678" cy="142" r="8" fill="#febc2e"/><circle cx="704" cy="142" r="8" fill="#28c840"/>
+    <text font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="22" fill="#e6edf3">
+      <tspan x="672" y="200" fill="#7dd3fc">{</tspan>
+      <tspan x="700" y="240"><tspan fill="#5eead4">"id"</tspan>: <tspan fill="#fcd34d">42</tspan>,</tspan>
+      <tspan x="700" y="280"><tspan fill="#5eead4">"name"</tspan>: <tspan fill="#fca5a5">"An"</tspan>,</tspan>
+      <tspan x="700" y="320"><tspan fill="#5eead4">"orders"</tspan>: <tspan fill="#c4b5fd">"/users/42/orders"</tspan></tspan>
+      <tspan x="672" y="360" fill="#7dd3fc">}</tspan>
+    </text>
+  </g>
+  <g filter="url(#sh)"><rect x="640" y="450" width="96" height="46" rx="23.0" fill="#2563eb"/><text x="688" y="480" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#fff">GET</text></g>
+  <g filter="url(#sh)"><rect x="748" y="450" width="110" height="46" rx="23.0" fill="#16a34a"/><text x="803" y="480" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#fff">POST</text></g>
+  <g filter="url(#sh)"><rect x="870" y="450" width="96" height="46" rx="23.0" fill="#d97706"/><text x="918" y="480" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#fff">PUT</text></g>
+  <g filter="url(#sh)"><rect x="978" y="450" width="132" height="46" rx="23.0" fill="#dc2626"/><text x="1044" y="480" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#fff">DELETE</text></g>
+  <g filter="url(#sh)"><rect x="640" y="520" width="172" height="46" rx="23.0" fill="#ffffff"/><text x="726" y="550" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#0f766e">201 Created</text></g>
+  <g filter="url(#sh)"><rect x="840" y="520" width="90" height="46" rx="23.0" fill="#ffffff"/><text x="885" y="550" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#b91c1c">422</text></g>
+  <g filter="url(#sh)"><rect x="942" y="520" width="90" height="46" rx="23.0" fill="#ffffff"/><text x="987" y="550" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="20" font-weight="700" fill="#b45309">429</text></g>
+
+</svg>

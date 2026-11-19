@@ -1,0 +1,66 @@
+name: Tech Radar bot
+
+on:
+  schedule:
+    # Every Monday 15:17 UTC (07:17 Pacific)
+    - cron: '17 15 * * 1'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'How many days back to look'
+        required: false
+        default: '7'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tech-radar
+  cancel-in-progress: false
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Find new technologies and write the post
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: add this repository secret to get Gemini-written bilingual summaries.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Optional: pin a model with a repository variable (default: gemini-flash-latest).
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: node scripts/tech-radar/index.mjs --days=${{ inputs.days || 7 }}
+
+      - name: Validate content
+        run: node scripts/validate-content.mjs
+
+      - name: Commit the new post
+        id: commit
+        run: |
+          git config user.name "tech-radar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/content scripts/tech-radar/seen.json
+          if git diff --cached --quiet; then
+            echo "Nothing new this week."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore(radar): Tech Radar $(date -u +%F)"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  # Pushes made with GITHUB_TOKEN don't trigger other workflows, so deploy explicitly.
+  deploy:
+    needs: radar
+    if: needs.radar.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml

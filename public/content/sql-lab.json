@@ -1,0 +1,215 @@
+{
+  "schema": "-- E-commerce demo database (SQLite)\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL UNIQUE,\n  city TEXT NOT NULL,\n  created_at TEXT NOT NULL\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price REAL NOT NULL CHECK (price >= 0),\n  stock INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER NOT NULL REFERENCES customers(id),\n  status TEXT NOT NULL CHECK (status IN ('pending','paid','shipped','cancelled')),\n  created_at TEXT NOT NULL\n);\nCREATE TABLE order_items (\n  id INTEGER PRIMARY KEY,\n  order_id INTEGER NOT NULL REFERENCES orders(id),\n  product_id INTEGER NOT NULL REFERENCES products(id),\n  quantity INTEGER NOT NULL CHECK (quantity > 0),\n  unit_price REAL NOT NULL\n);\nINSERT INTO customers VALUES\n (1,'Nguyen Van An','an.nguyen@gmail.com','Ho Chi Minh City','2025-01-15'),\n (2,'Tran Thi Binh','binh.tran@yahoo.com','Hanoi','2025-02-03'),\n (3,'Le Minh Chau','chau.le@gmail.com','Da Nang','2025-03-21'),\n (4,'Pham Quoc Dung','dung.pham@outlook.com','Hanoi','2025-05-10'),\n (5,'Emily Carter','emily.carter@gmail.com','Seattle','2025-06-01'),\n (6,'James Wilson','jwilson@company.io','San Francisco','2025-07-19'),\n (7,'Hoang Thu Ha','ha.hoang@gmail.com','Ho Chi Minh City','2025-08-30'),\n (8,'Sophia Martinez','sophia.m@outlook.com','Seattle','2025-09-12');\nINSERT INTO products VALUES\n (1,'Mechanical Keyboard','Accessories',89.00,25),\n (2,'Wireless Mouse','Accessories',29.50,60),\n (3,'27-inch 4K Monitor','Displays',329.00,12),\n (4,'USB-C Hub','Accessories',45.00,40),\n (5,'Laptop Stand','Accessories',39.90,30),\n (6,'Noise-Cancelling Headphones','Audio',199.00,18),\n (7,'Webcam 1080p','Video',59.00,22),\n (8,'Portable SSD 1TB','Storage',119.00,35),\n (9,'LED Desk Lamp','Office',34.00,50),\n (10,'Ergonomic Chair','Office',289.00,8);\nINSERT INTO orders VALUES\n (1,1,'shipped','2026-08-02'),\n (2,2,'paid','2026-08-15'),\n (3,1,'paid','2026-09-01'),\n (4,3,'shipped','2026-09-05'),\n (5,5,'cancelled','2026-09-12'),\n (6,6,'shipped','2026-09-20'),\n (7,2,'shipped','2026-10-03'),\n (8,7,'pending','2026-10-08'),\n (9,5,'paid','2026-10-15'),\n (10,1,'shipped','2026-10-22'),\n (11,6,'paid','2026-11-02'),\n (12,3,'pending','2026-11-10');\nINSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES\n (1,1,1,89.00),(1,2,2,29.50),\n (2,3,1,329.00),\n (3,8,2,119.00),(3,4,1,45.00),\n (4,6,1,199.00),\n (5,10,1,289.00),(5,9,1,34.00),\n (6,3,2,329.00),(6,7,1,59.00),\n (7,5,1,39.90),(7,9,2,34.00),\n (8,2,1,29.50),\n (9,6,1,199.00),(9,8,1,119.00),\n (10,10,1,289.00),\n (11,1,1,89.00),(11,4,2,45.00),(11,2,1,29.50),\n (12,7,1,59.00);\n",
+  "exercises": [
+    {
+      "id": "select-basics",
+      "level": 1,
+      "title": {
+        "vi": "SELECT & WHERE cơ bản",
+        "en": "SELECT & WHERE basics"
+      },
+      "prompt": {
+        "vi": "Lấy tên (name) và giá (price) của các sản phẩm có giá lớn hơn 50, sắp xếp giá giảm dần.",
+        "en": "Return the name and price of products priced above 50, sorted by price descending."
+      },
+      "hint": {
+        "vi": "SELECT name, price FROM products WHERE ... ORDER BY price DESC",
+        "en": "SELECT name, price FROM products WHERE ... ORDER BY price DESC"
+      },
+      "solution": "SELECT name, price\nFROM products\nWHERE price > 50\nORDER BY price DESC;",
+      "ordered": true
+    },
+    {
+      "id": "like-filter",
+      "level": 1,
+      "title": {
+        "vi": "Lọc chuỗi với LIKE",
+        "en": "String filtering with LIKE"
+      },
+      "prompt": {
+        "vi": "Tìm tên và email của các khách hàng dùng Gmail (email kết thúc bằng '@gmail.com').",
+        "en": "Find the name and email of customers using Gmail (email ends with '@gmail.com')."
+      },
+      "hint": {
+        "vi": "Ký tự % khớp với chuỗi bất kỳ: LIKE '%@gmail.com'",
+        "en": "% matches any sequence of characters: LIKE '%@gmail.com'"
+      },
+      "solution": "SELECT name, email\nFROM customers\nWHERE email LIKE '%@gmail.com';"
+    },
+    {
+      "id": "group-count",
+      "level": 1,
+      "title": {
+        "vi": "Đếm theo nhóm (GROUP BY)",
+        "en": "Counting with GROUP BY"
+      },
+      "prompt": {
+        "vi": "Mỗi danh mục (category) có bao nhiêu sản phẩm? Trả về category và số lượng.",
+        "en": "How many products does each category have? Return category and the count."
+      },
+      "hint": {
+        "vi": "COUNT(*) kết hợp GROUP BY category",
+        "en": "Use COUNT(*) with GROUP BY category"
+      },
+      "solution": "SELECT category, COUNT(*) AS product_count\nFROM products\nGROUP BY category;"
+    },
+    {
+      "id": "inner-join",
+      "level": 2,
+      "title": {
+        "vi": "INNER JOIN hai bảng",
+        "en": "INNER JOIN two tables"
+      },
+      "prompt": {
+        "vi": "Liệt kê id đơn hàng, tên khách hàng và trạng thái của các đơn có trạng thái 'shipped'.",
+        "en": "List the order id, customer name and status of every order whose status is 'shipped'."
+      },
+      "hint": {
+        "vi": "JOIN customers c ON c.id = o.customer_id",
+        "en": "JOIN customers c ON c.id = o.customer_id"
+      },
+      "solution": "SELECT o.id, c.name, o.status\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'shipped';"
+    },
+    {
+      "id": "order-totals",
+      "level": 2,
+      "title": {
+        "vi": "Tính tổng tiền mỗi đơn",
+        "en": "Order totals"
+      },
+      "prompt": {
+        "vi": "Tính tổng tiền của từng đơn hàng (SUM(quantity * unit_price)). Trả về order_id và total, sắp xếp total giảm dần.",
+        "en": "Compute each order's total (SUM(quantity * unit_price)). Return order_id and total, sorted by total descending."
+      },
+      "hint": {
+        "vi": "GROUP BY order_id trên bảng order_items",
+        "en": "GROUP BY order_id on order_items"
+      },
+      "solution": "SELECT order_id, SUM(quantity * unit_price) AS total\nFROM order_items\nGROUP BY order_id\nORDER BY total DESC;",
+      "ordered": true
+    },
+    {
+      "id": "left-join-null",
+      "level": 2,
+      "title": {
+        "vi": "LEFT JOIN tìm dữ liệu thiếu",
+        "en": "LEFT JOIN to find missing data"
+      },
+      "prompt": {
+        "vi": "Tìm tên các khách hàng CHƯA từng đặt đơn hàng nào.",
+        "en": "Find the names of customers who have NEVER placed an order."
+      },
+      "hint": {
+        "vi": "LEFT JOIN orders rồi lọc WHERE o.id IS NULL",
+        "en": "LEFT JOIN orders, then filter WHERE o.id IS NULL"
+      },
+      "solution": "SELECT c.name\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nWHERE o.id IS NULL;"
+    },
+    {
+      "id": "having",
+      "level": 2,
+      "title": {
+        "vi": "Lọc nhóm với HAVING",
+        "en": "Filtering groups with HAVING"
+      },
+      "prompt": {
+        "vi": "Tìm khách hàng có từ 2 đơn hàng trở lên. Trả về tên và số đơn (order_count).",
+        "en": "Find customers with 2 or more orders. Return name and order_count."
+      },
+      "hint": {
+        "vi": "WHERE lọc dòng trước khi nhóm, HAVING lọc sau khi nhóm.",
+        "en": "WHERE filters rows before grouping; HAVING filters after."
+      },
+      "solution": "SELECT c.name, COUNT(o.id) AS order_count\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nGROUP BY c.id, c.name\nHAVING COUNT(o.id) >= 2;"
+    },
+    {
+      "id": "monthly-revenue",
+      "level": 2,
+      "title": {
+        "vi": "Doanh thu theo tháng",
+        "en": "Monthly revenue"
+      },
+      "prompt": {
+        "vi": "Tính doanh thu theo tháng (định dạng 'YYYY-MM'), chỉ tính đơn 'paid' hoặc 'shipped'. Trả về month và revenue, sắp xếp theo tháng tăng dần.",
+        "en": "Compute revenue per month (format 'YYYY-MM'), counting only 'paid' or 'shipped' orders. Return month and revenue, sorted by month ascending."
+      },
+      "hint": {
+        "vi": "strftime('%Y-%m', o.created_at) và status IN ('paid','shipped')",
+        "en": "strftime('%Y-%m', o.created_at) and status IN ('paid','shipped')"
+      },
+      "solution": "SELECT strftime('%Y-%m', o.created_at) AS month,\n       SUM(oi.quantity * oi.unit_price) AS revenue\nFROM orders o\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status IN ('paid', 'shipped')\nGROUP BY month\nORDER BY month;",
+      "ordered": true
+    },
+    {
+      "id": "top-products",
+      "level": 3,
+      "title": {
+        "vi": "Top 3 sản phẩm theo doanh thu",
+        "en": "Top 3 products by revenue"
+      },
+      "prompt": {
+        "vi": "Tìm 3 sản phẩm có doanh thu cao nhất (bỏ qua đơn 'cancelled'). Trả về tên sản phẩm và revenue, sắp xếp giảm dần.",
+        "en": "Find the 3 products with the highest revenue (ignore 'cancelled' orders). Return product name and revenue, descending."
+      },
+      "hint": {
+        "vi": "JOIN 3 bảng: order_items, orders, products. Dùng LIMIT 3.",
+        "en": "Join 3 tables: order_items, orders, products. Use LIMIT 3."
+      },
+      "solution": "SELECT p.name, SUM(oi.quantity * oi.unit_price) AS revenue\nFROM order_items oi\nJOIN orders o   ON o.id = oi.order_id\nJOIN products p ON p.id = oi.product_id\nWHERE o.status <> 'cancelled'\nGROUP BY p.id, p.name\nORDER BY revenue DESC\nLIMIT 3;",
+      "ordered": true
+    },
+    {
+      "id": "window-rank",
+      "level": 3,
+      "title": {
+        "vi": "Xếp hạng với Window Function",
+        "en": "Ranking with window functions"
+      },
+      "prompt": {
+        "vi": "Xếp hạng khách hàng theo tổng chi tiêu (chỉ đơn 'paid' hoặc 'shipped'). Trả về name, total_spent và spend_rank (dùng RANK()), sắp xếp theo hạng.",
+        "en": "Rank customers by total spending (only 'paid' or 'shipped' orders). Return name, total_spent and spend_rank (use RANK()), ordered by rank."
+      },
+      "hint": {
+        "vi": "RANK() OVER (ORDER BY SUM(...) DESC) có thể dùng cùng GROUP BY.",
+        "en": "RANK() OVER (ORDER BY SUM(...) DESC) works together with GROUP BY."
+      },
+      "solution": "SELECT c.name,\n       SUM(oi.quantity * oi.unit_price) AS total_spent,\n       RANK() OVER (ORDER BY SUM(oi.quantity * oi.unit_price) DESC) AS spend_rank\nFROM customers c\nJOIN orders o       ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status IN ('paid', 'shipped')\nGROUP BY c.id, c.name\nORDER BY spend_rank;",
+      "ordered": true
+    },
+    {
+      "id": "cancel-transaction",
+      "level": 3,
+      "title": {
+        "vi": "Transaction: hủy đơn & hoàn kho",
+        "en": "Transaction: cancel order & restock"
+      },
+      "prompt": {
+        "vi": "Đơn hàng #3 bị hủy. Trong MỘT transaction (BEGIN ... COMMIT):\n1) Đổi status của đơn #3 thành 'cancelled'.\n2) Cộng trả lại số lượng vào products.stock cho từng sản phẩm của đơn #3.\n\nCuối cùng chạy câu sau để kiểm tra:\nSELECT (SELECT status FROM orders WHERE id = 3) AS order_status, id, stock FROM products ORDER BY id;",
+        "en": "Order #3 was cancelled. In ONE transaction (BEGIN ... COMMIT):\n1) Set order #3's status to 'cancelled'.\n2) Add each item's quantity back to products.stock.\n\nFinally run this to verify:\nSELECT (SELECT status FROM orders WHERE id = 3) AS order_status, id, stock FROM products ORDER BY id;"
+      },
+      "hint": {
+        "vi": "UPDATE products SET stock = stock + (SELECT quantity FROM order_items WHERE order_id = 3 AND product_id = products.id) WHERE id IN (...)",
+        "en": "UPDATE products SET stock = stock + (SELECT quantity FROM order_items WHERE order_id = 3 AND product_id = products.id) WHERE id IN (...)"
+      },
+      "solution": "BEGIN;\nUPDATE orders SET status = 'cancelled' WHERE id = 3;\nUPDATE products\nSET stock = stock + (\n  SELECT SUM(quantity) FROM order_items\n  WHERE order_id = 3 AND product_id = products.id\n)\nWHERE id IN (SELECT product_id FROM order_items WHERE order_id = 3);\nCOMMIT;\n\nSELECT (SELECT status FROM orders WHERE id = 3) AS order_status, id, stock\nFROM products ORDER BY id;",
+      "ordered": true
+    },
+    {
+      "id": "index-plan",
+      "level": 3,
+      "title": {
+        "vi": "Index & EXPLAIN QUERY PLAN",
+        "en": "Indexes & EXPLAIN QUERY PLAN"
+      },
+      "prompt": {
+        "vi": "Truy vấn SELECT * FROM orders WHERE customer_id = 1 đang phải quét toàn bảng (SCAN).\n1) Tạo index tên idx_orders_customer_id trên orders(customer_id).\n2) Chạy EXPLAIN QUERY PLAN cho truy vấn trên và xác nhận nó dùng index (SEARCH ... USING INDEX).\n\nThử chạy EXPLAIN QUERY PLAN trước và sau khi tạo index để so sánh!",
+        "en": "SELECT * FROM orders WHERE customer_id = 1 currently does a full table SCAN.\n1) Create an index named idx_orders_customer_id on orders(customer_id).\n2) Run EXPLAIN QUERY PLAN for that query and confirm it now uses the index (SEARCH ... USING INDEX).\n\nTry EXPLAIN QUERY PLAN before and after creating the index to compare!"
+      },
+      "hint": {
+        "vi": "CREATE INDEX idx_orders_customer_id ON orders(customer_id);",
+        "en": "CREATE INDEX idx_orders_customer_id ON orders(customer_id);"
+      },
+      "solution": "CREATE INDEX idx_orders_customer_id ON orders(customer_id);\nEXPLAIN QUERY PLAN\nSELECT * FROM orders WHERE customer_id = 1;"
+    }
+  ]
+}

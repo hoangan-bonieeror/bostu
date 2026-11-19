@@ -1,0 +1,409 @@
+[
+  {
+    "id": "http",
+    "icon": "🌐",
+    "level": "foundation",
+    "title": {
+      "vi": "HTTP & Web",
+      "en": "HTTP & the Web"
+    },
+    "desc": {
+      "vi": "Cách client và server nói chuyện: request, response, status code, header.",
+      "en": "How clients and servers talk: requests, responses, status codes, headers."
+    },
+    "topics": [
+      {
+        "vi": "Method & status code",
+        "en": "Methods & status codes"
+      },
+      {
+        "vi": "Header, cookie",
+        "en": "Headers, cookies"
+      },
+      {
+        "vi": "DNS, TLS/HTTPS",
+        "en": "DNS, TLS/HTTPS"
+      },
+      {
+        "vi": "CORS",
+        "en": "CORS"
+      }
+    ]
+  },
+  {
+    "id": "sql",
+    "icon": "🗄️",
+    "level": "foundation",
+    "title": {
+      "vi": "SQL",
+      "en": "SQL"
+    },
+    "desc": {
+      "vi": "Truy vấn dữ liệu quan hệ — kỹ năng dùng hằng ngày của backend.",
+      "en": "Querying relational data — a daily backend skill."
+    },
+    "topics": [
+      {
+        "vi": "SELECT, WHERE, ORDER BY",
+        "en": "SELECT, WHERE, ORDER BY"
+      },
+      {
+        "vi": "JOIN",
+        "en": "JOINs"
+      },
+      {
+        "vi": "GROUP BY, HAVING",
+        "en": "GROUP BY, HAVING"
+      },
+      {
+        "vi": "Window function",
+        "en": "Window functions"
+      }
+    ]
+  },
+  {
+    "id": "git-linux",
+    "icon": "🐧",
+    "level": "foundation",
+    "title": {
+      "vi": "Git & Linux CLI",
+      "en": "Git & Linux CLI"
+    },
+    "desc": {
+      "vi": "Làm việc với terminal, quản lý mã nguồn, quy trình pull request.",
+      "en": "Terminal fluency, version control, pull-request workflow."
+    },
+    "topics": [
+      {
+        "vi": "Branch, merge, rebase",
+        "en": "Branch, merge, rebase"
+      },
+      {
+        "vi": "Lệnh shell cơ bản",
+        "en": "Core shell commands"
+      },
+      {
+        "vi": "SSH, quyền file",
+        "en": "SSH, file permissions"
+      }
+    ]
+  },
+  {
+    "id": "rest-api",
+    "icon": "🔌",
+    "level": "core",
+    "title": {
+      "vi": "Thiết kế REST API",
+      "en": "REST API design"
+    },
+    "desc": {
+      "vi": "Thiết kế API dễ dùng, nhất quán, dễ mở rộng.",
+      "en": "Designing APIs that are consistent, predictable and evolvable."
+    },
+    "topics": [
+      {
+        "vi": "Resource & URL",
+        "en": "Resources & URLs"
+      },
+      {
+        "vi": "Phân trang, lọc",
+        "en": "Pagination, filtering"
+      },
+      {
+        "vi": "Versioning",
+        "en": "Versioning"
+      },
+      {
+        "vi": "Idempotency",
+        "en": "Idempotency"
+      },
+      {
+        "vi": "OpenAPI",
+        "en": "OpenAPI"
+      }
+    ]
+  },
+  {
+    "id": "db-design",
+    "icon": "🧱",
+    "level": "core",
+    "title": {
+      "vi": "Thiết kế CSDL",
+      "en": "Database design"
+    },
+    "desc": {
+      "vi": "Mô hình hóa dữ liệu, chuẩn hóa, index, transaction.",
+      "en": "Data modeling, normalization, indexes and transactions."
+    },
+    "topics": [
+      {
+        "vi": "Chuẩn hóa 1NF–3NF",
+        "en": "Normalization 1NF–3NF"
+      },
+      {
+        "vi": "Index B-tree",
+        "en": "B-tree indexes"
+      },
+      {
+        "vi": "ACID & isolation",
+        "en": "ACID & isolation"
+      },
+      {
+        "vi": "Vấn đề N+1",
+        "en": "The N+1 problem"
+      },
+      {
+        "vi": "Migration",
+        "en": "Migrations"
+      }
+    ]
+  },
+  {
+    "id": "auth",
+    "icon": "🔐",
+    "level": "core",
+    "title": {
+      "vi": "Xác thực & phân quyền",
+      "en": "Authentication & authorization"
+    },
+    "desc": {
+      "vi": "Ai đang gọi API và họ được phép làm gì.",
+      "en": "Who is calling your API and what they may do."
+    },
+    "topics": [
+      {
+        "vi": "Session & cookie",
+        "en": "Sessions & cookies"
+      },
+      {
+        "vi": "JWT",
+        "en": "JWT"
+      },
+      {
+        "vi": "OAuth 2.0 / OIDC",
+        "en": "OAuth 2.0 / OIDC"
+      },
+      {
+        "vi": "Hash mật khẩu",
+        "en": "Password hashing"
+      },
+      {
+        "vi": "RBAC",
+        "en": "RBAC"
+      }
+    ]
+  },
+  {
+    "id": "testing",
+    "icon": "🧪",
+    "level": "core",
+    "title": {
+      "vi": "Kiểm thử",
+      "en": "Testing"
+    },
+    "desc": {
+      "vi": "Viết test giúp tự tin khi refactor và deploy.",
+      "en": "Tests that let you refactor and deploy with confidence."
+    },
+    "topics": [
+      {
+        "vi": "Unit test",
+        "en": "Unit tests"
+      },
+      {
+        "vi": "Integration test",
+        "en": "Integration tests"
+      },
+      {
+        "vi": "Mock & fixture",
+        "en": "Mocks & fixtures"
+      },
+      {
+        "vi": "Test pyramid",
+        "en": "Test pyramid"
+      }
+    ]
+  },
+  {
+    "id": "docker",
+    "icon": "🐳",
+    "level": "core",
+    "title": {
+      "vi": "Docker & CI/CD",
+      "en": "Docker & CI/CD"
+    },
+    "desc": {
+      "vi": "Đóng gói ứng dụng và tự động hóa build, test, deploy.",
+      "en": "Package apps and automate build, test and deploy."
+    },
+    "topics": [
+      {
+        "vi": "Dockerfile",
+        "en": "Dockerfile"
+      },
+      {
+        "vi": "Docker Compose",
+        "en": "Docker Compose"
+      },
+      {
+        "vi": "GitHub Actions",
+        "en": "GitHub Actions"
+      },
+      {
+        "vi": "Biến môi trường & secret",
+        "en": "Env vars & secrets"
+      }
+    ]
+  },
+  {
+    "id": "caching",
+    "icon": "⚡",
+    "level": "advanced",
+    "title": {
+      "vi": "Caching & Redis",
+      "en": "Caching & Redis"
+    },
+    "desc": {
+      "vi": "Giảm độ trễ và tải cho database bằng bộ nhớ đệm.",
+      "en": "Cut latency and database load with caching."
+    },
+    "topics": [
+      {
+        "vi": "Cache-aside",
+        "en": "Cache-aside"
+      },
+      {
+        "vi": "TTL & invalidation",
+        "en": "TTL & invalidation"
+      },
+      {
+        "vi": "HTTP cache",
+        "en": "HTTP caching"
+      },
+      {
+        "vi": "Rate limiting",
+        "en": "Rate limiting"
+      }
+    ]
+  },
+  {
+    "id": "messaging",
+    "icon": "📨",
+    "level": "advanced",
+    "title": {
+      "vi": "Hàng đợi & xử lý nền",
+      "en": "Queues & background jobs"
+    },
+    "desc": {
+      "vi": "Xử lý bất đồng bộ, tách rời các service.",
+      "en": "Asynchronous processing and decoupled services."
+    },
+    "topics": [
+      {
+        "vi": "Message queue",
+        "en": "Message queues"
+      },
+      {
+        "vi": "Pub/Sub",
+        "en": "Pub/Sub"
+      },
+      {
+        "vi": "Retry & dead-letter",
+        "en": "Retries & dead-letter"
+      },
+      {
+        "vi": "Celery, RabbitMQ, Kafka",
+        "en": "Celery, RabbitMQ, Kafka"
+      }
+    ]
+  },
+  {
+    "id": "security",
+    "icon": "🛡️",
+    "level": "advanced",
+    "title": {
+      "vi": "Bảo mật Web",
+      "en": "Web security"
+    },
+    "desc": {
+      "vi": "Phòng tránh các lỗ hổng phổ biến theo OWASP Top 10.",
+      "en": "Defend against common flaws from the OWASP Top 10."
+    },
+    "topics": [
+      {
+        "vi": "SQL injection",
+        "en": "SQL injection"
+      },
+      {
+        "vi": "XSS, CSRF",
+        "en": "XSS, CSRF"
+      },
+      {
+        "vi": "Quản lý secret",
+        "en": "Secret management"
+      },
+      {
+        "vi": "Least privilege",
+        "en": "Least privilege"
+      }
+    ]
+  },
+  {
+    "id": "system-design",
+    "icon": "🏗️",
+    "level": "advanced",
+    "title": {
+      "vi": "System design",
+      "en": "System design"
+    },
+    "desc": {
+      "vi": "Thiết kế hệ thống chịu tải lớn, sẵn sàng cao.",
+      "en": "Designing scalable, highly available systems."
+    },
+    "topics": [
+      {
+        "vi": "Scale ngang/dọc",
+        "en": "Horizontal vs vertical scaling"
+      },
+      {
+        "vi": "Load balancer",
+        "en": "Load balancers"
+      },
+      {
+        "vi": "Replication & sharding",
+        "en": "Replication & sharding"
+      },
+      {
+        "vi": "CAP",
+        "en": "CAP theorem"
+      }
+    ]
+  },
+  {
+    "id": "tech-radar",
+    "icon": "📡",
+    "level": "trends",
+    "title": {
+      "vi": "Tech Radar",
+      "en": "Tech Radar"
+    },
+    "desc": {
+      "vi": "Tổng hợp tự động các công nghệ, công cụ và kỹ thuật mới mỗi tuần.",
+      "en": "Weekly auto-compiled digest of new technologies, tools and techniques."
+    },
+    "topics": [
+      {
+        "vi": "Xu hướng",
+        "en": "Trends"
+      },
+      {
+        "vi": "Bản phát hành mới",
+        "en": "New releases"
+      },
+      {
+        "vi": "Repo nổi bật",
+        "en": "Rising repos"
+      }
+    ]
+  }
+]

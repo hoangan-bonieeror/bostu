@@ -1,0 +1,17 @@
+{
+  "updated": "2026-11-18",
+  "urls": [
+    "https://github.com/agentes-chat/agentes-chat",
+    "https://github.com/yjid/kensaku",
+    "https://github.com/AbhiKamane/ai-app-builder-open",
+    "https://github.com/astral-sh/ruff/releases/tag/0.17.5",
+    "https://github.com/grafana/k6/releases/tag/v2.4.0",
+    "https://github.com/fastapi/fastapi/releases/tag/0.165.0",
+    "https://github.com/sqlalchemy/sqlalchemy/releases/tag/rel_2_1_9",
+    "https://github.com/nestjs/nest/releases/tag/v12.5.1",
+    "https://github.com/honojs/hono/releases/tag/v4.13.19",
+    "https://github.com/valkey-io/valkey/releases/tag/9.1.4",
+    "https://github.com/docker/compose/releases/tag/v5.8.0",
+    "https://github.com/emanuele-em/kanzo"
+  ]
+}

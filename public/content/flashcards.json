@@ -1,0 +1,530 @@
+[
+  {
+    "id": "http-01",
+    "skill": "http",
+    "front": {
+      "vi": "Khác nhau giữa 401 và 403?",
+      "en": "401 vs 403 — what's the difference?"
+    },
+    "back": {
+      "vi": "401 Unauthorized: chưa xác thực (thiếu/sai token).\n403 Forbidden: đã biết bạn là ai nhưng không có quyền.",
+      "en": "401 Unauthorized: not authenticated (missing/invalid credentials).\n403 Forbidden: identity is known but lacks permission."
+    }
+  },
+  {
+    "id": "http-02",
+    "skill": "http",
+    "front": {
+      "vi": "Method nào là idempotent?",
+      "en": "Which HTTP methods are idempotent?"
+    },
+    "back": {
+      "vi": "GET, HEAD, PUT, DELETE, OPTIONS. Gọi nhiều lần cho cùng kết quả trên server. POST và PATCH thì không đảm bảo.",
+      "en": "GET, HEAD, PUT, DELETE, OPTIONS — repeating them leaves the server in the same state. POST and PATCH are not guaranteed to be."
+    }
+  },
+  {
+    "id": "http-03",
+    "skill": "http",
+    "front": {
+      "vi": "Method 'safe' nghĩa là gì?",
+      "en": "What does a 'safe' method mean?"
+    },
+    "back": {
+      "vi": "Không làm thay đổi dữ liệu trên server (chỉ đọc): GET, HEAD, OPTIONS.",
+      "en": "It does not change server state (read-only): GET, HEAD, OPTIONS."
+    }
+  },
+  {
+    "id": "http-04",
+    "skill": "http",
+    "front": {
+      "vi": "Nhóm status code 2xx, 3xx, 4xx, 5xx?",
+      "en": "Status code classes 2xx–5xx?"
+    },
+    "back": {
+      "vi": "2xx thành công · 3xx chuyển hướng · 4xx lỗi phía client · 5xx lỗi phía server.",
+      "en": "2xx success · 3xx redirection · 4xx client error · 5xx server error."
+    }
+  },
+  {
+    "id": "http-05",
+    "skill": "http",
+    "front": {
+      "vi": "CORS là gì?",
+      "en": "What is CORS?"
+    },
+    "back": {
+      "vi": "Cơ chế trình duyệt cho phép trang ở origin A gọi API ở origin B nếu server B trả header Access-Control-Allow-Origin phù hợp. Là bảo vệ của trình duyệt, không phải của server.",
+      "en": "A browser mechanism letting a page on origin A call an API on origin B when B replies with a suitable Access-Control-Allow-Origin header. It protects browsers, not servers."
+    }
+  },
+  {
+    "id": "http-06",
+    "skill": "http",
+    "front": {
+      "vi": "Preflight request là gì?",
+      "en": "What is a preflight request?"
+    },
+    "back": {
+      "vi": "Request OPTIONS trình duyệt tự gửi trước một request CORS 'không đơn giản' (vd: có header Authorization, method PUT) để hỏi server có cho phép không.",
+      "en": "An OPTIONS request the browser sends before a non-simple CORS request (e.g. Authorization header, PUT) to ask whether it is allowed."
+    }
+  },
+  {
+    "id": "http-07",
+    "skill": "http",
+    "front": {
+      "vi": "HTTPS bảo vệ điều gì?",
+      "en": "What does HTTPS protect?"
+    },
+    "back": {
+      "vi": "Mã hóa dữ liệu trên đường truyền (TLS), chống nghe lén và sửa đổi, đồng thời xác minh danh tính server qua chứng chỉ.",
+      "en": "Encrypts data in transit (TLS), prevents eavesdropping and tampering, and verifies the server's identity via its certificate."
+    }
+  },
+  {
+    "id": "rest-api-01",
+    "skill": "rest-api",
+    "front": {
+      "vi": "Đặt tên endpoint REST thế nào cho đúng?",
+      "en": "How should REST endpoints be named?"
+    },
+    "back": {
+      "vi": "Dùng danh từ số nhiều cho resource, động từ nằm ở HTTP method: GET /users/42/orders, không phải /getOrdersOfUser?id=42.",
+      "en": "Plural nouns for resources; the verb is the HTTP method: GET /users/42/orders, not /getOrdersOfUser?id=42."
+    }
+  },
+  {
+    "id": "rest-api-02",
+    "skill": "rest-api",
+    "front": {
+      "vi": "POST tạo resource thành công nên trả gì?",
+      "en": "What should a successful create (POST) return?"
+    },
+    "back": {
+      "vi": "201 Created, header Location trỏ tới resource mới, và (thường) body là resource vừa tạo.",
+      "en": "201 Created, a Location header pointing to the new resource, and usually the created resource in the body."
+    }
+  },
+  {
+    "id": "rest-api-03",
+    "skill": "rest-api",
+    "front": {
+      "vi": "PUT khác PATCH?",
+      "en": "PUT vs PATCH?"
+    },
+    "back": {
+      "vi": "PUT thay thế toàn bộ resource (idempotent). PATCH cập nhật một phần.",
+      "en": "PUT replaces the whole resource (idempotent). PATCH applies a partial update."
+    }
+  },
+  {
+    "id": "rest-api-04",
+    "skill": "rest-api",
+    "front": {
+      "vi": "Offset pagination vs cursor pagination?",
+      "en": "Offset vs cursor pagination?"
+    },
+    "back": {
+      "vi": "Offset (?page=3) dễ làm nhưng chậm với offset lớn và lệch khi dữ liệu thay đổi. Cursor (?after=id_123) ổn định và nhanh, hợp cho feed/danh sách lớn.",
+      "en": "Offset (?page=3) is simple but slow for large offsets and shifts when data changes. Cursor (?after=id_123) is stable and fast — good for feeds and large lists."
+    }
+  },
+  {
+    "id": "rest-api-05",
+    "skill": "rest-api",
+    "front": {
+      "vi": "Idempotency key dùng để làm gì?",
+      "en": "What is an idempotency key for?"
+    },
+    "back": {
+      "vi": "Client gửi kèm một key duy nhất (header Idempotency-Key) để server không xử lý trùng khi request bị gửi lại, ví dụ thanh toán.",
+      "en": "The client sends a unique key (Idempotency-Key header) so the server won't process a retried request twice — e.g. payments."
+    }
+  },
+  {
+    "id": "rest-api-06",
+    "skill": "rest-api",
+    "front": {
+      "vi": "Status 422 dùng khi nào?",
+      "en": "When to use 422?"
+    },
+    "back": {
+      "vi": "Request đúng cú pháp nhưng dữ liệu không hợp lệ về nghiệp vụ (vd: email sai định dạng). 400 dùng cho request hỏng/không parse được.",
+      "en": "The request is well-formed but semantically invalid (e.g. bad email format). 400 is for malformed/unparseable requests."
+    }
+  },
+  {
+    "id": "rest-api-07",
+    "skill": "rest-api",
+    "front": {
+      "vi": "Các cách versioning API?",
+      "en": "Ways to version an API?"
+    },
+    "back": {
+      "vi": "URL (/v1/users) — phổ biến, rõ ràng; header (Accept: application/vnd.app.v2+json); query (?version=2). Quan trọng nhất: không phá vỡ client cũ.",
+      "en": "URL (/v1/users) — common and explicit; header (Accept: application/vnd.app.v2+json); query (?version=2). The key rule: don't break existing clients."
+    }
+  },
+  {
+    "id": "sql-01",
+    "skill": "sql",
+    "front": {
+      "vi": "Thứ tự thực thi logic của câu SELECT?",
+      "en": "Logical execution order of a SELECT?"
+    },
+    "back": {
+      "vi": "FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT.",
+      "en": "FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT."
+    }
+  },
+  {
+    "id": "sql-02",
+    "skill": "sql",
+    "front": {
+      "vi": "WHERE khác HAVING?",
+      "en": "WHERE vs HAVING?"
+    },
+    "back": {
+      "vi": "WHERE lọc từng dòng trước khi gom nhóm; HAVING lọc các nhóm sau GROUP BY (dùng được hàm tổng hợp).",
+      "en": "WHERE filters rows before grouping; HAVING filters groups after GROUP BY (can use aggregates)."
+    }
+  },
+  {
+    "id": "sql-03",
+    "skill": "sql",
+    "front": {
+      "vi": "INNER JOIN vs LEFT JOIN?",
+      "en": "INNER JOIN vs LEFT JOIN?"
+    },
+    "back": {
+      "vi": "INNER chỉ giữ dòng khớp ở cả hai bảng. LEFT giữ mọi dòng bảng trái, cột bảng phải là NULL nếu không khớp.",
+      "en": "INNER keeps only matching rows. LEFT keeps every left-table row, with NULLs where the right side has no match."
+    }
+  },
+  {
+    "id": "sql-04",
+    "skill": "sql",
+    "front": {
+      "vi": "Vì sao không dùng = NULL?",
+      "en": "Why not compare with = NULL?"
+    },
+    "back": {
+      "vi": "NULL nghĩa là 'không biết', mọi phép so sánh với NULL đều ra UNKNOWN. Phải dùng IS NULL / IS NOT NULL.",
+      "en": "NULL means 'unknown'; any comparison with it yields UNKNOWN. Use IS NULL / IS NOT NULL."
+    }
+  },
+  {
+    "id": "sql-05",
+    "skill": "sql",
+    "front": {
+      "vi": "COUNT(*) khác COUNT(cột)?",
+      "en": "COUNT(*) vs COUNT(column)?"
+    },
+    "back": {
+      "vi": "COUNT(*) đếm mọi dòng. COUNT(cột) bỏ qua các giá trị NULL của cột đó.",
+      "en": "COUNT(*) counts all rows. COUNT(column) skips NULLs in that column."
+    }
+  },
+  {
+    "id": "sql-06",
+    "skill": "sql",
+    "front": {
+      "vi": "Window function khác GROUP BY thế nào?",
+      "en": "How do window functions differ from GROUP BY?"
+    },
+    "back": {
+      "vi": "GROUP BY gộp nhiều dòng thành một. Window function (OVER ...) tính toán trên nhóm nhưng vẫn giữ nguyên từng dòng — dùng cho rank, running total.",
+      "en": "GROUP BY collapses rows. Window functions (OVER ...) compute across a set but keep every row — great for ranks and running totals."
+    }
+  },
+  {
+    "id": "sql-07",
+    "skill": "sql",
+    "front": {
+      "vi": "RANK vs DENSE_RANK vs ROW_NUMBER?",
+      "en": "RANK vs DENSE_RANK vs ROW_NUMBER?"
+    },
+    "back": {
+      "vi": "Với điểm 100,100,90: ROW_NUMBER = 1,2,3 · RANK = 1,1,3 · DENSE_RANK = 1,1,2.",
+      "en": "For scores 100,100,90: ROW_NUMBER = 1,2,3 · RANK = 1,1,3 · DENSE_RANK = 1,1,2."
+    }
+  },
+  {
+    "id": "db-design-01",
+    "skill": "db-design",
+    "front": {
+      "vi": "ACID là gì?",
+      "en": "What is ACID?"
+    },
+    "back": {
+      "vi": "Atomicity (tất cả hoặc không gì cả) · Consistency (luôn thỏa ràng buộc) · Isolation (transaction không giẫm chân nhau) · Durability (đã commit thì không mất).",
+      "en": "Atomicity (all or nothing) · Consistency (constraints always hold) · Isolation (transactions don't interfere) · Durability (committed data survives crashes)."
+    }
+  },
+  {
+    "id": "db-design-02",
+    "skill": "db-design",
+    "front": {
+      "vi": "Index B-tree giúp gì và đánh đổi gì?",
+      "en": "What do B-tree indexes give and cost?"
+    },
+    "back": {
+      "vi": "Tìm kiếm/sắp xếp nhanh O(log n) thay vì quét toàn bảng. Đổi lại: tốn dung lượng và làm INSERT/UPDATE chậm hơn.",
+      "en": "Fast O(log n) lookups and ordering instead of full scans. Cost: extra storage and slower INSERT/UPDATE."
+    }
+  },
+  {
+    "id": "db-design-03",
+    "skill": "db-design",
+    "front": {
+      "vi": "Composite index (a, b) dùng được cho query nào?",
+      "en": "Which queries can use a composite index (a, b)?"
+    },
+    "back": {
+      "vi": "WHERE a = ? và WHERE a = ? AND b = ? (quy tắc leftmost prefix). Chỉ WHERE b = ? thì thường KHÔNG dùng được.",
+      "en": "WHERE a = ? and WHERE a = ? AND b = ? (leftmost-prefix rule). WHERE b = ? alone usually can NOT use it."
+    }
+  },
+  {
+    "id": "db-design-04",
+    "skill": "db-design",
+    "front": {
+      "vi": "Vấn đề N+1 query là gì?",
+      "en": "What is the N+1 query problem?"
+    },
+    "back": {
+      "vi": "Lấy 1 query cho danh sách N bản ghi, rồi thêm N query cho dữ liệu liên quan của từng bản ghi. Sửa bằng JOIN hoặc eager loading (select_related / joinedload / IN (...)).",
+      "en": "One query for N rows, then N more queries for each row's related data. Fix with a JOIN or eager loading (select_related / joinedload / IN (...))."
+    }
+  },
+  {
+    "id": "db-design-05",
+    "skill": "db-design",
+    "front": {
+      "vi": "Các mức isolation phổ biến?",
+      "en": "Common isolation levels?"
+    },
+    "back": {
+      "vi": "Read Uncommitted → Read Committed (mặc định Postgres) → Repeatable Read (mặc định MySQL InnoDB) → Serializable. Càng cao càng an toàn, càng ít song song.",
+      "en": "Read Uncommitted → Read Committed (Postgres default) → Repeatable Read (MySQL InnoDB default) → Serializable. Higher = safer but less concurrency."
+    }
+  },
+  {
+    "id": "db-design-06",
+    "skill": "db-design",
+    "front": {
+      "vi": "Chuẩn hóa 3NF nói gì?",
+      "en": "What does 3NF say?"
+    },
+    "back": {
+      "vi": "Mỗi cột không phải khóa chỉ phụ thuộc vào khóa chính — không phụ thuộc vào cột không-khóa khác. Giảm dư thừa và lỗi cập nhật.",
+      "en": "Every non-key column depends only on the key — not on other non-key columns. Reduces redundancy and update anomalies."
+    }
+  },
+  {
+    "id": "auth-01",
+    "skill": "auth",
+    "front": {
+      "vi": "Authentication vs Authorization?",
+      "en": "Authentication vs authorization?"
+    },
+    "back": {
+      "vi": "Authentication: bạn là ai (đăng nhập). Authorization: bạn được làm gì (quyền).",
+      "en": "Authentication: who you are (login). Authorization: what you're allowed to do (permissions)."
+    }
+  },
+  {
+    "id": "auth-02",
+    "skill": "auth",
+    "front": {
+      "vi": "JWT gồm những phần nào?",
+      "en": "What are the parts of a JWT?"
+    },
+    "back": {
+      "vi": "header.payload.signature (Base64URL). Payload KHÔNG được mã hóa — ai cũng đọc được, chữ ký chỉ chống sửa đổi.",
+      "en": "header.payload.signature (Base64URL). The payload is NOT encrypted — anyone can read it; the signature only prevents tampering."
+    }
+  },
+  {
+    "id": "auth-03",
+    "skill": "auth",
+    "front": {
+      "vi": "Nhược điểm lớn của JWT stateless?",
+      "en": "Main downside of stateless JWTs?"
+    },
+    "back": {
+      "vi": "Khó thu hồi trước khi hết hạn. Giải pháp: access token ngắn hạn (5–15 phút) + refresh token lưu server có thể thu hồi.",
+      "en": "Hard to revoke before expiry. Fix: short-lived access tokens (5–15 min) + revocable server-side refresh tokens."
+    }
+  },
+  {
+    "id": "auth-04",
+    "skill": "auth",
+    "front": {
+      "vi": "Lưu mật khẩu thế nào?",
+      "en": "How should passwords be stored?"
+    },
+    "back": {
+      "vi": "Không bao giờ lưu plaintext hay hash nhanh (MD5/SHA-256). Dùng hàm chậm có salt: Argon2id, bcrypt hoặc scrypt.",
+      "en": "Never plaintext or fast hashes (MD5/SHA-256). Use a slow salted function: Argon2id, bcrypt or scrypt."
+    }
+  },
+  {
+    "id": "auth-05",
+    "skill": "auth",
+    "front": {
+      "vi": "Cookie an toàn cần cờ gì?",
+      "en": "Which flags make a cookie safer?"
+    },
+    "back": {
+      "vi": "HttpOnly (JS không đọc được), Secure (chỉ qua HTTPS), SameSite=Lax/Strict (giảm CSRF).",
+      "en": "HttpOnly (no JS access), Secure (HTTPS only), SameSite=Lax/Strict (mitigates CSRF)."
+    }
+  },
+  {
+    "id": "auth-06",
+    "skill": "auth",
+    "front": {
+      "vi": "OAuth 2.0 Authorization Code + PKCE dùng khi nào?",
+      "en": "When to use OAuth 2.0 Authorization Code + PKCE?"
+    },
+    "back": {
+      "vi": "Khi app (SPA, mobile, web) cần đăng nhập/truy cập thay mặt người dùng qua bên thứ ba (Google, GitHub). PKCE chống đánh cắp authorization code.",
+      "en": "When an app (SPA, mobile, web) signs users in or acts on their behalf via a provider (Google, GitHub). PKCE prevents authorization-code theft."
+    }
+  },
+  {
+    "id": "caching-01",
+    "skill": "caching",
+    "front": {
+      "vi": "Cache-aside hoạt động thế nào?",
+      "en": "How does cache-aside work?"
+    },
+    "back": {
+      "vi": "Đọc cache → miss thì đọc DB → ghi vào cache kèm TTL → trả về. Khi ghi dữ liệu: cập nhật DB rồi xóa key cache.",
+      "en": "Read cache → on miss read the DB → store in cache with a TTL → return. On write: update the DB, then delete the cache key."
+    }
+  },
+  {
+    "id": "caching-02",
+    "skill": "caching",
+    "front": {
+      "vi": "Cache stampede là gì?",
+      "en": "What is a cache stampede?"
+    },
+    "back": {
+      "vi": "Key nóng hết hạn, hàng nghìn request cùng miss và đập vào DB. Chống bằng lock/single-flight, TTL ngẫu nhiên (jitter), hoặc làm mới sớm.",
+      "en": "A hot key expires and thousands of requests miss at once, hammering the DB. Prevent with locking/single-flight, TTL jitter, or early refresh."
+    }
+  },
+  {
+    "id": "caching-03",
+    "skill": "caching",
+    "front": {
+      "vi": "Hai bài toán khó nhất của khoa học máy tính?",
+      "en": "The two hard things in computer science?"
+    },
+    "back": {
+      "vi": "Cache invalidation và đặt tên (và lỗi off-by-one 😄). Ý chính: luôn có chiến lược làm mất hiệu lực cache rõ ràng.",
+      "en": "Cache invalidation and naming things (and off-by-one errors 😄). Point: always have an explicit invalidation strategy."
+    }
+  },
+  {
+    "id": "caching-04",
+    "skill": "caching",
+    "front": {
+      "vi": "Rate limiting bằng Redis làm thế nào?",
+      "en": "How to rate-limit with Redis?"
+    },
+    "back": {
+      "vi": "Fixed window: INCR key theo user+phút, EXPIRE 60s, vượt ngưỡng trả 429. Chính xác hơn: sliding window hoặc token bucket.",
+      "en": "Fixed window: INCR a per-user-per-minute key, EXPIRE 60s, return 429 over the limit. More precise: sliding window or token bucket."
+    }
+  },
+  {
+    "id": "security-01",
+    "skill": "security",
+    "front": {
+      "vi": "Chống SQL injection thế nào?",
+      "en": "How do you prevent SQL injection?"
+    },
+    "back": {
+      "vi": "Luôn dùng parameterized query / prepared statement (hoặc ORM). Không bao giờ nối chuỗi input người dùng vào câu SQL.",
+      "en": "Always use parameterized queries / prepared statements (or an ORM). Never concatenate user input into SQL."
+    }
+  },
+  {
+    "id": "security-02",
+    "skill": "security",
+    "front": {
+      "vi": "XSS là gì?",
+      "en": "What is XSS?"
+    },
+    "back": {
+      "vi": "Kẻ tấn công chèn script vào trang để chạy trên trình duyệt nạn nhân. Chống: escape output, Content-Security-Policy, cookie HttpOnly.",
+      "en": "An attacker injects script that runs in victims' browsers. Defend with output escaping, Content-Security-Policy, HttpOnly cookies."
+    }
+  },
+  {
+    "id": "security-03",
+    "skill": "security",
+    "front": {
+      "vi": "CSRF là gì?",
+      "en": "What is CSRF?"
+    },
+    "back": {
+      "vi": "Trang độc hại khiến trình duyệt của bạn gửi request kèm cookie đăng nhập tới site khác. Chống: SameSite cookie, CSRF token.",
+      "en": "A malicious page makes your browser send a request, with your login cookie, to another site. Defend with SameSite cookies and CSRF tokens."
+    }
+  },
+  {
+    "id": "docker-01",
+    "skill": "docker",
+    "front": {
+      "vi": "Image khác container?",
+      "en": "Image vs container?"
+    },
+    "back": {
+      "vi": "Image là bản mẫu chỉ-đọc (như class). Container là một instance đang chạy của image (như object).",
+      "en": "An image is a read-only template (like a class). A container is a running instance of it (like an object)."
+    }
+  },
+  {
+    "id": "docker-02",
+    "skill": "docker",
+    "front": {
+      "vi": "Vì sao COPY requirements.txt trước khi COPY code?",
+      "en": "Why COPY requirements.txt before the code?"
+    },
+    "back": {
+      "vi": "Tận dụng layer cache: dependency ít đổi nên bước pip install được cache, sửa code không phải cài lại.",
+      "en": "Layer caching: dependencies change rarely, so the pip install layer stays cached when only code changes."
+    }
+  },
+  {
+    "id": "messaging-01",
+    "skill": "messaging",
+    "front": {
+      "vi": "Khi nào nên đưa việc vào background job?",
+      "en": "When should work go to a background job?"
+    },
+    "back": {
+      "vi": "Khi tác vụ chậm hoặc không cần trả kết quả ngay: gửi email, xử lý ảnh, gọi API bên thứ ba, tạo báo cáo. API trả 202 Accepted.",
+      "en": "When work is slow or needn't finish before responding: emails, image processing, third-party calls, reports. The API returns 202 Accepted."
+    }
+  },
+  {
+    "id": "messaging-02",
+    "skill": "messaging",
+    "front": {
+      "vi": "At-least-once delivery đòi hỏi gì ở consumer?",
+      "en": "What does at-least-once delivery require of consumers?"
+    },
+    "back": {
+      "vi": "Consumer phải idempotent, vì cùng một message có thể được giao nhiều lần.",
+      "en": "Consumers must be idempotent, since the same message may be delivered more than once."
+    }
+  }
+]
