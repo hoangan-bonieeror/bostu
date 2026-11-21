@@ -45,41 +45,27 @@ const RESPONSE_SCHEMA = {
 };
 
 /**
- * @param {Array<{key:string,title:string,description:string,source:string,category:string}>} items
- * @returns {Promise<null | { intro: {vi:string,en:string}, items: Record<string,{vi:string,en:string}> }>}
+ * Call Gemini with structured JSON output, retrying transient errors and falling back to other
+ * models when the main one is overloaded. Records the model used in aiStatus.model.
+ * Shared by the Tech Radar bot and the daily tech-news bot.
+ * @returns {Promise<any>} the parsed JSON object (throws on failure)
  */
-export async function summarize(items) {
+export async function geminiJSON(
+  prompt,
+  schema,
+  { maxOutputTokens = 16384, temperature = 0.4 } = {},
+) {
   const key = process.env.GEMINI_API_KEY;
-  aiStatus.enabled = !!key;
-  if (!key || !items.length) return null;
-
-  const prompt = `You are writing a weekly "Tech Radar" digest for a backend developer who is upskilling
-(roadmap: HTTP, REST APIs, SQL, database design, auth, testing, Docker/CI, caching, queues, security, system design).
-
-Each item may include "content": text crawled from the linked article, README or release notes.
-For EACH item:
-- "vi" / "en": a concise 1–2 sentence summary of what it is and why a backend developer might care.
-- "points_vi" / "points_en": for items with "highlight": true and non-empty content, 2–3 short key takeaways
-  (max ~20 words each) taken from the content; otherwise return empty arrays.
-Write Vietnamese for "vi"/"points_vi" and English for "en"/"points_en"; keep technical terms in English inside
-Vietnamese text. Paraphrase in your own words — never copy sentences from the content. Only use facts present in the
-item; do not invent features, numbers, versions or dates. Return one entry per item, using the item's "key".
-
-Also write a 2–3 sentence overview ("intro") of the week's themes in both languages.
-
-Items:
-${JSON.stringify(items, null, 1)}`;
-
+  if (!key) throw new Error('GEMINI_API_KEY is not set');
   const body = JSON.stringify({
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: {
-      temperature: 0.4,
-      maxOutputTokens: 16384,
+      temperature,
+      maxOutputTokens,
       responseMimeType: 'application/json',
-      responseSchema: RESPONSE_SCHEMA,
+      responseSchema: schema,
     },
   });
-
   /** Call one model, retrying transient errors (overloaded / rate-limited / 5xx). */
   async function call(model) {
     for (let attempt = 0; ; attempt++) {
@@ -108,30 +94,58 @@ ${JSON.stringify(items, null, 1)}`;
     }
   }
 
-  try {
-    let res;
-    let lastError;
-    for (const model of [MODEL, ...FALLBACK_MODELS]) {
-      try {
-        res = await call(model);
-        aiStatus.model = model;
-        break;
-      } catch (e) {
-        lastError = e;
-        if (!e.fallback) break; // e.g. invalid key: other models won't help
-        console.warn(`⚠ ${e.message} — trying next model`);
-      }
+  let res;
+  let lastError;
+  for (const model of [MODEL, ...FALLBACK_MODELS]) {
+    try {
+      res = await call(model);
+      aiStatus.model = model;
+      break;
+    } catch (e) {
+      lastError = e;
+      if (!e.fallback) break; // e.g. invalid key: other models won't help
+      console.warn(`⚠ ${e.message} — trying next model`);
     }
-    if (!res) throw lastError;
+  }
+  if (!res) throw lastError;
 
-    const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('') ?? '';
-    if (!text)
-      throw new Error(
-        `Empty response (finishReason: ${data.candidates?.[0]?.finishReason ?? 'unknown'})`,
-      );
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('') ?? '';
+  if (!text)
+    throw new Error(
+      `Empty response (finishReason: ${data.candidates?.[0]?.finishReason ?? 'unknown'})`,
+    );
+  return JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
+}
 
-    const json = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
+/**
+ * @param {Array<{key:string,title:string,description:string,source:string,category:string}>} items
+ * @returns {Promise<null | { intro: {vi:string,en:string}, items: Record<string,{vi:string,en:string}> }>}
+ */
+export async function summarize(items) {
+  const key = process.env.GEMINI_API_KEY;
+  aiStatus.enabled = !!key;
+  if (!key || !items.length) return null;
+
+  const prompt = `You are writing a weekly "Tech Radar" digest for a backend developer who is upskilling
+(roadmap: HTTP, REST APIs, SQL, database design, auth, testing, Docker/CI, caching, queues, security, system design).
+
+Each item may include "content": text crawled from the linked article, README or release notes.
+For EACH item:
+- "vi" / "en": a concise 1–2 sentence summary of what it is and why a backend developer might care.
+- "points_vi" / "points_en": for items with "highlight": true and non-empty content, 2–3 short key takeaways
+  (max ~20 words each) taken from the content; otherwise return empty arrays.
+Write Vietnamese for "vi"/"points_vi" and English for "en"/"points_en"; keep technical terms in English inside
+Vietnamese text. Paraphrase in your own words — never copy sentences from the content. Only use facts present in the
+item; do not invent features, numbers, versions or dates. Return one entry per item, using the item's "key".
+
+Also write a 2–3 sentence overview ("intro") of the week's themes in both languages.
+
+Items:
+${JSON.stringify(items, null, 1)}`;
+
+  try {
+    const json = await geminiJSON(prompt, RESPONSE_SCHEMA);
     if (!json.intro || !Array.isArray(json.items)) throw new Error('Unexpected response shape');
 
     // Turn the array into a lookup keyed by item key (what render.mjs expects).

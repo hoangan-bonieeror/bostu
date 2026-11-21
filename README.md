@@ -22,6 +22,7 @@
 | 🔍 | **Tìm kiếm** toàn văn ngay trên trình duyệt, không phân biệt dấu ("thiet ke" khớp "thiết kế") | **Full-text search** in the browser, diacritics-insensitive |
 | 🔖 | **Đã lưu**: bookmark, ghi chú riêng cho từng bài, lịch sử đọc, sao lưu JSON | **Saved**: bookmarks, per-post private notes, reading history, JSON backup |
 | 🗓️ | **Lưu trữ** theo tháng và **RSS** (`feed.vi.xml`, `feed.en.xml`) | **Archive** by month and **RSS** feeds |
+| 📰 | **Bản tin công nghệ hằng ngày**: bot đọc Hacker News và các trang tin/blog kỹ thuật, Gemini tóm tắt song ngữ | **Daily tech news**: a bot reads HN plus news sites and engineering blogs; Gemini summarises in VI/EN |
 | 📡 | **Tech Radar bot**: mỗi tuần quét GitHub, Hacker News, DEV, đọc nội dung từng link, viết bài song ngữ | **Tech Radar bot**: weekly scan of GitHub, HN, DEV; reads each link and writes a bilingual post |
 | 🌗 | VI/EN chuyển tức thì, sáng/tối, responsive | Instant VI/EN, light/dark, responsive |
 
@@ -35,6 +36,7 @@
 | 🚀 CI/CD & DevOps | CI/CD: từ commit đến production · Chiến lược triển khai |
 | 🏢 Hệ thống doanh nghiệp | Bản đồ ERP/CRM/HRM & tích hợp · SSO: SAML, OIDC, LDAP |
 | 🔌 Backend | HTTP · REST API · Session/JWT/OAuth · Caching với Redis |
+| 📰 Tin công nghệ | Bản tin tự động mỗi ngày |
 | 📡 Tech Radar | Bài tự động hằng tuần |
 
 ---
@@ -133,6 +135,30 @@ App dùng hash routing (`/#/p/<id>`) và `<base href="./">`, nên chạy đượ
 
 ---
 
+## 📰 Bản tin công nghệ hằng ngày
+
+Bot nằm trong `scripts/tech-news/`, chạy mỗi ngày lúc 14:23 UTC (6:23 sáng giờ California) qua `.github/workflows/tech-news.yml`:
+
+1. **Thu thập** tin trong 30 giờ qua từ Hacker News (bài trên 100 điểm) và các RSS/Atom feed: Ars Technica, The Verge, TechCrunch, The Register, BleepingComputer, InfoQ, GitHub Blog, Cloudflare Blog, AWS News Blog, VnExpress Số hóa. Feed nào lỗi thì bỏ qua và ghi chú cuối bài.
+2. **Lọc**: bỏ tin khuyến mãi, giải trí, bài tài trợ; gộp tin trùng (cùng link, hoặc nhiều trang cùng đưa một sự kiện; số trang đưa tin được tính là tín hiệu quan trọng).
+3. **Xếp hạng và chọn** 14 tin: điểm = độ tin cậy nguồn + độ mới + điểm HN + số trang cùng đưa tin. Tối đa 3 tin mỗi nguồn, 4 tin mỗi mục (AI, Bảo mật, Cloud, Phát triển phần mềm, Thiết bị & chip, Doanh nghiệp & chính sách).
+4. **Đọc nội dung** từng bài (dùng chung bộ crawl của Tech Radar: tôn trọng robots.txt, chỉ dùng văn bản để tóm tắt).
+5. **Gemini** dịch tiêu đề và viết tóm tắt 1–2 câu song ngữ, giọng trung tính; 3 tin tiêu điểm có thêm vài ý chính. Không có key thì giữ nguyên tiêu đề và mô tả gốc.
+6. **Đăng** `public/content/posts/tech-news-<ngày>.{vi,en}.md` (chuyên mục `tech-news`, ảnh bìa tự sinh), ghi các link đã đăng vào `seen.json` để hôm sau không lặp lại. Dưới 4 tin mới thì hôm đó không đăng.
+
+```bash
+npm run news:dry                          # xem trước tin được chọn, không ghi file
+npm run news                              # tạo bài hôm nay
+node scripts/tech-news/index.mjs --hours=48 --ignore-seen    # viết lại bài hôm nay, nhìn xa hơn
+```
+
+- Chạy tay: **Actions → Daily tech news → Run workflow** (có thể chọn ngày, số giờ, và **ignore_seen** để viết lại).
+- Đổi nguồn, từ khóa từng mục, giới hạn số tin trong `scripts/tech-news/config.mjs`.
+- Mặc định "hôm nay" tính theo giờ `America/Los_Angeles`; đổi bằng **Variable** `NEWS_TIMEZONE` (ví dụ `Asia/Ho_Chi_Minh`).
+- Bot tin tức và Tech Radar dùng chung `concurrency: content-bots`, nên không bao giờ push cùng lúc.
+
+---
+
 ## 📡 Tech Radar bot
 
 Bot nằm trong `scripts/tech-radar/` (Node.js 22; bộ crawl dùng `@mozilla/readability` + `linkedom`, cài sẵn qua `npm install`). Mỗi thứ Hai, workflow `.github/workflows/tech-radar.yml` sẽ:
@@ -195,7 +221,8 @@ scripts/
 ├── build-content.mjs       # front matter → posts.json, search.<lang>.json, RSS, ảnh bìa tự động; kiểm tra lỗi
 ├── new-post.mjs            # tạo khung bài song ngữ
 ├── lib/                    # frontmatter parser, cover generator
-└── tech-radar/             # bot: sources, classify, crawl, ai (Gemini), render, cover
+├── tech-news/              # bot bản tin hằng ngày: feeds, rank, summarize, render
+└── tech-radar/             # bot hằng tuần: sources, classify, crawl, ai (Gemini), render, cover
 ```
 
 **Quyết định thiết kế / Key decisions**
@@ -211,13 +238,13 @@ scripts/
 
 **Mô tả ngắn (CV / LinkedIn):**
 
-> *Built Bostu, a bilingual (VI/EN) engineering blog in Angular 22 (zoneless, signals) with a build-time content pipeline (front matter → index, full-text search, RSS, generated covers), in-browser runnable SQL via SQLite/WebAssembly, Mermaid diagrams, and a scheduled GitHub Actions bot that aggregates GitHub, Hacker News and DEV, crawls each article (robots.txt-aware), summarizes with Gemini, and publishes weekly posts to GitHub Pages.*
+> *Built Bostu, a bilingual (VI/EN) engineering blog in Angular 22 (zoneless, signals) with a build-time content pipeline (front matter → index, full-text search, RSS, generated covers), in-browser runnable SQL via SQLite/WebAssembly, Mermaid diagrams, and a scheduled GitHub Actions bot that aggregates GitHub, Hacker News and DEV, crawls each article (robots.txt-aware), summarizes with Gemini, and publishes a daily tech-news digest plus a weekly Tech Radar to GitHub Pages.*
 
 **Điểm nên nhấn mạnh khi phỏng vấn:**
 
 1. **Content pipeline:** Markdown + front matter → chỉ mục, tìm kiếm, RSS; CI chặn deploy khi nội dung sai.
 2. **Ô SQL nhúng:** fenced block `sql-run` được biến thành editor chạy SQLite trong trình duyệt, mỗi lần chạy trên database mới.
-3. **Tech Radar bot:** nguồn độc lập (một nguồn lỗi không làm hỏng cả lần chạy), chấm điểm thang log, bộ lọc chống spam/lạc đề, crawl có tôn trọng robots.txt và bản quyền, Gemini có retry + model dự phòng, ghi trạng thái để quan sát.
+3. **Hai bot nội dung** (tin tức hằng ngày, Tech Radar hằng tuần): nguồn độc lập (một nguồn lỗi không làm hỏng cả lần chạy), chấm điểm thang log, bộ lọc chống spam/lạc đề, crawl có tôn trọng robots.txt và bản quyền, Gemini có retry + model dự phòng, ghi trạng thái để quan sát.
 4. **CI/CD:** workflow tái sử dụng (`workflow_call`), quyền tối thiểu, concurrency, truyền input qua env để tránh script injection.
 5. **Song ngữ khi chạy** bằng signal, không phải build riêng từng ngôn ngữ.
 

@@ -22,7 +22,7 @@ const postsDir = join(content, 'posts');
 const genDir = join(content, 'generated');
 const autoCovers = join(content, 'covers', 'auto');
 const LANGS = ['vi', 'en'];
-const TYPES = ['article', 'note', 'radar'];
+const TYPES = ['article', 'note', 'radar', 'news'];
 
 const readJson = (f) => JSON.parse(readFileSync(join(content, f), 'utf8'));
 const categories = readJson('categories.json');

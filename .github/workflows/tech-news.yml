@@ -1,0 +1,81 @@
+name: Daily tech news
+
+on:
+  schedule:
+    # Every day 14:23 UTC (06:23 PST / 07:23 PDT)
+    - cron: '23 14 * * *'
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: 'How many hours back to look'
+        required: false
+        default: '30'
+      date:
+        description: 'Post date YYYY-MM-DD (optional; an existing date replaces that post)'
+        required: false
+        default: ''
+      ignore_seen:
+        description: 'Rebuild: ignore already-published links (replaces the post of that day)'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Shared with the Tech Radar bot so the two never push at the same time.
+concurrency:
+  group: content-bots
+  cancel-in-progress: false
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Collect today's news and write the post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          NEWS_TIMEZONE: ${{ vars.NEWS_TIMEZONE }}
+          # Passed via env (not inlined in the shell command) to avoid script injection.
+          NEWS_DATE: ${{ inputs.date }}
+          NEWS_HOURS: ${{ inputs.hours }}
+        run: node scripts/tech-news/index.mjs ${{ inputs.ignore_seen && '--ignore-seen' || '' }}
+
+      - name: Validate content
+        run: node scripts/build-content.mjs
+
+      - name: Commit the new post
+        id: commit
+        run: |
+          git config user.name "tech-news-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/content/posts scripts/tech-news/seen.json
+          if git diff --cached --quiet; then
+            echo "No new post today."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore(news): tech news $(date -u +%F)"
+          git pull --rebase --autostash
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  # Pushes made with GITHUB_TOKEN don't trigger other workflows, so deploy explicitly.
+  deploy:
+    needs: news
+    if: needs.news.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml

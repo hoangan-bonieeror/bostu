@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../core/content.service';
 import { I18n } from '../core/i18n';
-import { RADAR_CATEGORY } from '../core/models';
+import { BOT_CATEGORIES, NEWS_CATEGORY, RADAR_CATEGORY } from '../core/models';
 import { PostCard } from '../shared/post-card';
 
 const PAGE = 9;
@@ -43,6 +43,17 @@ const PAGE = 9;
       </div>
 
       <aside class="home-side">
+        @if (news(); as n) {
+          <div class="side-block">
+            <h3 class="side-title">📰 {{ i18n.t('home.news') }}</h3>
+            <a class="news-mini" [routerLink]="['/p', n.id]">
+              <span class="muted small">{{ i18n.date(n.date, 'long') }}</span>
+              <strong>{{ i18n.pick(n.title) }}</strong>
+              <span class="news-mini-sum">{{ i18n.pick(n.summary) }}</span>
+            </a>
+            <a class="small" [routerLink]="['/c', newsId]">{{ i18n.t('home.allNews') }} →</a>
+          </div>
+        }
         @if (radar(); as r) {
           <div class="side-block">
             <h3 class="side-title">📡 {{ i18n.t('home.radar') }}</h3>
@@ -107,9 +118,13 @@ export class HomePage {
   protected readonly PAGE = PAGE;
   protected readonly shown = signal(PAGE);
 
-  /** Radar posts live in their own box; the feed shows articles and notes. */
+  /** Bot posts (news, radar) live in their own boxes; the feed shows articles and notes. */
   private readonly feed = computed(() =>
-    this.content.posts().filter((p) => p.category !== RADAR_CATEGORY),
+    this.content.posts().filter((p) => !BOT_CATEGORIES.includes(p.category)),
+  );
+  protected readonly newsId = NEWS_CATEGORY;
+  protected readonly news = computed(() =>
+    this.content.posts().find((p) => p.category === NEWS_CATEGORY),
   );
   protected readonly featured = computed(() => this.feed().find((p) => p.type === 'article'));
   private readonly rest = computed(() => this.feed().filter((p) => p !== this.featured()));
@@ -120,12 +135,10 @@ export class HomePage {
   );
 
   protected readonly cats = computed(() =>
-    this.content
-      .categories()
-      .map((c) => ({
-        ...c,
-        count: this.content.posts().filter((p) => p.category === c.id).length,
-      })),
+    this.content.categories().map((c) => ({
+      ...c,
+      count: this.content.posts().filter((p) => p.category === c.id).length,
+    })),
   );
   protected readonly seriesList = computed(() =>
     this.content

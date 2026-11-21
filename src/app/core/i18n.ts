@@ -11,6 +11,7 @@ const DICT = {
   'nav.categories': { vi: 'Chuyên mục', en: 'Topics' },
   'nav.series': { vi: 'Series', en: 'Series' },
   'nav.radar': { vi: 'Tech Radar', en: 'Tech Radar' },
+  'nav.news': { vi: 'Tin tức', en: 'News' },
   'nav.archive': { vi: 'Lưu trữ', en: 'Archive' },
   'nav.search': { vi: 'Tìm kiếm', en: 'Search' },
   'nav.saved': { vi: 'Đã lưu', en: 'Saved' },
@@ -28,6 +29,7 @@ const DICT = {
   'type.article': { vi: 'Bài viết', en: 'Article' },
   'type.note': { vi: 'Ghi chép', en: 'Note' },
   'type.radar': { vi: 'Tech Radar', en: 'Tech Radar' },
+  'type.news': { vi: 'Bản tin', en: 'News' },
 
   'home.title': { vi: 'Sổ tay kỹ thuật', en: 'A tech notebook' },
   'home.subtitle': {
@@ -41,6 +43,12 @@ const DICT = {
   'home.series': { vi: 'Series', en: 'Series' },
   'home.tags': { vi: 'Thẻ phổ biến', en: 'Popular tags' },
   'home.radar': { vi: 'Tech Radar mới nhất', en: 'Latest Tech Radar' },
+  'home.news': { vi: 'Bản tin hôm nay', en: "Today's news" },
+  'home.allNews': { vi: 'Xem các bản tin trước', en: 'Earlier digests' },
+  'news.about': {
+    vi: 'Mỗi sáng bot đọc Hacker News và các trang tin, blog kỹ thuật lớn, rồi dùng Gemini tóm tắt song ngữ. Bấm vào tiêu đề để đọc bài gốc.',
+    en: 'Every morning a bot reads Hacker News and major tech news sites and engineering blogs, then summarises them in both languages with Gemini. Follow a title to read the original.',
+  },
 
   'post.toc': { vi: 'Mục lục', en: 'On this page' },
   'post.fallback': {

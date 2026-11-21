@@ -11,11 +11,11 @@ on:
         required: false
         default: '7'
       date:
-        description: 'Post date YYYY-MM-DD (optional; use an existing post''s date to replace it)'
+        description: "Post date YYYY-MM-DD (optional; use an existing post's date to replace it)"
         required: false
         default: ''
       ignore_seen:
-        description: 'Rebuild: ignore already-published links (replaces today''s post)'
+        description: "Rebuild: ignore already-published links (replaces today's post)"
         type: boolean
         required: false
         default: false
@@ -25,8 +25,9 @@ permissions:
   pages: write
   id-token: write
 
+# Shared with the daily news bot so the two never push at the same time.
 concurrency:
-  group: tech-radar
+  group: content-bots
   cancel-in-progress: false
 
 jobs:
@@ -72,6 +73,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(radar): Tech Radar $(date -u +%F)"
+          git pull --rebase --autostash
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 

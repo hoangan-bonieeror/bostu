@@ -2,7 +2,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../core/content.service';
 import { I18n } from '../core/i18n';
-import { RADAR_CATEGORY } from '../core/models';
+import { NEWS_CATEGORY, RADAR_CATEGORY } from '../core/models';
 import { PostCard } from '../shared/post-card';
 import { RadarStatusCard } from '../shared/radar-status';
 
@@ -23,6 +23,9 @@ import { RadarStatusCard } from '../shared/radar-status';
       @if (c.id === radarId) {
         <p class="notice">🤖 {{ i18n.t('radar.about') }}</p>
         <app-radar-status />
+      }
+      @if (c.id === newsId) {
+        <p class="notice">🤖 {{ i18n.t('news.about') }}</p>
       }
 
       <nav class="cat-switch">
@@ -50,6 +53,7 @@ export class CategoryPage {
   protected readonly i18n = inject(I18n);
   protected readonly content = inject(ContentService);
   protected readonly radarId = RADAR_CATEGORY;
+  protected readonly newsId = NEWS_CATEGORY;
   protected readonly category = computed(() => this.content.categoryById().get(this.id()));
   protected readonly posts = computed(() =>
     this.content.posts().filter((p) => p.category === this.id()),

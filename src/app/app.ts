@@ -2,7 +2,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ContentService } from './core/content.service';
 import { I18n } from './core/i18n';
-import { RADAR_CATEGORY } from './core/models';
+import { BOT_CATEGORIES, NEWS_CATEGORY, RADAR_CATEGORY } from './core/models';
 import { StoreService } from './core/store.service';
 
 @Component({
@@ -49,6 +49,7 @@ import { StoreService } from './core/store.service';
           </div>
 
           <a routerLink="/series" routerLinkActive="active">{{ i18n.t('nav.series') }}</a>
+          <a [routerLink]="['/c', newsId]" routerLinkActive="active">📰 {{ i18n.t('nav.news') }}</a>
           <a [routerLink]="['/c', radarId]" routerLinkActive="active"
             >📡 {{ i18n.t('nav.radar') }}</a
           >
@@ -130,8 +131,9 @@ export class App {
   protected readonly menuOpen = signal(false);
   protected readonly catsOpen = signal(false);
   protected readonly radarId = RADAR_CATEGORY;
+  protected readonly newsId = NEWS_CATEGORY;
   protected readonly topics = () =>
-    this.content.categories().filter((c) => c.id !== RADAR_CATEGORY);
+    this.content.categories().filter((c) => !BOT_CATEGORIES.includes(c.id));
 
   constructor() {
     inject(Router).events.subscribe((e) => {

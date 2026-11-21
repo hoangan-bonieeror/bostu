@@ -2,10 +2,7 @@
   {
     "id": "system-design",
     "icon": "🏗️",
-    "colors": [
-      "#3730a3",
-      "#0ea5e9"
-    ],
+    "colors": ["#3730a3", "#0ea5e9"],
     "title": {
       "vi": "Thiết kế hệ thống",
       "en": "System Design"
@@ -18,10 +15,7 @@
   {
     "id": "dsa",
     "icon": "🧮",
-    "colors": [
-      "#6d28d9",
-      "#db2777"
-    ],
+    "colors": ["#6d28d9", "#db2777"],
     "title": {
       "vi": "Cấu trúc dữ liệu & giải thuật",
       "en": "Data Structures & Algorithms"
@@ -34,10 +28,7 @@
   {
     "id": "database",
     "icon": "🗄️",
-    "colors": [
-      "#1d4ed8",
-      "#06b6d4"
-    ],
+    "colors": ["#1d4ed8", "#06b6d4"],
     "title": {
       "vi": "Thiết kế database",
       "en": "Database Design"
@@ -50,10 +41,7 @@
   {
     "id": "cicd",
     "icon": "🚀",
-    "colors": [
-      "#0f766e",
-      "#22c55e"
-    ],
+    "colors": ["#0f766e", "#22c55e"],
     "title": {
       "vi": "CI/CD & DevOps",
       "en": "CI/CD & DevOps"
@@ -66,10 +54,7 @@
   {
     "id": "enterprise",
     "icon": "🏢",
-    "colors": [
-      "#9a3412",
-      "#f59e0b"
-    ],
+    "colors": ["#9a3412", "#f59e0b"],
     "title": {
       "vi": "Hệ thống doanh nghiệp",
       "en": "Enterprise Systems"
@@ -82,10 +67,7 @@
   {
     "id": "backend",
     "icon": "🔌",
-    "colors": [
-      "#4338ca",
-      "#7c3aed"
-    ],
+    "colors": ["#4338ca", "#7c3aed"],
     "title": {
       "vi": "Backend",
       "en": "Backend"
@@ -96,12 +78,22 @@
     }
   },
   {
+    "id": "tech-news",
+    "icon": "📰",
+    "colors": ["#0f766e", "#f59e0b"],
+    "title": {
+      "vi": "Tin công nghệ",
+      "en": "Tech News"
+    },
+    "desc": {
+      "vi": "Bản tin công nghệ hằng ngày do bot tổng hợp: AI, bảo mật, cloud, phần mềm và doanh nghiệp.",
+      "en": "A daily technology digest compiled by a bot: AI, security, cloud, software and business."
+    }
+  },
+  {
     "id": "tech-radar",
     "icon": "📡",
-    "colors": [
-      "#0b1026",
-      "#312e81"
-    ],
+    "colors": ["#0b1026", "#312e81"],
     "title": {
       "vi": "Tech Radar",
       "en": "Tech Radar"

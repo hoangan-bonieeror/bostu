@@ -130,6 +130,22 @@ const MOTIFS = {
     });
     return s;
   },
+  'tech-news': (r) => {
+    // a folded newspaper with headline bars and columns
+    let s = '<g filter="url(#sh)">';
+    s += '<rect x="660" y="120" width="440" height="400" rx="16" fill="#fff"/>';
+    s += '<rect x="690" y="150" width="380" height="34" rx="6" fill="#0f766e"/>';
+    s += '<rect x="690" y="204" width="180" height="120" rx="8" fill="#fde68a"/>';
+    for (let i = 0; i < 5; i++)
+      s += `<rect x="890" y="${206 + i * 24}" width="${130 + Math.round(r() * 50)}" height="10" rx="5" fill="#cbd5e1"/>`;
+    for (let c = 0; c < 3; c++)
+      for (let i = 0; i < 6; i++)
+        s += `<rect x="${690 + c * 130}" y="${350 + i * 24}" width="${80 + Math.round(r() * 30)}" height="9" rx="4" fill="#e2e8f0"/>`;
+    s += '</g>';
+    s +=
+      '<circle cx="1110" cy="130" r="34" fill="#f59e0b"/><text x="1110" y="143" font-size="34" text-anchor="middle" fill="#fff" font-weight="800">24h</text>';
+    return s;
+  },
   backend: () => {
     let s = '';
     for (let i = 0; i < 3; i++)
@@ -167,7 +183,7 @@ export function renderCover({ id, category, tags = [], type }) {
   <circle cx="${80 + r() * 80}" cy="${560 + r() * 40}" r="180" fill="#fff" fill-opacity=".06"/>
   ${motif}
   <text x="80" y="250" font-size="150">${category.icon}</text>
-  <text x="84" y="350" font-size="26" font-weight="800" fill="#fff" fill-opacity=".85" letter-spacing="6">${esc(type === 'note' ? 'NOTE' : category.id.toUpperCase().replace(/-/g, ' '))}</text>
+  <text x="84" y="350" font-size="26" font-weight="800" fill="#fff" fill-opacity=".85" letter-spacing="6">${esc(type === 'note' ? 'NOTE' : type === 'news' ? 'DAILY NEWS' : category.id.toUpperCase().replace(/-/g, ' '))}</text>
   ${chips}
 </svg>`;
 }

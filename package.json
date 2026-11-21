@@ -13,7 +13,9 @@
     "content": "node scripts/build-content.mjs",
     "prestart": "node scripts/build-content.mjs",
     "prebuild": "node scripts/build-content.mjs",
-    "new-post": "node scripts/new-post.mjs"
+    "new-post": "node scripts/new-post.mjs",
+    "news": "node scripts/tech-news/index.mjs",
+    "news:dry": "node scripts/tech-news/index.mjs --dry-run"
   },
   "private": true,
   "packageManager": "npm@10.9.9",

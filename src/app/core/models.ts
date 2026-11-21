@@ -21,7 +21,7 @@ export interface Series {
   desc: I18nText;
 }
 
-export type PostType = 'article' | 'note' | 'radar';
+export type PostType = 'article' | 'note' | 'radar' | 'news';
 
 /** One entry of public/content/generated/posts.json (built by scripts/build-content.mjs). */
 export interface PostMeta {
@@ -48,6 +48,9 @@ export interface SiteInfo {
 }
 
 export const RADAR_CATEGORY = 'tech-radar';
+export const NEWS_CATEGORY = 'tech-news';
+/** Categories filled by bots; kept out of the home feed and the topics menu. */
+export const BOT_CATEGORIES = [RADAR_CATEGORY, NEWS_CATEGORY];
 
 /** Written by the Tech Radar bot on every run (public/content/radar-status.json). */
 export interface RadarStatus {
