@@ -5,16 +5,17 @@ import { I18n } from '../core/i18n';
 import { NEWS_CATEGORY, RADAR_CATEGORY } from '../core/models';
 import { PostCard } from '../shared/post-card';
 import { RadarStatusCard } from '../shared/radar-status';
+import { DecodeText } from '../shared/decode-text';
 
 @Component({
   selector: 'app-category',
-  imports: [RouterLink, PostCard, RadarStatusCard],
+  imports: [RouterLink, PostCard, RadarStatusCard, DecodeText],
   template: `
     @if (category(); as c) {
       <header class="cat-hero" [style.--c1]="c.colors[0]" [style.--c2]="c.colors[1]">
         <span class="cat-hero-icon">{{ c.icon }}</span>
         <div>
-          <h1>{{ i18n.pick(c.title) }}</h1>
+          <h1 [appDecode]="i18n.pick(c.title)"></h1>
           <p>{{ i18n.pick(c.desc) }}</p>
           <span class="cat-hero-count">{{ posts().length }} {{ i18n.t('common.posts') }}</span>
         </div>

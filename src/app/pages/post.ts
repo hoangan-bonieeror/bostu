@@ -22,10 +22,11 @@ import { PostMeta } from '../core/models';
 import { mountSqlRunners } from '../core/sql-runner';
 import { StoreService } from '../core/store.service';
 import { PostCard } from '../shared/post-card';
+import { DecodeText } from '../shared/decode-text';
 
 @Component({
   selector: 'app-post',
-  imports: [RouterLink, PostCard],
+  imports: [RouterLink, PostCard, DecodeText],
   template: `
     <div class="read-progress" [style.width.%]="progress()"></div>
 
@@ -54,7 +55,7 @@ import { PostCard } from '../shared/post-card';
               <span class="type-badge">{{ i18n.t('type.note') }}</span>
             }
           </div>
-          <h1>{{ i18n.pick(m.title) }}</h1>
+          <h1 [appDecode]="i18n.pick(m.title)"></h1>
           <p class="lead">{{ i18n.pick(m.summary) }}</p>
           <div class="byline">
             <span class="avatar" [class.bot]="m.type === 'radar'">{{

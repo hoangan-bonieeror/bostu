@@ -4,6 +4,7 @@ import {
   withComponentInputBinding,
   withHashLocation,
   withInMemoryScrolling,
+  withViewTransitions,
 } from '@angular/router';
 import { routes } from './app.routes';
 
@@ -16,6 +17,8 @@ export const appConfig: ApplicationConfig = {
       withHashLocation(),
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
+      // Cross-fade between pages (View Transitions API; browsers without it just navigate).
+      withViewTransitions({ skipInitialTransition: true }),
     ),
   ],
 };

@@ -4,19 +4,20 @@ import { ContentService } from '../core/content.service';
 import { I18n } from '../core/i18n';
 import { BOT_CATEGORIES, NEWS_CATEGORY, RADAR_CATEGORY } from '../core/models';
 import { PostCard } from '../shared/post-card';
+import { DecodeText } from '../shared/decode-text';
 
 const PAGE = 9;
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, PostCard],
+  imports: [RouterLink, PostCard, DecodeText],
   template: `
     <section class="home-hero">
       <p class="hero-kicker">
         <span class="dot"></span>neural.notebook · {{ content.posts().length }}
         {{ i18n.t('common.posts') }}<span class="caret"></span>
       </p>
-      <h1>{{ i18n.t('home.title') }}</h1>
+      <h1 [appDecode]="i18n.t('home.title')"></h1>
       <p class="muted">{{ i18n.t('home.subtitle') }}</p>
     </section>
 

@@ -310,6 +310,17 @@ export class NeuralBackground {
       if (i >= 0) fire(i, 5);
     };
 
+    /** Bursts requested by the rest of the app (MotionService fires one on every link click). */
+    const onBurst = (e: Event) => {
+      const {
+        x,
+        y,
+        energy = 3,
+      } = (e as CustomEvent<{ x: number; y: number; energy?: number }>).detail;
+      const i = nearestNeuron(x, y);
+      if (i >= 0) fire(i, energy);
+    };
+
     readColors();
     resize();
     play();
@@ -327,6 +338,7 @@ export class NeuralBackground {
     window.addEventListener('resize', onResize);
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('pointerdown', onDown, { passive: true });
+    window.addEventListener('neural:burst', onBurst);
     document.addEventListener('pointerleave', onLeave);
     document.addEventListener('visibilitychange', play);
     reduceMotion.addEventListener('change', play);
@@ -337,6 +349,7 @@ export class NeuralBackground {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('neural:burst', onBurst);
       document.removeEventListener('pointerleave', onLeave);
       document.removeEventListener('visibilitychange', play);
       reduceMotion.removeEventListener('change', play);

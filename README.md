@@ -33,6 +33,7 @@ Phong cách **futuristic**: nền tối kiểu không gian, màu neon cyan–tí
 - **Mạng neuron động** (`src/app/shared/neural-bg.ts`, canvas 2D): các tế bào trôi chậm, nối với nhau bằng synapse; xung tín hiệu chạy dọc dây nối, làm tế bào đích "phát hỏa" và đôi khi lan tiếp thành chuỗi. Con trỏ chuột hoạt động như một neuron (kéo nhẹ các tế bào gần đó); bấm vào chỗ trống để phóng một loạt xung.
 - Tự giảm số tế bào trên màn hình nhỏ, dừng khi tab bị ẩn, giới hạn DPR = 2; tắt mọi chuyển động khi hệ điều hành bật **Reduce motion**.
 - Màu lấy từ biến CSS `--neuron-a`, `--neuron-b`, `--neuron-line`, nên đổi theme sáng/tối là mạng neuron đổi màu theo.
+- **Chuyển động** (`src/app/core/motion.ts`, viết một lần bằng event delegation nên các trang không chứa code animation): chuyển trang bằng View Transitions API; tiêu đề "giải mã" từ ký tự ngẫu nhiên (`src/app/shared/decode-text.ts`, có `aria-label` cho trình đọc màn hình); thẻ bài nghiêng 3D và có đốm sáng theo chuột; các đoạn trong bài hiện dần khi cuộn tới (IntersectionObserver); quầng sáng đi theo con trỏ; bấm link phóng một chuỗi xung trong mạng neuron; viền bài nổi bật có tín hiệu chạy vòng quanh.
 - Lớp giao diện nằm riêng trong `src/futuristic.scss` (nạp sau `styles.scss`): đổi màu, hiệu ứng glow, quét sáng trên navbar, chữ tiêu đề lấp lánh, thẻ bài nổi lên khi rê chuột.
 
 ### Nội dung hiện có / Current content

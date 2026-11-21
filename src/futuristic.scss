@@ -464,6 +464,219 @@ textarea:focus {
   font-size: 0.8rem;
 }
 
+/* =====================================================================
+ * Motion layer (driven by src/app/core/motion.ts — the .motion class is only set when the
+ * user hasn't asked for reduced motion)
+ * ===================================================================== */
+
+/* ---- Page transitions (View Transitions API) ---- */
+.navbar {
+  view-transition-name: navbar;
+}
+.neural-bg {
+  view-transition-name: neural;
+}
+::view-transition-group(navbar),
+::view-transition-group(neural) {
+  animation: none;
+}
+::view-transition-old(root) {
+  animation: vt-out 0.22s ease-in both;
+}
+::view-transition-new(root) {
+  animation: vt-in 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+    filter: blur(6px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(1.01);
+    filter: blur(6px);
+  }
+}
+
+/* ---- Scroll reveal ---- */
+.motion .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(4px);
+}
+.motion .reveal.in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.7s ease;
+}
+.motion .prose > h2.reveal.in::before {
+  animation: synapse 0.9s ease-out both;
+}
+@keyframes synapse {
+  from {
+    transform: scaleY(0);
+    box-shadow: 0 0 0 var(--neuron-a);
+  }
+  60% {
+    box-shadow: 0 0 22px var(--neuron-a);
+  }
+}
+
+/* ---- Cards: 3D tilt + spotlight under the pointer ---- */
+.pc::before,
+.post-nav-card::before,
+.radar-mini::before,
+.news-mini::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--neuron-a) 16%, transparent),
+    transparent 45%
+  );
+  transition: opacity 0.3s ease;
+}
+.post-nav-card,
+.radar-mini,
+.news-mini {
+  position: relative;
+}
+.tilting::before {
+  opacity: 1;
+}
+.pc.tilting,
+.post-nav-card.tilting,
+.radar-mini.tilting,
+.news-mini.tilting {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px);
+  transition:
+    transform 0.08s linear,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* ---- Featured post: a signal travels around its border ---- */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+:root {
+  --card-solid: #ffffff;
+}
+[data-theme='dark'] {
+  --card-solid: #0a0f22;
+}
+.pc-featured {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card-solid), var(--card-solid)) padding-box,
+    conic-gradient(
+        from var(--angle),
+        transparent 0deg,
+        var(--neuron-a) 40deg,
+        var(--neuron-b) 80deg,
+        transparent 120deg,
+        transparent 360deg
+      )
+      border-box;
+  animation: orbit 6s linear infinite;
+}
+@keyframes orbit {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* ---- Category hero: slow aurora drift ---- */
+.cat-hero {
+  background-size: 180% 180%;
+  animation: aurora 14s ease-in-out infinite;
+}
+@keyframes aurora {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ---- Nav links: glowing underline that grows from the centre ---- */
+.nav-links > a::after,
+.nav-drop-btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--neuron-b), var(--neuron-a));
+  box-shadow: 0 0 8px var(--neuron-a);
+  transition:
+    left 0.25s ease,
+    right 0.25s ease;
+}
+.nav-links > a:hover::after,
+.nav-drop-btn:hover::after {
+  left: 18%;
+  right: 18%;
+}
+
+/* ---- Pointer aura: a soft light that trails the cursor ---- */
+.cursor-aura {
+  position: fixed;
+  left: -170px;
+  top: -170px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1; /* above the neural canvas, below the content */
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--neuron-a) 14%, transparent) 0%,
+    color-mix(in srgb, var(--neuron-b) 8%, transparent) 35%,
+    transparent 70%
+  );
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+.cursor-aura.on {
+  opacity: 1;
+}
+[data-theme='light'] .cursor-aura {
+  mix-blend-mode: multiply;
+}
+
+/* ---- Buttons: press feedback ---- */
+.btn:active,
+.icon-btn:active,
+.lang-switch button:active {
+  transform: scale(0.96);
+}
+.icon-btn {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
 /* ---- Accessibility: no motion when the user asks for it ---- */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -471,5 +684,18 @@ textarea:focus {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* Printing: show everything that is waiting to be revealed. */
+@media print {
+  .neural-bg,
+  .cursor-aura {
+    display: none;
+  }
+  .motion .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

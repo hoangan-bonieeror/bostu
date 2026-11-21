@@ -1,10 +1,11 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, afterNextRender, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ContentService } from './core/content.service';
 import { I18n } from './core/i18n';
 import { BOT_CATEGORIES, NEWS_CATEGORY, RADAR_CATEGORY } from './core/models';
 import { StoreService } from './core/store.service';
 import { NeuralBackground } from './shared/neural-bg';
+import { MotionService } from './core/motion';
 
 @Component({
   selector: 'app-root',
@@ -138,6 +139,8 @@ export class App {
     this.content.categories().filter((c) => !BOT_CATEGORIES.includes(c.id));
 
   constructor() {
+    const motion = inject(MotionService);
+    afterNextRender(() => motion.start());
     inject(Router).events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         this.menuOpen.set(false);
