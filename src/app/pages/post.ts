@@ -187,17 +187,41 @@ import { DecodeText } from '../shared/decode-text';
         </div>
 
         @if (toc().length) {
-          <aside class="toc">
-            <div class="toc-inner">
-              <h4>{{ i18n.t('post.toc') }}</h4>
-              <ul>
-                @for (item of toc(); track item.id) {
-                  <li [class.sub]="item.level === 3" [class.active]="activeId() === item.id">
-                    <button type="button" (click)="scrollTo(item.id)">{{ item.text }}</button>
+          <aside class="toc" [attr.aria-label]="i18n.t('post.toc')">
+            <nav class="toc-inner">
+              <header class="toc-head">
+                <span class="toc-title"
+                  ><span class="toc-icon" aria-hidden="true">◈</span>{{ i18n.t('post.toc') }}</span
+                >
+                <span class="toc-pct">{{ progressPct() }}%</span>
+              </header>
+              <div class="toc-meter" aria-hidden="true">
+                <span [style.width.%]="progress()"></span>
+              </div>
+              <ol class="toc-list">
+                @for (item of toc(); track item.id; let i = $index) {
+                  <li
+                    [class.sub]="item.level === 3"
+                    [class.active]="activeId() === item.id"
+                    [class.passed]="i < activeIndex()"
+                  >
+                    <button
+                      type="button"
+                      (click)="scrollTo(item.id)"
+                      [attr.aria-current]="activeId() === item.id ? 'location' : null"
+                    >
+                      @if (item.level === 2) {
+                        <span class="toc-num">{{ sectionNo().get(item.id) }}</span>
+                      }
+                      <span class="toc-text">{{ tocLabel(item) }}</span>
+                    </button>
                   </li>
                 }
-              </ul>
-            </div>
+              </ol>
+              <button type="button" class="toc-top" (click)="toTop()">
+                ↑ {{ i18n.t('post.backTop') }}
+              </button>
+            </nav>
           </aside>
         }
       </div>
@@ -234,6 +258,18 @@ export class PostPage {
   protected readonly progress = signal(0);
   protected readonly activeId = signal('');
   protected readonly zoomSrc = signal<string | null>(null);
+  /** Position of the section being read; earlier items are shown as "passed". */
+  protected readonly activeIndex = computed(() =>
+    this.toc().findIndex((t) => t.id === this.activeId()),
+  );
+  protected readonly progressPct = computed(() => Math.round(this.progress()));
+  /** "01", "02"… for top-level sections. */
+  protected readonly sectionNo = computed(() => {
+    const map = new Map<string, string>();
+    let n = 0;
+    for (const t of this.toc()) if (t.level === 2) map.set(t.id, String(++n).padStart(2, '0'));
+    return map;
+  });
   protected readonly noteSaved = signal(false);
 
   protected readonly meta = computed(() => this.content.postById().get(this.id()));
@@ -379,6 +415,15 @@ export class PostPage {
       this.store.saveNote(this.id(), text);
       this.noteSaved.set(true);
     }, 600);
+  }
+
+  /** Section titles often start with their own number ("2. Estimate…"); the TOC already shows one. */
+  protected tocLabel(item: TocItem) {
+    return item.level === 2 ? item.text.replace(/^\d+[.)]\s+/, '') : item.text;
+  }
+
+  protected toTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   protected scrollTo(id: string) {

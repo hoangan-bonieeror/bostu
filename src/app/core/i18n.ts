@@ -51,6 +51,7 @@ const DICT = {
   },
 
   'post.toc': { vi: 'Mục lục', en: 'On this page' },
+  'post.backTop': { vi: 'Lên đầu trang', en: 'Back to top' },
   'post.fallback': {
     vi: 'Bài này chưa có bản tiếng Việt, đang hiển thị bản tiếng Anh.',
     en: 'No English version yet — showing Vietnamese.',
