@@ -173,7 +173,7 @@ Trang được host trên **Cloudflare Pages** và đặt sau **Cloudflare Acces
 
 ## 📰 Bản tin công nghệ hằng ngày
 
-Bot nằm trong `scripts/tech-news/`, chạy mỗi ngày lúc 14:23 UTC (6:23 sáng giờ California) qua `.github/workflows/tech-news.yml`:
+Bot nằm trong `scripts/tech-news/`, chạy mỗi ngày lúc 11:07 UTC (khoảng 3 giờ sáng giờ California; GitHub đôi khi chạy lịch trễ vài tiếng nên đặt sớm) qua `.github/workflows/tech-news.yml`:
 
 1. **Thu thập** tin trong 30 giờ qua từ Hacker News (bài trên 100 điểm) và các RSS/Atom feed: Ars Technica, The Verge, TechCrunch, The Register, BleepingComputer, InfoQ, GitHub Blog, Cloudflare Blog, AWS News Blog, VnExpress Số hóa, MIT Technology Review, Wired, Lobsters, Hugging Face Blog, Simon Willison, Krebs on Security, The Hacker News, Netflix TechBlog, Meta Engineering, Google Cloud Blog, Microsoft DevBlogs, cùng các nguồn data engineering: Databricks Engineering, dbt Labs, Snowflake Builders Blog, Data Engineering Weekly (tổng cộng 25 feed). Feed nào lỗi thì bỏ qua và ghi chú cuối bài.
 2. **Lọc**: bỏ tin khuyến mãi, giải trí, bài tài trợ; gộp tin trùng (cùng link, hoặc nhiều trang cùng đưa một sự kiện; số trang đưa tin được tính là tín hiệu quan trọng).
@@ -191,6 +191,8 @@ node scripts/tech-news/index.mjs --hours=48 --ignore-seen    # viết lại bài
 - Chạy tay: **Actions → Daily tech news → Run workflow** (có thể chọn ngày, số giờ, và **ignore_seen** để viết lại).
 - Đổi nguồn, từ khóa từng mục, giới hạn số tin trong `scripts/tech-news/config.mjs`.
 - Mặc định "hôm nay" tính theo giờ `America/Los_Angeles`; đổi bằng **Variable** `NEWS_TIMEZONE` (ví dụ `Asia/Ho_Chi_Minh`).
+- Mỗi ngày chỉ có **một** bản tin: nếu bài hôm nay đã có (ví dụ bạn đã chạy tay), lần chạy theo lịch sẽ bỏ qua. Muốn viết lại thì chạy tay với **ignore_seen**.
+- Gemini được gọi theo từng nhóm 6 tin song song (mức suy nghĩ `low`, đổi bằng biến `GEMINI_THINKING_LEVEL`); nhóm nào lỗi hoặc quá thời gian thì chỉ các tin đó giữ tiêu đề gốc, các tin khác vẫn có tóm tắt. Quá thời gian cũng tự chuyển sang model dự phòng.
 - Bot tin tức và Tech Radar dùng chung `concurrency: content-bots`, nên không bao giờ push cùng lúc.
 
 ---

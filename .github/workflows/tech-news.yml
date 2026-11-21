@@ -2,8 +2,9 @@ name: Daily tech news
 
 on:
   schedule:
-    # Every day 14:23 UTC (06:23 PST / 07:23 PDT)
-    - cron: '23 14 * * *'
+    # Every day 11:07 UTC (03:07 PST / 04:07 PDT). GitHub may start scheduled runs hours late
+    # when it is busy, so we aim early enough that the digest is ready by morning.
+    - cron: '7 11 * * *'
   workflow_dispatch:
     inputs:
       hours:

@@ -123,8 +123,13 @@ export const FEEDS = [
   },
   {
     id: 'vnexpress',
-    name: 'VnExpress Số hóa',
+    name: 'VnExpress Công nghệ',
     url: 'https://vnexpress.net/rss/so-hoa.rss',
+    // VnExpress moved "Số hóa" under "Công nghệ"; try the newer feed names too.
+    fallbackUrls: [
+      'https://vnexpress.net/rss/cong-nghe.rss',
+      'https://vnexpress.net/rss/khoa-hoc-cong-nghe.rss',
+    ],
     weight: 0.9,
     lang: 'vi',
   },

@@ -12,6 +12,8 @@ const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? 'gemini-flash-lit
   .map((m) => m.trim())
   .filter((m) => m && m !== MODEL);
 const RETRY_DELAYS_MS = [5000, 15000]; // per model, for 429/500/503
+/** Thinking level for Gemini 3.x models (minimal | low | medium | high); empty = model default. */
+const THINKING_LEVEL = (process.env.GEMINI_THINKING_LEVEL ?? 'low').trim().toUpperCase();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Outcome of the last summarize() call, recorded in radar-status.json for troubleshooting. */
@@ -53,33 +55,59 @@ const RESPONSE_SCHEMA = {
 export async function geminiJSON(
   prompt,
   schema,
-  { maxOutputTokens = 16384, temperature = 0.4 } = {},
+  { maxOutputTokens = 16384, temperature = 0.4, timeoutMs = 180000 } = {},
 ) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error('GEMINI_API_KEY is not set');
-  const body = JSON.stringify({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature,
-      maxOutputTokens,
-      responseMimeType: 'application/json',
-      responseSchema: schema,
-    },
-  });
+  const generationConfig = {
+    temperature,
+    maxOutputTokens,
+    responseMimeType: 'application/json',
+    responseSchema: schema,
+  };
+  // Summaries don't need deep reasoning; low thinking keeps calls fast. Models that don't
+  // support thinking levels answer 400, and we retry once without it.
+  if (THINKING_LEVEL) generationConfig.thinkingConfig = { thinkingLevel: THINKING_LEVEL };
+  const bodyFor = (withThinking) => {
+    const cfg = { ...generationConfig };
+    if (!withThinking) delete cfg.thinkingConfig;
+    return JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: cfg,
+    });
+  };
+
   /** Call one model, retrying transient errors (overloaded / rate-limited / 5xx). */
   async function call(model) {
+    let withThinking = !!generationConfig.thinkingConfig;
     for (let attempt = 0; ; attempt++) {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-        {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-          body,
-          signal: AbortSignal.timeout(120000),
-        },
-      );
+      let res;
+      try {
+        res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+          {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+            body: bodyFor(withThinking),
+            signal: AbortSignal.timeout(timeoutMs),
+          },
+        );
+      } catch (e) {
+        // A timeout usually means the model is slow right now: move on to the next model
+        // instead of waiting again on the same one.
+        const err = new Error(
+          `Gemini ${model}: ${e.name === 'TimeoutError' ? `no answer within ${timeoutMs / 1000}s` : e.message}`,
+        );
+        err.fallback = true;
+        throw err;
+      }
       if (res.ok) return res;
       const detail = (await res.text()).replace(/\s+/g, ' ').slice(0, 240);
+      if (res.status === 400 && withThinking && /thinking/i.test(detail)) {
+        console.warn(`⚠ Gemini ${model} does not accept thinkingLevel, retrying without it`);
+        withThinking = false;
+        continue;
+      }
       const transient = [429, 500, 502, 503, 504].includes(res.status);
       if (transient && attempt < RETRY_DELAYS_MS.length) {
         console.warn(

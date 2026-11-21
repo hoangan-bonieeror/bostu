@@ -103,6 +103,20 @@ async function main() {
   const id = `tech-news-${today}`;
   const dateObj = new Date(`${today}T12:00:00Z`);
 
+  // One digest per day: a second run on the same day (a late scheduled run after a manual
+  // one, say) would otherwise replace the post with only the stories not published yet.
+  const postFile = join(content, 'posts', `${id}.vi.md`);
+  if (existsSync(postFile) && !ignoreSeen && !dryRun) {
+    console.log(`📰 ${id} already exists — skipping. Run with --ignore-seen to rebuild it.`);
+    if (process.env.GITHUB_STEP_SUMMARY)
+      writeFileSync(
+        process.env.GITHUB_STEP_SUMMARY,
+        `## 📰 Daily tech news\n\n\`${id}\` already exists, nothing to do. Use **ignore_seen** to rebuild it.\n`,
+        { flag: 'a' },
+      );
+    return;
+  }
+
   const seen = existsSync(SEEN_FILE) ? JSON.parse(readFileSync(SEEN_FILE, 'utf8')) : { urls: [] };
   const seenSet = ignoreSeen ? new Set() : new Set(seen.urls);
   if (ignoreSeen) console.log('♻️  --ignore-seen: previously published links may appear again');

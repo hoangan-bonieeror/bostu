@@ -4,7 +4,9 @@ import { DOMParser } from 'linkedom';
 import { cleanText } from '../tech-radar/sources.mjs';
 import { FEEDS, HN_MIN_POINTS } from './config.mjs';
 
-const UA = 'bostu-tech-news-bot/1.0 (+https://github.com/hoangan-bonieeror/bostu)';
+// "Mozilla/5.0 (compatible; …)" is the usual crawler form; some sites refuse bare bot names.
+const UA =
+  'Mozilla/5.0 (compatible; bostu-tech-news-bot/1.0; +https://github.com/hoangan-bonieeror/bostu)';
 const MAX_BYTES = 3_000_000;
 
 async function fetchText(url, accept) {
@@ -76,10 +78,22 @@ export function parseFeed(xml, feed) {
 }
 
 export async function readFeed(feed, { hours }) {
-  const xml = await fetchText(
-    feed.url,
-    'application/rss+xml, application/atom+xml, application/xml, text/xml',
-  );
+  // A feed may list fallback URLs (sites move their RSS); the first one that answers wins.
+  const urls = [feed.url, ...(feed.fallbackUrls ?? [])];
+  let xml;
+  let lastError;
+  for (const url of urls) {
+    try {
+      xml = await fetchText(
+        url,
+        'application/rss+xml, application/atom+xml, application/xml, text/xml',
+      );
+      break;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  if (xml === undefined) throw lastError;
   const since = Date.now() - hours * 3600e3;
   // Undated items are kept; the seen-list stops them from repeating on later days.
   return parseFeed(xml, feed).filter((it) => !it.time || it.time >= since);
