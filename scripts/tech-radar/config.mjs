@@ -74,6 +74,20 @@ export const CATEGORIES = [
       'oltp',
       'jsonb',
       'wal',
+      // data engineering
+      'data-engineering',
+      'etl',
+      'elt',
+      'airflow',
+      'dbt',
+      'spark',
+      'pyspark',
+      'polars',
+      'dataframe',
+      'parquet',
+      'iceberg',
+      'lakehouse',
+      'data-warehouse',
     ],
     why: {
       vi: 'Phần lớn sự cố hiệu năng nằm ở tầng dữ liệu — hiểu công cụ mới giúp bạn chọn đúng kho lưu trữ cho từng bài toán.',
@@ -299,6 +313,7 @@ export const GITHUB_QUERIES = [
   'topic:devops',
   'topic:observability',
   'topic:mcp',
+  'topic:data-engineering',
 ];
 
 /** Well-known backend tools whose new releases are worth knowing about. */
@@ -325,6 +340,11 @@ export const RELEASE_WATCHLIST = [
   'grafana/k6',
   'temporalio/temporal',
   'supabase/supabase',
+  // data engineering
+  'apache/airflow',
+  'dbt-labs/dbt-core',
+  'apache/spark',
+  'pola-rs/polars',
 ];
 
 /** New GitHub repos need at least this many stars (filters out star-farming spam). */

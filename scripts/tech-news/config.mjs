@@ -5,10 +5,10 @@
 export const WINDOW_HOURS = 30;
 
 export const LIMITS = {
-  items: 14, // stories per post
-  headlines: 3, // "top stories" with key points
+  items: 22, // stories per post
+  headlines: 4, // "top stories" with key points
   perSource: 3, // keep one site from dominating
-  perSection: 4,
+  perSection: 5,
   minItems: 4, // fewer than this → no post today
 };
 
@@ -49,6 +49,78 @@ export const FEEDS = [
     weight: 1.2,
   },
   { id: 'aws', name: 'AWS News Blog', url: 'https://aws.amazon.com/blogs/aws/feed/', weight: 1.1 },
+  // In-depth tech journalism
+  {
+    id: 'mit-tr',
+    name: 'MIT Technology Review',
+    url: 'https://www.technologyreview.com/feed/',
+    weight: 1.1,
+  },
+  { id: 'wired', name: 'Wired', url: 'https://www.wired.com/feed/rss', weight: 0.9 },
+  // Developer community
+  { id: 'lobsters', name: 'Lobsters', url: 'https://lobste.rs/rss', weight: 1.0 },
+  // AI
+  {
+    id: 'huggingface',
+    name: 'Hugging Face Blog',
+    url: 'https://huggingface.co/blog/feed.xml',
+    weight: 1.1,
+  },
+  {
+    id: 'simonw',
+    name: 'Simon Willison',
+    url: 'https://simonwillison.net/atom/everything/',
+    weight: 1.1,
+  },
+  // Security
+  { id: 'krebs', name: 'Krebs on Security', url: 'https://krebsonsecurity.com/feed/', weight: 1.1 },
+  {
+    id: 'thehackernews',
+    name: 'The Hacker News',
+    url: 'https://feeds.feedburner.com/TheHackersNews',
+    weight: 0.9,
+  },
+  // Company engineering blogs (real-world system design)
+  { id: 'netflix', name: 'Netflix TechBlog', url: 'https://netflixtechblog.com/feed', weight: 1.2 },
+  {
+    id: 'meta-eng',
+    name: 'Meta Engineering',
+    url: 'https://engineering.fb.com/feed/',
+    weight: 1.2,
+  },
+  // Cloud
+  {
+    id: 'gcloud',
+    name: 'Google Cloud Blog',
+    url: 'https://cloudblog.withgoogle.com/rss/',
+    weight: 1.1,
+  },
+  {
+    id: 'ms-devblogs',
+    name: 'Microsoft DevBlogs',
+    url: 'https://devblogs.microsoft.com/feed/',
+    weight: 1.0,
+  },
+  // Data engineering
+  {
+    id: 'databricks',
+    name: 'Databricks Engineering',
+    url: 'https://www.databricks.com/blog/category/engineering/feed.xml',
+    weight: 1.1,
+  },
+  { id: 'dbt', name: 'dbt Labs Blog', url: 'https://www.getdbt.com/blog/feed.xml', weight: 1.0 },
+  {
+    id: 'snowflake',
+    name: 'Snowflake Builders Blog',
+    url: 'https://medium.com/feed/snowflake',
+    weight: 0.9,
+  },
+  {
+    id: 'de-weekly',
+    name: 'Data Engineering Weekly',
+    url: 'https://www.dataengineeringweekly.com/feed',
+    weight: 1.0,
+  },
   {
     id: 'vnexpress',
     name: 'VnExpress Số hóa',
@@ -119,6 +191,40 @@ export const SECTIONS = [
       'lừa đảo',
       'mã độc',
       'tấn công mạng',
+    ],
+  },
+  {
+    id: 'data',
+    icon: '📊',
+    title: { vi: 'Dữ liệu & data engineering', en: 'Data & data engineering' },
+    bonus: 0.5,
+    keywords: [
+      'data engineering',
+      'data engineer',
+      'data pipeline',
+      'data pipelines',
+      'etl',
+      'elt',
+      'airflow',
+      'dbt',
+      'spark',
+      'pyspark',
+      'kafka',
+      'flink',
+      'snowflake',
+      'databricks',
+      'bigquery',
+      'redshift',
+      'iceberg',
+      'delta lake',
+      'lakehouse',
+      'data warehouse',
+      'data lake',
+      'duckdb',
+      'polars',
+      'parquet',
+      'analytics engineering',
+      'dữ liệu',
     ],
   },
   {

@@ -139,11 +139,11 @@ App dùng hash routing (`/#/p/<id>`) và `<base href="./">`, nên chạy đượ
 
 Bot nằm trong `scripts/tech-news/`, chạy mỗi ngày lúc 14:23 UTC (6:23 sáng giờ California) qua `.github/workflows/tech-news.yml`:
 
-1. **Thu thập** tin trong 30 giờ qua từ Hacker News (bài trên 100 điểm) và các RSS/Atom feed: Ars Technica, The Verge, TechCrunch, The Register, BleepingComputer, InfoQ, GitHub Blog, Cloudflare Blog, AWS News Blog, VnExpress Số hóa. Feed nào lỗi thì bỏ qua và ghi chú cuối bài.
+1. **Thu thập** tin trong 30 giờ qua từ Hacker News (bài trên 100 điểm) và các RSS/Atom feed: Ars Technica, The Verge, TechCrunch, The Register, BleepingComputer, InfoQ, GitHub Blog, Cloudflare Blog, AWS News Blog, VnExpress Số hóa, MIT Technology Review, Wired, Lobsters, Hugging Face Blog, Simon Willison, Krebs on Security, The Hacker News, Netflix TechBlog, Meta Engineering, Google Cloud Blog, Microsoft DevBlogs, cùng các nguồn data engineering: Databricks Engineering, dbt Labs, Snowflake Builders Blog, Data Engineering Weekly (tổng cộng 25 feed). Feed nào lỗi thì bỏ qua và ghi chú cuối bài.
 2. **Lọc**: bỏ tin khuyến mãi, giải trí, bài tài trợ; gộp tin trùng (cùng link, hoặc nhiều trang cùng đưa một sự kiện; số trang đưa tin được tính là tín hiệu quan trọng).
-3. **Xếp hạng và chọn** 14 tin: điểm = độ tin cậy nguồn + độ mới + điểm HN + số trang cùng đưa tin. Tối đa 3 tin mỗi nguồn, 4 tin mỗi mục (AI, Bảo mật, Cloud, Phát triển phần mềm, Thiết bị & chip, Doanh nghiệp & chính sách).
+3. **Xếp hạng và chọn** 22 tin: điểm = độ tin cậy nguồn + độ mới + điểm HN + số trang cùng đưa tin. Tối đa 3 tin mỗi nguồn, 5 tin mỗi mục (AI, Bảo mật, Dữ liệu & data engineering, Cloud, Phát triển phần mềm, Thiết bị & chip, Doanh nghiệp & chính sách).
 4. **Đọc nội dung** từng bài (dùng chung bộ crawl của Tech Radar: tôn trọng robots.txt, chỉ dùng văn bản để tóm tắt).
-5. **Gemini** dịch tiêu đề và viết tóm tắt 1–2 câu song ngữ, giọng trung tính; 3 tin tiêu điểm có thêm vài ý chính. Không có key thì giữ nguyên tiêu đề và mô tả gốc.
+5. **Gemini** dịch tiêu đề và viết tóm tắt 1–2 câu song ngữ, giọng trung tính; 4 tin tiêu điểm có thêm vài ý chính. Không có key thì giữ nguyên tiêu đề và mô tả gốc.
 6. **Đăng** `public/content/posts/tech-news-<ngày>.{vi,en}.md` (chuyên mục `tech-news`, ảnh bìa tự sinh), ghi các link đã đăng vào `seen.json` để hôm sau không lặp lại. Dưới 4 tin mới thì hôm đó không đăng.
 
 ```bash
@@ -165,7 +165,7 @@ Bot nằm trong `scripts/tech-radar/` (Node.js 22; bộ crawl dùng `@mozilla/re
 
 1. **Thu thập** dữ liệu từ 4 nguồn:
    - GitHub: repo mới tạo trong 30 ngày, đang tăng sao nhanh, thuộc các topic backend
-   - GitHub Releases: bản phát hành mới của FastAPI, Django, uv, Redis/Valkey, Kafka, Docker Compose, k6…
+   - GitHub Releases: bản phát hành mới của FastAPI, Django, uv, Redis/Valkey, Kafka, Docker Compose, k6, Airflow, dbt, Spark, Polars…
    - Hacker News: bài trên 120 điểm
    - DEV Community: bài top tuần theo tag
 2. **Lọc và chấm điểm**: bỏ repo spam (nhiều repo cùng chủ, mô tả rỗng, ít sao), bỏ chủ đề lạc đề (crypto, game, mobile…). Một từ thông dụng như "test" hay "security" đứng một mình không đủ để coi là tin công nghệ: cần thêm một từ khóa khác, hoặc một thuật ngữ cụ thể như `postgres`, `xss`, `kubernetes` (danh sách `AMBIGUOUS_KEYWORDS`). Mỗi mục được xếp theo chủ đề và liên kết tới chuyên mục tương ứng của blog. Điểm = độ phổ biến (thang log) + mức liên quan.
