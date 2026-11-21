@@ -1,0 +1,475 @@
+/* ===== Futuristic theme layer =====
+ * Loaded after styles.scss (see angular.json). It re-tunes the design tokens and adds glass
+ * surfaces, neon glows and motion on top of the base layout, so the base file stays readable.
+ * The animated neural network itself is drawn by src/app/shared/neural-bg.ts.
+ */
+
+:root {
+  --bg: #eef2fb;
+  --surface: rgb(255 255 255 / 72%);
+  --surface-2: rgb(232 238 252 / 80%);
+  --border: rgb(99 102 241 / 18%);
+  --text: #0d1230;
+  --muted: #5a6386;
+  --accent: #4f46e5;
+  --accent-2: #0891b2;
+  --accent-soft: rgb(79 70 229 / 10%);
+  --glow: rgb(79 70 229 / 22%);
+  --shadow: 0 1px 2px rgb(15 23 42 / 5%), 0 10px 30px rgb(79 70 229 / 8%);
+  --neuron-a: #0891b2;
+  --neuron-b: #7c3aed;
+  --neuron-line: rgb(79 70 229 / 22%);
+  --font:
+    'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --display: 'Space Grotesk Variable', 'Space Grotesk', var(--font);
+  --mono:
+    'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', Consolas, 'SFMono-Regular', Menlo,
+    monospace;
+}
+
+[data-theme='dark'] {
+  --bg: #04060f;
+  --surface: rgb(13 18 38 / 62%);
+  --surface-2: rgb(22 29 58 / 70%);
+  --border: rgb(120 140 255 / 16%);
+  --text: #e6ebff;
+  --muted: #8f99c2;
+  --accent: #7dd3fc;
+  --accent-2: #a78bfa;
+  --accent-soft: rgb(125 211 252 / 10%);
+  --accent-text: #04060f;
+  --glow: rgb(56 189 248 / 30%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 40px rgb(0 0 0 / 35%);
+  --neuron-a: #22d3ee;
+  --neuron-b: #a78bfa;
+  --neuron-line: rgb(125 145 255 / 20%);
+}
+
+/* ---- Backdrop: neural canvas + soft nebula + faint grid ---- */
+.neural-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgb(124 58 237 / 12%), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgb(8 145 178 / 12%), transparent 60%), var(--bg);
+  background-attachment: fixed;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 70%);
+  opacity: 0.5;
+}
+[data-theme='dark'] body {
+  background:
+    radial-gradient(1200px 700px at 5% -10%, rgb(124 58 237 / 22%), transparent 60%),
+    radial-gradient(1000px 600px at 100% 10%, rgb(14 165 233 / 16%), transparent 60%),
+    radial-gradient(800px 500px at 50% 120%, rgb(34 211 238 / 10%), transparent 60%), var(--bg);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+* {
+  scrollbar-color: color-mix(in srgb, var(--accent) 40%, transparent) transparent;
+}
+
+h1,
+h2,
+h3,
+.pc-title,
+.brand-text strong {
+  font-family: var(--display);
+  letter-spacing: -0.02em;
+}
+
+/* ---- Navbar: glass with a scanning light along the bottom edge ---- */
+.navbar {
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  backdrop-filter: saturate(1.6) blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.navbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neuron-a) 45%,
+    var(--neuron-b) 55%,
+    transparent
+  );
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: scan 6s linear infinite;
+  opacity: 0.9;
+}
+@keyframes scan {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+.brand-logo {
+  position: relative;
+  background: linear-gradient(135deg, var(--neuron-b), var(--neuron-a));
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 15%) inset,
+    0 0 18px var(--glow);
+}
+.brand-logo::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 13px;
+  border: 1px solid var(--neuron-a);
+  opacity: 0;
+  animation: ring 3.2s ease-out infinite;
+}
+@keyframes ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+.brand-text small {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.nav-links a,
+.nav-drop-btn {
+  position: relative;
+}
+.nav-links > a.active,
+.nav-links a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent) inset;
+}
+.nav-drop-menu {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.icon-btn,
+.lang-switch {
+  background: var(--surface);
+  border-color: var(--border);
+  backdrop-filter: blur(8px);
+}
+.icon-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+.lang-switch button.on {
+  background: linear-gradient(135deg, var(--neuron-b), var(--neuron-a));
+  color: #fff;
+}
+
+/* ---- Page enter animation ---- */
+.content > * {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---- Home hero ---- */
+.home-hero {
+  padding: 1.6rem 0 0.6rem;
+}
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.9rem;
+  padding: 0.3rem 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+.hero-kicker .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--neuron-a);
+  box-shadow: 0 0 10px var(--neuron-a);
+  animation: blink 1.6s ease-in-out infinite;
+}
+.hero-kicker .caret {
+  width: 0.55em;
+  height: 1em;
+  background: var(--accent);
+  animation: caret 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.home-hero h1 {
+  font-size: clamp(2.3rem, 5.5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  background: linear-gradient(
+    100deg,
+    var(--text) 0%,
+    var(--text) 35%,
+    var(--neuron-a) 50%,
+    var(--neuron-b) 62%,
+    var(--text) 78%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 9s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+/* ---- Section titles: terminal style ---- */
+.section-title,
+.side-title {
+  font-family: var(--mono);
+  letter-spacing: 0.08em;
+}
+.section-title::before {
+  content: '// ';
+  color: var(--accent);
+}
+
+/* ---- Glass surfaces ---- */
+.pc,
+.card,
+.side-block,
+.toc-inner,
+.post-nav-card,
+.notice,
+.radar-mini,
+.news-mini {
+  background: var(--surface);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border-color: var(--border);
+}
+
+/* Cards: lift, neon edge and a light sweep on hover */
+.pc {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.pc::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 10%) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.8s ease;
+}
+.pc:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent),
+    0 18px 50px -10px var(--glow);
+}
+.pc:hover::after {
+  transform: translateX(120%);
+}
+.pc-cover {
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pc:hover .pc-cover {
+  transform: scale(1.04);
+}
+.pc-cover-wrap {
+  overflow: hidden;
+}
+.pc-meta,
+.pc-read,
+.byline > span:nth-child(2) {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+/* Staggered entrance for grids */
+.post-grid > * {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@for $i from 1 through 12 {
+  .post-grid > *:nth-child(#{$i}) {
+    animation-delay: #{$i * 60}ms;
+  }
+}
+
+/* Chips, tags, buttons */
+.cat-chip {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--c2, var(--accent)) 35%, transparent);
+}
+.tag-pill,
+.type-badge,
+.series-badge {
+  font-family: var(--mono);
+  background: var(--surface-2);
+}
+.tag-pill:hover {
+  box-shadow: 0 0 12px var(--glow);
+}
+.btn {
+  position: relative;
+  background: linear-gradient(135deg, var(--neuron-b), var(--neuron-a));
+  color: #fff;
+  border: 0;
+  box-shadow: 0 0 18px var(--glow);
+}
+.btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 26px var(--glow);
+}
+.btn.ghost {
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: none;
+}
+.btn.ghost:hover {
+  box-shadow: 0 0 18px var(--glow);
+}
+input,
+textarea,
+select {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Category hero: glowing gradient panel */
+.cat-hero {
+  box-shadow: 0 20px 60px -20px color-mix(in srgb, var(--c2, var(--accent)) 60%, transparent);
+}
+
+/* ---- Article ----
+ * Reading surfaces are nearly opaque so the network never runs through the text. */
+.post-main,
+.toc-inner {
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(18px);
+}
+.read-progress {
+  background: linear-gradient(90deg, var(--neuron-b), var(--neuron-a));
+  box-shadow: 0 0 12px var(--neuron-a);
+}
+.post-hero-cover {
+  box-shadow: 0 30px 80px -30px var(--glow);
+}
+.prose h2 {
+  position: relative;
+}
+.prose h2::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 0.3em;
+  width: 4px;
+  height: 0.9em;
+  border-radius: 4px;
+  background: linear-gradient(var(--neuron-a), var(--neuron-b));
+  box-shadow: 0 0 10px var(--neuron-a);
+}
+.prose code {
+  font-family: var(--mono);
+}
+.code-block,
+.sql-runner {
+  border-color: var(--border);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 3%) inset;
+}
+.code-block:hover,
+.sql-runner:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 0 24px -6px var(--glow);
+}
+.toc li.active button {
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--glow);
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+/* ---- Accessibility: no motion when the user asks for it ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

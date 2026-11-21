@@ -12,6 +12,10 @@ const PAGE = 9;
   imports: [RouterLink, PostCard],
   template: `
     <section class="home-hero">
+      <p class="hero-kicker">
+        <span class="dot"></span>neural.notebook · {{ content.posts().length }}
+        {{ i18n.t('common.posts') }}<span class="caret"></span>
+      </p>
       <h1>{{ i18n.t('home.title') }}</h1>
       <p class="muted">{{ i18n.t('home.subtitle') }}</p>
     </section>

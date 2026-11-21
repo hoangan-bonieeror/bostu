@@ -26,6 +26,15 @@
 | 📡 | **Tech Radar bot**: mỗi tuần quét GitHub, Hacker News, DEV, đọc nội dung từng link, viết bài song ngữ | **Tech Radar bot**: weekly scan of GitHub, HN, DEV; reads each link and writes a bilingual post |
 | 🌗 | VI/EN chuyển tức thì, sáng/tối, responsive | Instant VI/EN, light/dark, responsive |
 
+### Giao diện / Design
+
+Phong cách **futuristic**: nền tối kiểu không gian, màu neon cyan–tím, thẻ kính mờ (glassmorphism), font Space Grotesk + Inter + JetBrains Mono (tự host qua `@fontsource-variable`, không gọi Google Fonts).
+
+- **Mạng neuron động** (`src/app/shared/neural-bg.ts`, canvas 2D): các tế bào trôi chậm, nối với nhau bằng synapse; xung tín hiệu chạy dọc dây nối, làm tế bào đích "phát hỏa" và đôi khi lan tiếp thành chuỗi. Con trỏ chuột hoạt động như một neuron (kéo nhẹ các tế bào gần đó); bấm vào chỗ trống để phóng một loạt xung.
+- Tự giảm số tế bào trên màn hình nhỏ, dừng khi tab bị ẩn, giới hạn DPR = 2; tắt mọi chuyển động khi hệ điều hành bật **Reduce motion**.
+- Màu lấy từ biến CSS `--neuron-a`, `--neuron-b`, `--neuron-line`, nên đổi theme sáng/tối là mạng neuron đổi màu theo.
+- Lớp giao diện nằm riêng trong `src/futuristic.scss` (nạp sau `styles.scss`): đổi màu, hiệu ứng glow, quét sáng trên navbar, chữ tiêu đề lấp lánh, thẻ bài nổi lên khi rê chuột.
+
 ### Nội dung hiện có / Current content
 
 | Chuyên mục | Bài viết |
@@ -248,7 +257,7 @@ scripts/
 4. **CI/CD:** workflow tái sử dụng (`workflow_call`), quyền tối thiểu, concurrency, truyền input qua env để tránh script injection.
 5. **Song ngữ khi chạy** bằng signal, không phải build riêng từng ngôn ngữ.
 
-**Ảnh chụp nên có:** trang chủ (sáng và tối), một bài có sơ đồ Mermaid + mục lục, một ô SQL đang hiển thị kết quả, trang tìm kiếm, và giao diện mobile.
+**Ảnh chụp nên có:** trang chủ (sáng và tối) kèm một GIF ngắn quay mạng neuron đang chạy, một bài có sơ đồ Mermaid + mục lục, một ô SQL đang hiển thị kết quả, trang tìm kiếm, và giao diện mobile.
 
 ---
 

@@ -57,7 +57,11 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "@fontsource-variable/jetbrains-mono/index.css",
+              "@fontsource-variable/space-grotesk/index.css",
+              "@fontsource-variable/inter/index.css",
+              "src/styles.scss",
+              "src/futuristic.scss"
             ],
             "allowedCommonJsDependencies": [
               "@braintree/sanitize-url",

@@ -4,11 +4,13 @@ import { ContentService } from './core/content.service';
 import { I18n } from './core/i18n';
 import { BOT_CATEGORIES, NEWS_CATEGORY, RADAR_CATEGORY } from './core/models';
 import { StoreService } from './core/store.service';
+import { NeuralBackground } from './shared/neural-bg';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NeuralBackground],
   template: `
+    <app-neural-bg />
     <header class="navbar" [class.open]="menuOpen()">
       <div class="navbar-inner">
         <a class="brand" routerLink="/">

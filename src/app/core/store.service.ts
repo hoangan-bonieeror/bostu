@@ -10,10 +10,9 @@ function detectLang(): Lang {
     : 'en';
 }
 
+/** Dark is the signature look (neural network on deep space); light stays one click away. */
 function detectTheme(): Theme {
-  return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
+  return 'dark';
 }
 
 export function initialState(): AppState {
