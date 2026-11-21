@@ -3,9 +3,9 @@
 > 🇻🇳 Blog kỹ thuật cá nhân, song ngữ Việt–Anh: thiết kế hệ thống, cấu trúc dữ liệu & giải thuật, thiết kế database, CI/CD và hệ thống doanh nghiệp. Ô SQL chạy ngay trong bài, sơ đồ trực quan, kèm một bot tự tổng hợp công nghệ mới mỗi tuần.
 > 🇺🇸 A personal, bilingual (VI/EN) engineering blog on system design, DSA, database design, CI/CD and enterprise systems — with runnable SQL inside articles, visual diagrams, and a bot that compiles new tech every week.
 
-**Live:** https://hoangan-bonieeror.github.io/bostu/
+**Live (riêng tư, cần đăng nhập):** https://bostu.pages.dev/
 
-![Angular](https://img.shields.io/badge/Angular-22-dd0031?logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript) ![SQLite](https://img.shields.io/badge/SQLite-WASM-003b57?logo=sqlite) ![Mermaid](https://img.shields.io/badge/diagrams-Mermaid-ff3670) ![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-222?logo=github)
+![Angular](https://img.shields.io/badge/Angular-22-dd0031?logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript) ![SQLite](https://img.shields.io/badge/SQLite-WASM-003b57?logo=sqlite) ![Mermaid](https://img.shields.io/badge/diagrams-Mermaid-ff3670) ![Cloudflare Pages](https://img.shields.io/badge/deploy-Cloudflare%20Pages%20%2B%20Access-f38020?logo=cloudflare)
 
 ---
 
@@ -135,13 +135,39 @@ SELECT * FROM t;
 
 ---
 
-## 🌐 Deploy lên GitHub Pages
+## 🔒 Deploy (riêng tư) — Cloudflare Pages + Cloudflare Access
 
-1. **Settings → Pages → Source:** chọn **GitHub Actions**.
-2. **Settings → Actions → General → Workflow permissions:** chọn **Read and write permissions** (cho bot Tech Radar).
-3. Push lên `main`. Workflow `deploy.yml` sẽ kiểm tra bài viết, build và deploy.
+Trang được host trên **Cloudflare Pages** và đặt sau **Cloudflare Access**: chỉ email được cho phép mới mở được trang (đăng nhập bằng mã OTP gửi qua email). Việc kiểm tra diễn ra ở máy chủ Cloudflare, nên cả HTML lẫn file bài viết (`content/posts/*.md`, `posts.json`) đều không tải được nếu chưa đăng nhập. Repo GitHub để **private**.
 
-App dùng hash routing (`/#/p/<id>`) và `<base href="./">`, nên chạy được ở mọi đường dẫn con mà không cần cấu hình thêm.
+> Vì sao không dùng GitHub Pages? Với tài khoản cá nhân, trang GitHub Pages luôn công khai; chỉ GitHub Enterprise Cloud mới giới hạn được người xem.
+
+**Thiết lập một lần:**
+
+1. **Tạo tài khoản Cloudflare** (miễn phí) tại dash.cloudflare.com.
+2. **Lấy Account ID:** trang **Workers & Pages** → cột phải có *Account ID*.
+3. **Tạo API token:** *My Profile → API Tokens → Create Token → Create Custom Token*, quyền **Account → Cloudflare Pages → Edit**.
+4. **Thêm secrets vào GitHub:** repo → **Settings → Secrets and variables → Actions → Secrets**:
+   - `CLOUDFLARE_API_TOKEN` = token ở bước 3
+   - `CLOUDFLARE_ACCOUNT_ID` = Account ID ở bước 2
+   - (Tùy chọn) **Variable** `CF_PAGES_PROJECT` nếu muốn tên project khác `bostu`.
+5. **Deploy lần đầu:** tab **Actions → Deploy to Cloudflare Pages → Run workflow**. Workflow tự tạo project `bostu` rồi đưa trang lên `https://bostu.pages.dev` (nếu tên đã có người dùng, Cloudflare sẽ cấp địa chỉ khác, xem trong log hoặc trang project).
+6. **Khóa trang bằng Cloudflare Access** (theo hướng dẫn *Enable Access on your `*.pages.dev` domain* của Cloudflare):
+   1. **Workers & Pages** → chọn project `bostu` → **Settings** → **Enable access policy**.
+   2. Bấm **Manage** ở policy vừa tạo (mặc định chỉ bảo vệ bản preview).
+   3. Trong **Access → Applications**, chọn ứng dụng của project → **Configure**.
+   4. Ở **Public hostname**, ô **Subdomain**: xóa dấu `*` rồi lưu (đổi *Application name* nếu báo trùng). Bước này để bảo vệ chính `bostu.pages.dev`.
+   5. Quay lại project → **Settings → General**, bấm **Enable access policy** lần nữa để bảo vệ lại các bản preview.
+   6. Kiểm tra có **hai** application: một cho `bostu.pages.dev`, một cho `*.bostu.pages.dev`. Trong policy của cả hai, quy tắc **Include → Emails** chỉ chứa email của bạn.
+7. **Tắt GitHub Pages cũ và chuyển repo sang private:**
+   - repo → **Settings → Pages** → **Unpublish site** (hoặc đặt Source về *None*).
+   - **Settings → General → Danger Zone → Change visibility → Private**.
+8. Mở `https://bostu.pages.dev` trong cửa sổ ẩn danh: phải thấy trang đăng nhập của Cloudflare Access. Nhập email → nhận mã → vào được trang.
+
+**Chi phí:** Cloudflare Pages và Zero Trust (Access) đều có gói miễn phí; Zero Trust miễn phí cho dưới 50 người dùng. Repo private dùng hạn mức GitHub Actions của gói Free (2.000 phút/tháng); bot tin tức + Tech Radar + deploy mỗi ngày dùng khoảng vài trăm phút.
+
+> RSS (`feed.vi.xml`, `feed.en.xml`) cũng nằm sau Access, nên trình đọc RSS bên ngoài sẽ không đọc được trong thời gian trang bị khóa.
+
+**Mở lại công khai sau này:** xóa hai Access application trong Zero Trust (trang Cloudflare thành công khai), hoặc chuyển repo về public và khôi phục workflow GitHub Pages cũ từ lịch sử git.
 
 ---
 
@@ -248,14 +274,14 @@ scripts/
 
 **Mô tả ngắn (CV / LinkedIn):**
 
-> *Built Bostu, a bilingual (VI/EN) engineering blog in Angular 22 (zoneless, signals) with a build-time content pipeline (front matter → index, full-text search, RSS, generated covers), in-browser runnable SQL via SQLite/WebAssembly, Mermaid diagrams, and a scheduled GitHub Actions bot that aggregates GitHub, Hacker News and DEV, crawls each article (robots.txt-aware), summarizes with Gemini, and publishes a daily tech-news digest plus a weekly Tech Radar to GitHub Pages.*
+> *Built Bostu, a bilingual (VI/EN) engineering blog in Angular 22 (zoneless, signals) with a build-time content pipeline (front matter → index, full-text search, RSS, generated covers), in-browser runnable SQL via SQLite/WebAssembly, Mermaid diagrams, and a scheduled GitHub Actions bot that aggregates GitHub, Hacker News and DEV, crawls each article (robots.txt-aware), summarizes with Gemini, and publishes a daily tech-news digest plus a weekly Tech Radar to a private Cloudflare Pages site behind Cloudflare Access.*
 
 **Điểm nên nhấn mạnh khi phỏng vấn:**
 
 1. **Content pipeline:** Markdown + front matter → chỉ mục, tìm kiếm, RSS; CI chặn deploy khi nội dung sai.
 2. **Ô SQL nhúng:** fenced block `sql-run` được biến thành editor chạy SQLite trong trình duyệt, mỗi lần chạy trên database mới.
 3. **Hai bot nội dung** (tin tức hằng ngày, Tech Radar hằng tuần): nguồn độc lập (một nguồn lỗi không làm hỏng cả lần chạy), chấm điểm thang log, bộ lọc chống spam/lạc đề, crawl có tôn trọng robots.txt và bản quyền, Gemini có retry + model dự phòng, ghi trạng thái để quan sát.
-4. **CI/CD:** workflow tái sử dụng (`workflow_call`), quyền tối thiểu, concurrency, truyền input qua env để tránh script injection.
+4. **CI/CD & bảo mật:** workflow tái sử dụng (`workflow_call` + `secrets: inherit`), quyền tối thiểu, concurrency, truyền input qua env để tránh script injection; deploy lên Cloudflare Pages và khóa bằng Cloudflare Access (zero trust) thay vì mật khẩu phía client.
 5. **Song ngữ khi chạy** bằng signal, không phải build riêng từng ngôn ngữ.
 
 **Ảnh chụp nên có:** trang chủ (sáng và tối) kèm một GIF ngắn quay mạng neuron đang chạy, một bài có sơ đồ Mermaid + mục lục, một ô SQL đang hiển thị kết quả, trang tìm kiếm, và giao diện mobile.

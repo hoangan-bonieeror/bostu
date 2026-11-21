@@ -22,8 +22,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 # Shared with the daily news bot so the two never push at the same time.
 concurrency:
@@ -82,3 +80,5 @@ jobs:
     needs: radar
     if: needs.radar.outputs.changed == 'true'
     uses: ./.github/workflows/deploy.yml
+    # Reusable workflows don't see the caller's secrets unless they are passed on.
+    secrets: inherit
