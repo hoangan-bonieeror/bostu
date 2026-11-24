@@ -1,50 +1,50 @@
 {
-  "lastRun": "2026-11-19T10:13:28.378Z",
+  "lastRun": "2026-11-24T02:14:28.471Z",
   "days": 7,
   "sources": [
     {
       "id": "github",
       "name": "GitHub",
       "ok": true,
-      "fetched": 16,
+      "fetched": 18,
       "error": null
     },
     {
       "id": "release",
       "name": "GitHub Releases",
       "ok": true,
-      "fetched": 9,
+      "fetched": 11,
       "error": null
     },
     {
       "id": "hn",
       "name": "Hacker News",
       "ok": true,
-      "fetched": 261,
+      "fetched": 242,
       "error": null
     },
     {
       "id": "devto",
       "name": "DEV Community",
       "ok": true,
-      "fetched": 66,
+      "fetched": 70,
       "error": null
     }
   ],
-  "relevant": 48,
-  "published": 35,
-  "postId": "tech-radar-2026-11-19",
+  "relevant": 52,
+  "published": 30,
+  "postId": "tech-radar-2026-11-24",
   "crawl": {
-    "attempted": 35,
-    "ok": 26,
-    "failed": 7,
-    "robots": 2
+    "attempted": 30,
+    "ok": 29,
+    "failed": 1,
+    "robots": 0
   },
   "ai": {
     "enabled": true,
-    "ok": false,
+    "ok": true,
     "model": "gemini-flash-latest",
-    "summarized": 0,
-    "error": "Gemini API 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    "summarized": 30,
+    "error": null
   }
 }
